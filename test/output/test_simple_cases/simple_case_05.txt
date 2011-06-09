@@ -1,0 +1,8 @@
+#
+#	@param	var_0		= 'tested'
+#
+def method_0(var_0)
+	var_5 = var_0.chop 
+	var_4 = var_5 
+	return var_4 
+end

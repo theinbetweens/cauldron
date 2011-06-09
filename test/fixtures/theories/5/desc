@@ -1,0 +1,9 @@
+if: 
+	if([32mvar1[m.pass?([33mvar2[m[[34mvar3[m]))
+		return true
+	end
+
+result: 
+	if([32mvar1[m.all_pass?([33mvar2[m))
+		return true
+	end

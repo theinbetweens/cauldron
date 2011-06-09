@@ -1,0 +1,14 @@
+if: 
+	if([32mvar1[m.pass?([33mvar2[m[[34mvar3[m]))
+		return true
+	end
+	if([32mvar1[m.pass?([33mvar2[m[[35mvar4[m]) == false)
+		return true
+	end
+
+action: 
+	<runtime_method>.add_statement_at(Statement.new(Return.new, [33mvar2[m[[35mvar4[m][:output]),[32mvar1[m.statement_id)
+result: 
+	if([32mvar1[m.pass?([33mvar2[m[[35mvar4[m]))
+		return true
+	end

@@ -1,0 +1,8 @@
+
+#
+#	@param	var_0		= 8
+#
+def method_0(var_0)
+	var_4 = var_0 
+	return var_4 
+end

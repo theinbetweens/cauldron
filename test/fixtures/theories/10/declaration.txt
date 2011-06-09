@@ -1,0 +1,23 @@
+
+    dependent_one = TheoryResult.new(StringToTheory.run(
+      "if(var1.history(var2[var3][:params]).any? { |x| x.statement_id == var1.last.statement_id })\nreturn true\nend"
+    ))
+    dependent_two = TheoryResult.new(StringToTheory.run(
+      "if((var1.history(var2[var4][:params]).any? { |x| x.statement_id == var1.last.statement_id })==false)\nreturn true\nend"
+    ))
+    action = TheoryAction.new(
+      TheoryStatement.new(StringToTheory.run('Statement.new(Return.new,var2[var3][:output])')),
+      StringToTheory.run('var1.last.statement_id')
+    )    
+    result_one = TheoryResult.new(StringToTheory.run(
+      "if(var1.pass?(var2[var3]))\nreturn true\nend"
+    ))
+    result_two = TheoryResult.new(StringToTheory.run(
+      "if(var1.pass?(var2[var4])==false)\nreturn true\nend"
+    ))    
+    Theory.new(
+      [dependent_one,dependent_two],
+      action,
+      [result_one,result_two]
+    )
+    

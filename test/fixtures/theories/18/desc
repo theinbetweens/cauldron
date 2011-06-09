@@ -1,0 +1,11 @@
+if: 
+	if([36mvar5[m.history2([34mvar3[m[[35mvar4[m][:params]).last['variables'].last['value'] == [34mvar3[m[[35mvar4[m][:output].length)
+		return true
+	end
+
+action: 
+	<runtime_method>.add_statement_at(Statement.new(Return.new, [32mvar1[m.params[[33mvar2[m]),[32mvar1[m.statement_id)
+result: 
+	if([32mvar1[m.pass?([34mvar3[m[[35mvar4[m]))
+		return true
+	end

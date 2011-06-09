@@ -1,0 +1,9 @@
+if: 
+	if(runtime_method.realise2(test_cases[0][:params]).params[0].value.length == test_cases[0][:output])
+	end
+action: 
+	<runtime_method>.add_statement_at(Statement.new(Return.new, test_cases[0][:output]),0)
+result: 
+	if(runtime_method.pass?(test_cases[0]))
+end
+	returns true

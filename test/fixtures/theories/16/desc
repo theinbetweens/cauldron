@@ -1,0 +1,14 @@
+if: 
+	if([32mvar1[m.kind_of?(RuntimeMethod))
+		return true
+	end
+	if([34mvar3[m[[35mvar4[m].kind_of?(CTestCase))
+		return true
+	end
+
+action: 
+	<runtime_method>.add_statement_at(BlockStatement.new(Statement.new(InstanceCallContainer.new(Container.new(InstanceCallContainer.new([32mvar1[m.params[[33mvar2[m], StringLength.new), Subtract.new, 1), Times.new))),[32mvar1[m.statement_id)
+result: 
+	if(([32mvar1[m.history2([34mvar3[m[[35mvar4[m][:params]).select{ |x| x['statement_id'] == [32mvar1[m.last.statement_id} ) == [34mvar3[m[[35mvar4[m][:params][[33mvar2[m].length - 1)
+		return true
+	end

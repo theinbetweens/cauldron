@@ -1,0 +1,17 @@
+if: 
+	if([33mvar2[m[[34mvar3[m].kind_of?(CTestCase))
+		return true
+	end
+	if(([33mvar2[m[[34mvar3[m][:params][[36mvar6[m] == [33mvar2[m[[35mvar4[m][:params][[36mvar6[m]) == false)
+		return true
+	end
+
+action: 
+	<runtime_method>.add_statement_at(OpenStatement.new(IfContainer.new([32mvar1[m.params[[36mvar6[m], Equivalent.new, [33mvar2[m[[34mvar3[m][:params][[36mvar6[m])),[32mvar1[m.statement_id)
+result: 
+	if([36mvar5[m.history2([33mvar2[m[[34mvar3[m][:params]).any?{ |x| x['statement_id'] == [32mvar1[m.last.statement_id} )
+		return true
+	end
+	if(([36mvar5[m.history2([33mvar2[m[[35mvar4[m][:params]).any?{ |x| x['statement_id'] == [32mvar1[m.last.statement_id} ) == false)
+		return true
+	end
