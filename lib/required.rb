@@ -231,6 +231,6 @@ require $LOC+File.join('implemented_chain')
 require $LOC+File.join('ChainMapping')
 
 # TEST HELPERS
-require $LOC+File.join(['test','fixtures','theories.rb'])
+require $LOC+File.join(['theories'])
 
 require $LOC+File.join(['cauldron','pot'])

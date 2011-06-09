@@ -17,10 +17,10 @@ Jeweler::Tasks.new do |gem|
   gem.name = "cauldron"
   gem.homepage = "http://github.com/theinbetweens/cauldron"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{Generate simple ruby methods from the input(s) and expected output}
+  gem.description = %Q{Cauldron generates a methd from a number of examples that describe the input and the expected output.  It is still at a very early stage of development right now so you're unlikely to get much practical use out of it.}
   gem.email = "warrensangster@yahoo.com"
-  gem.authors = ["theinbetweens"]
+  gem.authors = ["Warren Sangster"]
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
