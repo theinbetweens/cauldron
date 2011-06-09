@@ -1,0 +1,9 @@
+if: 
+	if(test_cases[0][:params][0] + test_cases[0][:params][1] == test_cases[0][:output])
+	end
+action: 
+	<runtime_method>.add_statement_at(Statement.new(Unknown.new, Equal.new, runtime_method.params[0], Addition.new, runtime_method.params[1]),0)
+result: 
+	if(runtime_method.all_pass?(test_cases))
+end
+	returns true

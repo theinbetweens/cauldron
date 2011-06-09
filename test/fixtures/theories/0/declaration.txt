@@ -1,0 +1,9 @@
+
+    dependent_one = TheoryDependent.new(StringToTheory.run("if(var1.realise2(var2).params[0].value.length == var3.length)\nend"))
+    action_one = TheoryAction.new(
+    	TheoryStatement.new(StringToTheory.run('Statement.new(Return.new,var4.params[0])')),
+    	StringToTheory.run('var1.statement_id')
+		)
+    result_one = TheoryResult.new(StringToTheory.run("if(var1.all_pass?(var5))\nreturn true\nend"),true)      
+    Theory.new([dependent_one],action_one,[result_one]) 
+    

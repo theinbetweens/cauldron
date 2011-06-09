@@ -1,0 +1,6 @@
+
+    dependent_one = TheoryDependent.new(StringToTheory.run("if(var1.pass?(var2[var3]))\nreturn true\nend"))
+    action_one = nil
+    result_one = TheoryResult.new(StringToTheory.run("if(var1.all_pass?(var2))\nreturn true\nend"))    
+    Theory.new([dependent_one],action_one,[result_one])
+    

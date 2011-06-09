@@ -1,0 +1,25 @@
+
+        dependent_one = TheoryDependent.new(
+          StringToTheory.run(
+            "if(var1.history2(var3[var4][:params]).select {|x| x['statement_id'] == var1.last.statement_id} == var3[var4][:params][var2].length-1)\nreturn true\nend"
+          )
+        )    
+        action = TheoryAction.new(
+          TheoryStatement.new(
+            StringToTheory.run(
+              "Statement.new(var1.params[var2],Equal.new,InstanceCallContainer.new(var1.params[var2],Chop.new))"
+            )
+          ),
+          StringToTheory.run('var1.last.statement_id')
+        )
+        result_one = TheoryResult.new(
+          StringToTheory.run(
+            "if(var5.history2(var3[var4][:params]).last['variables'].last['value'] == var3[var4][:output].length)\nreturn true\nend"
+          )
+        )
+        Theory.new(
+          [dependent_one],
+          action,
+          [result_one]
+        )
+      

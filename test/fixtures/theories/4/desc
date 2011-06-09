@@ -1,0 +1,11 @@
+if: 
+	if([32mvar1[m.realise2([33mvar2[m[[34mvar3[m][:params]).params[[34mvar3[m].value.length == [33mvar2[m[[34mvar3[m][:output])
+		return true
+	end
+
+action: 
+	<runtime_method>.add_statement_at(Statement.new(Return.new, [32mvar1[m.params[[34mvar3[m]),[32mvar1[m.statement_id)
+result: 
+	if([32mvar1[m.pass?([33mvar2[m[[34mvar3[m]))
+		return true
+	end

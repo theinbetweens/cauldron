@@ -1,0 +1,24 @@
+
+    dependent_one = TheoryDependent.new(StringToTheory.run("if(var2[var3].kind_of?(CTestCase))\nreturn true\nend"))
+    dependent_two = TheoryDependent.new(StringToTheory.run("if(var6.kind_of?(Fixnum))\nreturn true\nend"))
+    dependent_three = TheoryDependent.new(
+      StringToTheory.run("if((var2[var3][:params][var6] == var2[var4][:params][var6])==false)\nreturn true\nend")
+    )
+    action = TheoryAction.new(
+      TheoryStatement.new(StringToTheory.run(
+        'OpenStatement.new(IfContainer.new(var1.params[var6],Equivalent.new,var2[var3][:params][var6]))'
+      )),
+      StringToTheory.run('var1.statement_id')
+    )
+    result_one = TheoryResult.new(StringToTheory.run(
+      "if(var5.history2(var2[var3][:params]).any? { |x| x['statement_id'] == var1.last.statement_id })\nreturn true\nend"
+    ))
+    result_two = TheoryResult.new(StringToTheory.run(
+      "if((var5.history2(var2[var4][:params]).any? { |x| x['statement_id'] == var1.last.statement_id })==false)\nreturn true\nend"
+    ))    
+    Theory.new(
+      [dependent_one,dependent_two,dependent_three],
+      action,
+      [result_one,result_two]
+    )  
+    

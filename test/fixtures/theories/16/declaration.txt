@@ -1,0 +1,30 @@
+
+      dependent_one = TheoryDependent.new(
+        StringToTheory.run(
+          "if(var1.kind_of?(RuntimeMethod))\nreturn true\nend"
+        )
+      )     
+      dependent_two = TheoryDependent.new(
+        StringToTheory.run(
+          "if(var3[var4].kind_of?(CTestCase))\nreturn true\nend"
+        )
+      )     
+      action = TheoryAction.new(
+        TheoryStatement.new(
+          StringToTheory.run(
+            'BlockStatement.new(Statement.new(InstanceCallContainer.new(Container.new(InstanceCallContainer.new(var1.params[var2],StringLength.new),Subtract.new,1),Times.new)))'
+          )
+        ),
+        StringToTheory.run('var1.statement_id')
+      )
+      result_one = TheoryResult.new(
+        StringToTheory.run(
+          "if(var1.history2(var3[var4][:params]).select {|x| x['statement_id'] == var1.last.statement_id} == var3[var4][:params][var2].length-1)\nreturn true\nend"
+        )
+      )
+        Theory.new(
+          [dependent_one,dependent_two],
+          action,
+          [result_one]
+        )    
+      

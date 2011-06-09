@@ -1,0 +1,10 @@
+if: 
+	if([32mvar1[m.length == [33mvar2[m.length)
+	end
+
+action: 
+	<runtime_method>.add_statement_at(Statement.new(Return.new, [34mvar3[m),[35mvar4[m.statement_id)
+result: 
+	if([35mvar4[m.all_pass?([36mvar5[m))
+		return true
+	end
