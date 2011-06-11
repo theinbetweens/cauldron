@@ -1,3 +1,5 @@
+$LOAD_PATH << File.expand_path('../../../../../lib',__FILE__)
+
 require 'required'
 require 'test/unit'
 
@@ -669,6 +671,12 @@ class TestStatement < Test::Unit::TestCase
   
   def test_write_structure_simple
     assert_equal("a = b",Parser.run("var1 = var2").write_structure)
+    puts '-==========================================='
+    res = Parser.run("var1 = var2 + var3")
+    puts '-===========================================____________________'
+    res.each do |x|
+      puts x.class.to_s
+    end
     assert_equal("a = b + c",Parser.run("var1 = var2 + var3").write_structure)
     assert_equal("a = b + c",Parser.run("var1 = var2 + 7").write_structure)
     assert_equal("a = b + c",Parser.run("var1 = var2 + 'adeley'").write_structure)

@@ -1,3 +1,5 @@
+$LOAD_PATH << File.expand_path('../../../../../lib',__FILE__)
+
 require 'required'
 require 'test/unit'
 
@@ -7,7 +9,7 @@ class TestOpenStatement < Test::Unit::TestCase
     
     # Create a simple open if statement
     @simple_if_statement_var = Unknown.new
-    simple_if_statement = Statement.new(If.new,@simple_if_statement_var,Equivalent.new,'Stobart'.to_literal)
+    simple_if_statement = Statement.new(If.new,Container.new(@simple_if_statement_var,Equivalent.new,'Stobart'.to_literal))
     @simple_open_if_statement = OpenStatement.new(simple_if_statement)
     
     # Create a simple open statement with variables
@@ -31,11 +33,11 @@ class TestOpenStatement < Test::Unit::TestCase
   def test_write  
     
     # Test the simple statement is written out properly
-    assert_equal("if #{@simple_if_statement_var.write} == 'Stobart'\nend" ,@simple_open_if_statement.write)
+    assert_equal("if(#{@simple_if_statement_var.write} == 'Stobart')\nend" ,@simple_open_if_statement.write)
     
     # Test that internal statements are properly tabs
     @simple_open_if_statement << Statement.new(Return.new,True.new)
-    assert_equal("if #{@simple_if_statement_var.write} == 'Stobart'\n\treturn true\nend" ,@simple_open_if_statement.write)
+    assert_equal("if(#{@simple_if_statement_var.write} == 'Stobart')\n\treturn true\nend" ,@simple_open_if_statement.write)
     
   end
   

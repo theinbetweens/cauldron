@@ -57,9 +57,6 @@ class UnifiedChain < Chain
     # Take the first theory and identify all the accessors
     # (need to work out what is the runtime method and what the test cases)
     
-    #pp missing_intrinsic_values
-    #puts @nodes.first.class.to_s
-    #@nodes.each {|x| puts x.class}
     # TEMP: Why are these implemented theories
     @nodes.first.all_theory_variables
     

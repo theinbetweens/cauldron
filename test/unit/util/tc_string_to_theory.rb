@@ -1,6 +1,7 @@
+$LOAD_PATH << File.expand_path('../../../../lib',__FILE__)
+
 require 'required'
 require 'test/unit'
-
 
 class TestStringToTheory < Test::Unit::TestCase
   
@@ -92,7 +93,7 @@ class TestStringToTheory < Test::Unit::TestCase
   end
   
   def test_variable_assignment
-    # var1.length = var2.length
+    a = StringToTheory.run("var1.length = var2.length")
     assert_equal(
       "#{TheoryVariable.variable_colour(1)}var1#{TheoryVariable::NORMAL}.length = #{TheoryVariable.variable_colour(2)}var2#{TheoryVariable::NORMAL}.length",    
       StringToTheory.run("var1.length = var2.length").describe

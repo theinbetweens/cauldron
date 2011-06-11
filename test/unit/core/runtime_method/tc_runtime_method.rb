@@ -1,3 +1,5 @@
+$LOAD_PATH << File.expand_path('../../../../../lib',__FILE__)
+
 require 'required'
 require 'test/unit'
 
@@ -414,7 +416,7 @@ class TestRuntimeMethod < Test::Unit::TestCase
     simple_method_written_4 = simple_method.write
     realised_simple_method_4 = simple_method.realise2(['Grim','fandango','Threepwood'])
     assert_equal(
-      "\n#\n#\t@param\t[StringVariable] 'Grim'\n#\t@param\t[StringVariable] 'fandango'\n#\t@param\t[StringVariable] 'Threepwood'\n#\n#\ndef method_0(var_33, var_34, var_35)\n\tvar_58 = var_33.length\n\tvar_68 = var_33.chop\n\tvar_79 = var_34.length\n\tvar_80 = var_79  + var_58\nend\n",
+      "\n#\n#\t@param\t[StringVariable] 'Grim'\n#\t@param\t[StringVariable] 'fandango'\n#\t@param\t[StringVariable] 'Threepwood'\n#\n#\ndef method_0(var_33, var_34, var_35)\n\tvar_58 = var_33.length\n\tvar_68 = var_33.chop\n\tvar_79 = var_34.length\n\tvar_80 = var_79 + var_58\nend\n",
       realised_simple_method_4.write
     )
     
@@ -482,10 +484,10 @@ class TestRuntimeMethod < Test::Unit::TestCase
     assert_not_equal("#\n#\ndef method_"+method_example_b.method_id.to_s+"\n\nend\n",method_example_b.write)    
       
     # Test that neested methods are writen properly      
-    assert_equal("\n#\n#\ndef method_7\n\tvar_26 = ''\n\tvar_27 = 'x'\n\t3.times do |var_28|\n\t\tvar_26 = var_26  + var_27\n\tend\n\nend\n",@build_xxx_method.write)  
+    assert_equal("\n#\n#\ndef method_7\n\tvar_26 = ''\n\tvar_27 = 'x'\n\t3.times do |var_28|\n\t\tvar_26 = var_26 + var_27\n\tend\n\nend\n",@build_xxx_method.write)  
     
     # Test how the method is written with tabs
-    assert_equal("\n\t#\n\t#\n\tdef method_7\n\t\tvar_26 = ''\n\t\tvar_27 = 'x'\n\t\t3.times do |var_28|\n\t\t\tvar_26 = var_26  + var_27\n\t\tend\n\n\tend\n",@build_xxx_method.write(nil,1))      
+    assert_equal("\n\t#\n\t#\n\tdef method_7\n\t\tvar_26 = ''\n\t\tvar_27 = 'x'\n\t\t3.times do |var_28|\n\t\t\tvar_26 = var_26 + var_27\n\t\tend\n\n\tend\n",@build_xxx_method.write(nil,1))      
     
     # TODO  Test write with passed in parameters         
   end
