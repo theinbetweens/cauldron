@@ -21,7 +21,7 @@ class InstanceCallContainer < CallContainer
   #  
   def initialize(subject,method_call,*params)
     raise StandardError.new('Use ClassMethodCallContainer here') if subject.kind_of?(ClassName)
-    super(subject,method_call,*params)    
+    super(subject,method_call,*params)        
   end
   
   def write_with_uniq_id

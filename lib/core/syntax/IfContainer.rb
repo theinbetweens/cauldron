@@ -30,7 +30,7 @@ class IfContainer < Statement
     line += '('
     self.each do |x|
       line += x.write
-      line += ' ' unless x.object_id == last.object_id
+      line += '' unless x.object_id == last.object_id
     end
     line += ')'
     return line

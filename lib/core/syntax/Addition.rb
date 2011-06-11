@@ -11,7 +11,7 @@ class Addition < InstanceCall
   end
   
   def write
-    return ' +'
+    return ' + '
   end
   
   def to_literal_string
@@ -19,7 +19,8 @@ class Addition < InstanceCall
   end
 
   def closure
-    return [' ','']
+    #return [' ','']
+    return ['','']
   end       
     
 end

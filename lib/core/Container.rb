@@ -22,7 +22,6 @@ class Container
     @tokens.each do |code|
       line += code.write
       break if code.object_id == @tokens.last.object_id
-      line += ' '
     end
     return line+')'
   end
@@ -33,7 +32,6 @@ class Container
     @tokens.each do |code|
       line += code.describe
       break if code.object_id == @tokens.last.object_id
-      line += ' '
     end
     return line+')'
   end  

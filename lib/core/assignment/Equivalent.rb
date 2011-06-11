@@ -6,7 +6,7 @@ class Equivalent < Assignment
   end
   
   def write
-    return '=='
+    return ' == '
   end
   
   def copy

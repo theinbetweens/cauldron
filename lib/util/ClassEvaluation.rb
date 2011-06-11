@@ -43,7 +43,7 @@ class ClassEvaluation
     # Include the sytax for the statement in the file
     file << runtime_class.write
     file.close
-
+    
     # Load the newly created class and check the statement
     load filepath
     begin 
@@ -57,7 +57,6 @@ class ClassEvaluation
         raise StandardError.new('Can only handle one parameter right now')
       end
     rescue NameError => e
-      StandardLogger.instance.error(original_method.write()) unless original_method.nil?
       StandardLogger.instance.info(runtime_class.write)
       raise e
     end    

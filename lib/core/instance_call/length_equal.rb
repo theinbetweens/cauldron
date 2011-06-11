@@ -5,7 +5,7 @@ class LengthEqual < InstanceCall
   end
   
   def write 
-    return '.length ='
+    return '.length = '
   end
   
   def copy

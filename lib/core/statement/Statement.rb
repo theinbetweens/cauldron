@@ -156,7 +156,6 @@ class Statement < Array
     self.each do |code|
       line += code.write
       break if code.object_id == self.last.object_id
-      line += ' '
     end
     return line
   end
@@ -170,7 +169,6 @@ class Statement < Array
     self.each do |code|
       line += code.describe
       break if code.object_id == self.last.object_id
-      line += ' '
     end
     return line  
   end  
@@ -206,9 +204,9 @@ class Statement < Array
       if code.kind_of?(Variable)
 
         line += code.write+'('+code.value.write+')'
-        unless code == self.last
-          line += ' '
-        end
+        # unless code == self.last
+          # line += ' '
+        # end
         next
       end
 

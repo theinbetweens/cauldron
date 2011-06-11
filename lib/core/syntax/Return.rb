@@ -7,7 +7,7 @@ class Return
   end
   
   def write(method_context=nil)
-    return 'return'
+    return 'return '
   end
   
   def describe

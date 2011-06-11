@@ -159,52 +159,13 @@ module Cauldron
       s
     end    
     
-    def process_if(exp)
-      puts '--------------------- start process if ----------------'
-      #puts 's(:call, s(:call, nil, :var5, s(:arglist)), :==, s(:arglist, s(:lit, 6)))'
-      puts exp.length
-      pp exp[0]
-      # =>  's(:call, s(:call, nil, :var5, s(:arglist)), :==, s(:arglist, s(:lit, 6)))'
-      puts '--------->>>'
-      pp exp[1]
-      puts '--------->>>'
-      pp exp[2]
-      puts '--------->>>'
-      pp exp[3]
-      puts '--------->>>'      
-      puts '-------------------------------------------------------'
-      # puts '---------------------------------'
-      # pp exp
-      # puts '---------------------------------'
-      
+    def process_if(exp)      
       inner_statement_sexp = exp.shift
       # => Clear out the remain sexp 
       exp.shift
       exp.shift      
-      return OpenStatement.new(IfContainer.new(*process(inner_statement_sexp)))
-      #c = process exp.shift
-      #t = process exp.shift
-      #f = process exp.shift
-      
-      
-      # puts '--------if statement '
-      # pp exp
-      # exp.shift
-      # puts '----------------AFFTER'  
-      # pp exp
-      # process(exp)
-      # puts '--------------JJJJJJJJJJJJJJJJJJJJ'
-      # a = exp.shift
-      # puts a.class.to_s
-      # pp a
-      # puts exp.class
-      # pp exp
-      # puts exp.first
-      # pp exp.first
-      #c = process exp.shift
-      #pp c
-      #puts '-----------------DONE c'
-      #return IfContainer.new()
+      #return OpenStatement.new(IfContainer.new(*process(inner_statement_sexp)))
+      return OpenStatement.new(Statement.new(If.new,Container.new(*process(inner_statement_sexp))))
     end    
     
     def process_call(exp)

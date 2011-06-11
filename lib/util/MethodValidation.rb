@@ -118,20 +118,24 @@ class MethodValidation
       )
     )
     # 5.  return true if var_3.evaluate_class(var_2,var_1.method_name)<condition>
-    test_method.push(
-      Statement.new(
-        Return.new,
-        True.new,
-        If.new,
+    s = Statement.new(
+      If.new,
+      Container.new(
         InstanceCallContainer.new(
           var_3,
           EvaluateClassCall.new,
           var_2,
           InstanceCallContainer.new(var_1,MethodNameCall.new)
         ),
-        Raw.new(condition)
+        Raw.new(condition)      
       )
     )
+    os = OpenStatement.new(s)
+    os << Statement.new(Return.new,True.new)
+    test_method.push(os)
+    
+    #test_method.push(s)
+    
     # 6.  return false  
     test_method.push(
       Statement.new(

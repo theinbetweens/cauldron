@@ -8,7 +8,7 @@ class Equal < Equivalent
   end
   
   def write()
-    return '='
+    return ' = '
   end
   
   def describe

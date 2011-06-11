@@ -8,7 +8,7 @@ class NotEqual < Assignment
   end
   
   def write()
-    return '!='
+    return ' != '
   end
   
 end

@@ -52,7 +52,6 @@ class TheoryStatement < Statement
     self.each do |code|
       line += code.describe
       break if code.object_id == self.last.object_id
-      line += ' '
     end
     return line
   end  
