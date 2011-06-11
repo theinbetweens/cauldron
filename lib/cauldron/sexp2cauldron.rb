@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'ruby2ruby'
 require 'sexp_processor'
 
 module Cauldron
@@ -7,33 +8,35 @@ module Cauldron
     
     def initialize
       super
-      self.strict = false
+      #self.strict = false
       self.expected = Object   
+      self.auto_shift_type = true
+      self.strict = true      
       @debug[:lasgn] = nil
       @unsupported_checked = true
     end
     
     def process_lit(exp)
-      type = exp.shift
+      #type = exp.shift
       val = exp.shift
       return Literal.new(val)
     end
     
-    # def in_context type, &block
-      # # puts '-------------------------- in_context'
-      # # warn 'kadsjflkasj kldasfj lasdkfj ldksaf'
-      # # puts type
-      # # puts block_given?
-      # # pp self.context
-      # # puts @debug.has_key?(type)
-      # # pp &block
-      # # puts '--------------------999999999999999'
-      # self.context.unshift type
-#   
-      # yield
-#   
-      # self.context.shift
-    # end    
+    def in_context type, &block
+      # puts '-------------------------- in_context'
+      # warn 'kadsjflkasj kldasfj lasdkfj ldksaf'
+      # puts type
+      # puts block_given?
+      # pp self.context
+      # puts @debug.has_key?(type)
+      # pp &block
+      # puts '--------------------999999999999999'
+      self.context.unshift type
+  
+      yield
+  
+      self.context.shift
+    end    
     
     # def process(exp)
         # puts '--------------------------------calling process===================>'
@@ -52,6 +55,8 @@ module Cauldron
         # end
 #     
         # result = self.expected.new
+#     
+        # puts 'BEFORE type check - exp.class.to_s: '+exp.class.to_s
 #     
         # type = exp.first
         # raise "type should be a Symbol, not: #{exp.first.inspect}" unless
@@ -80,6 +85,10 @@ module Cauldron
 #     
           # # now do a pass with the real processor (or generic)
           # meth = @processors[type] || @default_method
+          # puts '===============meth type: '+type.to_s+' - '+type.class.to_s
+          # pp @processors
+          # puts meth
+          # puts '===============meth END'
           # if meth then
 #     
             # if @warn_on_default and meth == @default_method then
@@ -134,10 +143,10 @@ module Cauldron
 #     
         # result
       # end
-#     
+    
     # => Overwritten method
     def process_lasgn(exp)
-      exp.shift
+      #exp.shift
       next_exp = exp.shift
       if next_exp.to_s.match(/var(\d+)/)
         s = Statement.new(Unknown.new($1),Equal.new)
@@ -149,6 +158,105 @@ module Cauldron
       end
       s
     end    
+    
+    def process_if(exp)
+      puts '--------------------- start process if ----------------'
+      #puts 's(:call, s(:call, nil, :var5, s(:arglist)), :==, s(:arglist, s(:lit, 6)))'
+      puts exp.length
+      pp exp[0]
+      # =>  's(:call, s(:call, nil, :var5, s(:arglist)), :==, s(:arglist, s(:lit, 6)))'
+      puts '--------->>>'
+      pp exp[1]
+      puts '--------->>>'
+      pp exp[2]
+      puts '--------->>>'
+      pp exp[3]
+      puts '--------->>>'      
+      puts '-------------------------------------------------------'
+      # puts '---------------------------------'
+      # pp exp
+      # puts '---------------------------------'
+      
+      inner_statement_sexp = exp.shift
+      # => Clear out the remain sexp 
+      exp.shift
+      exp.shift      
+      return OpenStatement.new(IfContainer.new(*process(inner_statement_sexp)))
+      #c = process exp.shift
+      #t = process exp.shift
+      #f = process exp.shift
+      
+      
+      # puts '--------if statement '
+      # pp exp
+      # exp.shift
+      # puts '----------------AFFTER'  
+      # pp exp
+      # process(exp)
+      # puts '--------------JJJJJJJJJJJJJJJJJJJJ'
+      # a = exp.shift
+      # puts a.class.to_s
+      # pp a
+      # puts exp.class
+      # pp exp
+      # puts exp.first
+      # pp exp.first
+      #c = process exp.shift
+      #pp c
+      #puts '-----------------DONE c'
+      #return IfContainer.new()
+    end    
+    
+    def process_call(exp)
+      puts '----------------------AAAAAAAAA process_call'
+      #puts exp.class.to_s
+      #receiver_node_type = exp.first.nil? ? nil : exp.first.first
+      
+      
+      
+      # => s(s(:call, nil, :var5, s(:arglist)), :==, s(:arglist, s(:lit, 6)))
+      # => Sexp
+      #pp exp
+      #puts exp.class
+      
+      # => s(:call, nil, :var5, s(:arglist))
+      # => Sexp
+      #a = exp.shift
+      #pp a
+      #puts a.class
+      #process a
+      
+      # puts '--------------------------------'
+      results = []
+      a = exp.shift
+      variable_id = a[2].to_s.match(/var(\d+)/)[1]
+      var = Unknown.new(variable_id)
+      results << var
+      #puts var.write
+      b = exp.shift
+      c = exp.shift
+      puts b.class.to_s
+      puts b
+      if b == :==
+        puts 'Equals sign'
+        results << Equivalent.new
+      end
+      puts c.class.to_s
+      pp c
+      results << process(c)
+      return results
+      
+      #puts '-------------'
+      #receiver = process exp.shift
+      #pp receiver
+    end    
+    
+    def process_arglist(exp)
+      puts '-----------------------------HANDLE arglist'
+      pp exp
+      puts exp.length
+      return process exp.shift
+    end
     
   end
   

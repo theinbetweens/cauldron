@@ -8,5 +8,5 @@ Feature: Cauldron generates a runtime method
 		Then I should receive a runtime method like this <runtime_method>
 
 		Scenarios: example with only one parameter
-			|      cases   	   	   				         	|     							runtime_method   						|		demo_num  |
-			|  "'sparky','sparky'*'kel','kel'"      | "def method_3(var_6)\n\treturn var_6\nend\n"  |     1       |
+			|      cases   	   	   				         				|     							runtime_method   						|		demo_num  |
+			|  "'sparky','sparky'*'kel','kel'"      			| "def method_3(var_6)\n\treturn var_6\nend\n"  |     1       |

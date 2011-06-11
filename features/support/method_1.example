@@ -1,0 +1,3 @@
+def method_3(var_6)
+	return var_6
+end

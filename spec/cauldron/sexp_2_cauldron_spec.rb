@@ -20,6 +20,21 @@ module Cauldron
         sexp2cauldron.process(sexp).write.should == Statement.new(Unknown.new(4),Equal.new,Literal.new(9)).write        
       end
       
+      it 'generates a basic if container' do 
+        parser    = RubyParser.new
+        ruby      =  %q!
+          if(var5 == 6)
+          end
+        !
+        sexp      = parser.process(ruby)
+        sexp2cauldron = Sexp2Cauldron.new
+        puts '------------------------>>>>>>>'
+        puts sexp2cauldron.process(sexp).write
+        puts '------------------------>>>>>>>'
+        sexp      = parser.process(ruby)
+        sexp2cauldron.process(sexp).write.should == "if(var_5 == 6)\nend"        
+      end
+      
     end
   end
   

@@ -21,6 +21,7 @@ Jeweler::Tasks.new do |gem|
   gem.description = %Q{Cauldron generates a methd from a number of examples that describe the input and the expected output.  It is still at a very early stage of development right now so you're unlikely to get much practical use out of it.}
   gem.email = "warrensangster@yahoo.com"
   gem.authors = ["Warren Sangster"]
+  gem.required_ruby_version = '>= 1.6.8'
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
