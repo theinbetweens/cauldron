@@ -5,6 +5,7 @@
 class IfContainer < Statement
   
   def initialize(*parameters)
+    raise StandardError.new('Not using this class anymore')
     # TODO  It would be better to use super here
     #super(*parameters)
     # TODO  i think this is just passed a statement - so it only ever has one parameter - I prefer it that way

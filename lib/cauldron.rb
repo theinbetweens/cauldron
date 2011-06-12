@@ -1,4 +1,3 @@
-
 require 'required'
 
 require 'cauldron/sexp2cauldron'

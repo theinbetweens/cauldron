@@ -57,9 +57,16 @@ class TestOpenStatement < Test::Unit::TestCase
     # Test copy with an open theory statement
     # TODO  This is quite a good way to test copy - I should use it across the other main classes
     initial_theory = StringToTheory.run("if(var1.length = var2.length)\nend")
-    original_element_ids = initial_theory.select_all{true}.collect {|x| x.object_id}
-    copied_elements_ids = initial_theory.copy.select_all{true}.collect {|x| x.object_id}
-    assert_equal(initial_theory.select_all{true}.length*2,(copied_elements_ids + original_element_ids).uniq.length)
+    # => TODO uniq shouldn't be needed - why is it selecting the same value 
+    original_element_ids = initial_theory.select_all{true}.collect {|x| x.object_id}.uniq
+    
+    copied_theory = initial_theory.copy
+    copied_elements_ids = copied_theory.select_all{true}.collect {|x| x.object_id}.uniq
+
+    assert_equal(
+      original_element_ids.length*2,
+      (copied_elements_ids + original_element_ids).uniq.length
+    )
   end
   
   def test_write_structure_with_simple_examples

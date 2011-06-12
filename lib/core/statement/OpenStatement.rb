@@ -68,6 +68,7 @@ class OpenStatement < StatementGroup
   # TODO  Write tests for this 
   # 
   def copy
+    puts @statement.class.to_s
     result = self.class.new(@statement.copy,*self.collect {|x| x.copy })
     result.scope_id = scope_id
     result.scope = scope

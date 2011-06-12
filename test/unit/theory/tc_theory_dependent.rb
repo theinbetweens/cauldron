@@ -143,10 +143,6 @@ class TestTheoryDependent < Test::Unit::TestCase
     dependent_three = TheoryDependent.new(
       StringToTheory.run("if((var2[var3][:params][var6] == var2[var4][:params][var6])==false)\nreturn true\nend")
     )
-    pp dependent_three
-    puts '----------------'
-    pp dependent_three.statement
-    puts dependent_three.statement.class
     mapping = {2=>IntrinsicTestCases.new,3=>Literal.new(0),6=>0.to_literal,4=>1.to_literal}
     assert_equal(
       "if((<test_cases>[0][:params][0] == <test_cases>[1][:params][0]) == false)\n\treturn true\nend\n",

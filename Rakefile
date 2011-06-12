@@ -11,6 +11,12 @@ rescue Bundler::BundlerError => e
 end
 require 'rake'
 
+$LOAD_PATH << File.expand_path('../lib',__FILE__)
+
+require 'lib/cauldron'
+
+load File.join(File.dirname(__FILE__), 'tasks', 'theory_tasks.rake')
+
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options

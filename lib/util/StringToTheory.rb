@@ -98,6 +98,32 @@ class StringToTheory < Parser
     end    
   end
   
+  def self.parse_if(sexp)
+    # TODO  Look into the change in the nil position
+    # 
+    # "if(var2 == var3)\nreturn true\nend"
+    # s(:if, s(:call, s(:call, nil, :var2, s(:arglist)), :==, s(:arglist, s(:call, nil, :var3, s(:arglist)))), s(:return, s(:true)), nil)
+    #
+    # "if(var2 != var3)\nreturn true\nend"
+    # s(:if, s(:call, s(:call, nil, :var2, s(:arglist)), :==, s(:arglist, s(:call, nil, :var3, s(:arglist)))), nil, s(:return, s(:true)))
+    #      
+    internal_statements = (2...sexp.length).inject([]) do |total,x| 
+      total << sexp[x] unless sexp[x].nil?
+      total
+    end 
+    return OpenStatement.new(
+      TheoryStatement.new(
+        If.new,
+        Container.new(parse_token(sexp[1]))
+      ),
+      #IfContainer.new(
+      #  parse_token(sexp[1])
+      #),
+      *internal_statements.collect {|x| parse_token(x)}
+    )      
+    
+  end  
+  
   def self.parse_return(sexp)
     return TheoryStatement.new(
       *[sexp[0],sexp[1]].collect {|x| parse_token(x)}

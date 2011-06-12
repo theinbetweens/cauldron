@@ -9,6 +9,10 @@ class If
     return ("\t"*tab)+'if'
   end  
   
+  def describe(tab=0)
+    return write(tab) 
+  end
+  
   def copy
     return If.new
   end
@@ -16,6 +20,10 @@ class If
   def creation
     return 'If.new'
   end    
+  
+  def to_literal_string
+    return write
+  end
   
 end
 
