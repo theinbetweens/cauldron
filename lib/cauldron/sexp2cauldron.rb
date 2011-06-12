@@ -37,26 +37,39 @@ module Cauldron
       return s
     end    
     
-    def process_if(exp)      
-      inner_statement_sexp = exp.shift
-      # => Clear out the remain sexp 
+    def process_if(exp)
+      inner_statement_sexp = exp.shift 
+      scope = process(exp.shift)   # => The content of the if statement
       exp.shift
-      exp.shift      
-      return OpenStatement.new(Statement.new(If.new,Container.new(*process(inner_statement_sexp))))
+      open_statement = OpenStatement.new(Statement.new(If.new,Container.new(*process(inner_statement_sexp))))
+      open_statement << scope unless scope.nil?
+      return open_statement
     end    
+    
+    def process_return(exp)
+      s = Statement.new(Return.new,*process(exp.shift))
+      return s
+    end
     
     def process_call(exp)
       results = []
-      a = exp.shift
-      variable_id = a[2].to_s.match(/var(\d+)/)[1]
-      var = Unknown.new(variable_id)
-      results << var
-      b = exp.shift
-      c = exp.shift
-      if b == :==
-        results << Equivalent.new
+      until exp.empty?
+        atom = exp.shift
+        # => TODO NOt DRY RegExp
+        if atom.to_s.match(/var[|_]*(\d+)/)
+          variable_id = atom.to_s.match(/var[|_]*(\d+)/)[1]
+          results << Unknown.new(variable_id)
+          next
+        end
+        if atom == :==
+          results << Equivalent.new
+          next
+        end   
+        next if atom.nil?
+        res = process(atom)
+        next if res.nil?
+        results << res     
       end
-      results << process(c)
       return results
     end    
     

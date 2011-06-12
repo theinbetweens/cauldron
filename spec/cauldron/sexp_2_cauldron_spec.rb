@@ -45,21 +45,28 @@ module Cauldron
       
       it 'generates a method with a simple statement' do 
         parser    = RubyParser.new
-        ruby      =  %q!
+        ruby      =  "
           def method_1
-            var_8 = 9
-          end
-        !
-        ruby2 = "
-          def method_1
-            \t\tvar_8 = 9
+            \tvar_8 = 9
           end
         "
         sexp      = parser.process(ruby)
         sexp2cauldron = Sexp2Cauldron.new
-        #sexp2cauldron.process(sexp).basic_write.should == strip_whitespace(ruby2)+"\n"
-        #strip_whitespace(ruby2)        
-        sexp2cauldron.process(sexp).basic_write.should == strip_whitespace(ruby2)+"\n"
+        sexp2cauldron.process(sexp).basic_write.should == strip_whitespace(ruby)+"\n"
+      end
+      
+      it 'generates a method with a simple if statement' do
+        parser    = RubyParser.new
+        ruby      =  "
+          def method_2
+            \tif(var_8 == 9)
+            \t\treturn var_8
+            \tend
+          end
+        "
+        sexp2cauldron = Sexp2Cauldron.new        
+        sexp      = parser.process(ruby)
+        sexp2cauldron.process(sexp).basic_write.should == strip_whitespace(ruby)+"\n"        
       end
       
     end
