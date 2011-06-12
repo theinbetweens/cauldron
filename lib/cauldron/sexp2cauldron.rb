@@ -16,7 +16,6 @@ module Cauldron
     end
     
     def process_lit(exp)
-      #type = exp.shift
       val = exp.shift
       return Literal.new(val)
     end
@@ -31,25 +30,11 @@ module Cauldron
     def process_lasgn(exp)
       next_exp = exp.shift
       if next_exp.to_s.match(/var[|_]*(\d+)/)
-        puts '--------------------->>>>>>>>>>>>>var8'
-        puts $1
         s = Statement.new(Unknown.new($1),Equal.new)
-        puts s.class
-        puts s.write
       end
-      pp exp
       a = process(exp.shift)
-      puts a.class
       s.add a
-      puts s.write
       return s
-      # pp exp
-      # puts exp.class
-      # if next_exp.kind_of?(Symbol)
-        # res = process(exp.shift)
-        # s.add res
-      # end
-      # s
     end    
     
     def process_if(exp)      
@@ -84,15 +69,10 @@ module Cauldron
       args = exp.shift
       scope = exp.shift
       
-      m = RuntimeMethod.new(MethodUsage.new)
-      puts '---------------KKKKKKKKKKKKK'
-      pp scope
-      puts '---------------KKKKKKKKKKKKK'
+      method = RuntimeMethod.new(MethodUsage.new)
       statement = process(scope)
-      puts '---------------PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPp'
-      puts statement.class
-      m << statement unless statement.nil?
-      return m
+      method << statement unless statement.nil?
+      return method
       
     end
     
@@ -102,18 +82,7 @@ module Cauldron
     
     def process_block(exp)
       a = exp.shift
-      puts '----------------------MMMMMMMMMMMMMMMMMmmm'
-      pp a
-      puts a.class
-      puts a.first
-      #return nil if a.first.nil?
-      puts a.first
-      puts a.first.class
-      if a.first == :nil
-        puts '---------------- it is NILLLLLLLLLLLl'
-        return nil
-      end
-      puts '----------------------MMMMMMMMMMMMMMMMMmmm'
+      return nil if a.first == :nil
       s = process(a)
       return s   
     end    
