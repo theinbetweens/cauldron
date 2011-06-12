@@ -22,18 +22,6 @@ class OpenStatementClass < ClassName
   
 end
 
-class IfContainerClass < ClassName
-  
-  def initialize
-    super
-  end
-  
-  def write(context=nil)
-    return 'IfContainer'
-  end  
-  
-end
-
 class BlockStatementClass < ClassName
   
   def initialize
@@ -90,6 +78,18 @@ class ChopClass < ClassName
   
   def write(tab=0)
     return 'Chop'
+  end  
+  
+end
+
+class IfClass < ClassName
+  
+  def initialize
+    super
+  end
+  
+  def write(tab=0)
+    return 'If'
   end  
   
 end

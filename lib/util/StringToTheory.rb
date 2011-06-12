@@ -69,12 +69,12 @@ class StringToTheory < Parser
       'Unknown'=>'UnknownClass',
       'Addition'=>'AdditionClass',
       'Equal'=>'EqualClass',
+      'If'=>'IfClass',
       'RuntimeMethod'=>'RuntimeMethodClass',
       'CTestCase'=>'CTestCaseClass',
       'Fixnum'=>'FixnumClass',
       'Equivalent'=>'EquivalentClass',
       'OpenStatement'=>'OpenStatementClass',
-      'IfContainer'=>'IfContainerClass',
       'BlockStatement'=> 'BlockStatementClass',
       'Container'=> 'ContainerClass',
       'Subtract'=> 'SubtractClass',
@@ -116,9 +116,6 @@ class StringToTheory < Parser
         If.new,
         Container.new(parse_token(sexp[1]))
       ),
-      #IfContainer.new(
-      #  parse_token(sexp[1])
-      #),
       *internal_statements.collect {|x| parse_token(x)}
     )      
     

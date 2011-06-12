@@ -34,7 +34,7 @@ class TestTheoryGenerator < Test::Unit::TestCase
     assert_equal(
       true,
       theories.any? do |x|
-        x.write == '<runtime_method>.add_statement_at(OpenStatement.new(IfContainer.new(var1.params[var5], Equivalent.new, var2[var3][:params][var5])),var1.statement_id)'
+        x.write == '<runtime_method>.add_statement_at(OpenStatement.new(Statement.new(If.new,Container.new(var1.params[var5], Equivalent.new, var2[var3][:params][var5]))),var1.statement_id)'
       end
     )
   end

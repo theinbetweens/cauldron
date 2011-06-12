@@ -6,7 +6,7 @@
     )
     action = TheoryAction.new(
       TheoryStatement.new(StringToTheory.run(
-        'OpenStatement.new(IfContainer.new(var1.params[var6],Equivalent.new,var2[var3][:params][var6]))'
+        'OpenStatement.new(Statement.new(If.new,Container.new(var1.params[var6],Equivalent.new,var2[var3][:params][var6])))'
       )),
       StringToTheory.run('var1.statement_id')
     )

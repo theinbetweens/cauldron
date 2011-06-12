@@ -4,10 +4,7 @@ class ClassEvaluation
   #include WriteParameters
   @@count = 0
   
-  # TODO  What is original_method about - can I get rid of it.  I need to 
-  #       pass through parameters. 
-  #
-  def evaluate_class(runtime_class,runtime_call,original_method=nil)
+  def evaluate_class(runtime_class,runtime_call)
     
     # Create file to include the test method
     #filepath = $LOC+File.join(['tmp','runtime_class_evaluation.rb'])    
@@ -24,7 +21,6 @@ class ClassEvaluation
     begin 
       return eval("#{runtime_class.class_name}.new.#{runtime_call}")
     rescue NameError => e
-      StandardLogger.instance.error(original_method.write()) unless original_method.nil?
       StandardLogger.instance.info(runtime_class.write)
       raise e
     end

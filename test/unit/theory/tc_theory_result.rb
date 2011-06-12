@@ -70,7 +70,6 @@ class TestTheoryResult < Test::Unit::TestCase
   def test_same_structure_4
     # TODO  Fixtures should include implemented TheoryResult and TheoryResults - I don't like using first
     theory = Theory.load_theory(4)
-    
     implemented_result = load_implementation_result(0)
     theory_result = theory.results.first
     assert_equal(

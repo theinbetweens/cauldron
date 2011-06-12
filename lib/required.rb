@@ -187,7 +187,6 @@ require $LOC+File.join(['core','syntax','Addition'])
 require $LOC+File.join(['core','syntax','Do'])
 require $LOC+File.join(['core','syntax','If'])
 require $LOC+File.join(['core','syntax','BlockContainer'])
-require $LOC+File.join(['core','syntax','IfContainer'])
 require $LOC+File.join(['core','syntax','This'])
 
 require $LOC+File.join(['theory','TheoryVariable'])

@@ -7,7 +7,7 @@ if:
 	end
 
 action: 
-	<runtime_method>.add_statement_at(OpenStatement.new(IfContainer.new([32mvar1[m.params[[36mvar6[m], Equivalent.new, [33mvar2[m[[34mvar3[m][:params][[36mvar6[m])),[32mvar1[m.statement_id)
+	<runtime_method>.add_statement_at(OpenStatement.new(Statement.new(If.new, Container.new([32mvar1[m.params[[36mvar6[m], Equivalent.new, [33mvar2[m[[34mvar3[m][:params][[36mvar6[m]))),[32mvar1[m.statement_id)
 result: 
 	if([36mvar5[m.history2([33mvar2[m[[34mvar3[m][:params]).any?{ |x| x['statement_id'] == [32mvar1[m.last.statement_id} )
 		return true

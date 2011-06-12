@@ -67,6 +67,7 @@ module ContainsTheories
   def load_implementation_result(result_id)
     directory_path = $LOC+File.join('test','fixtures','implementation_results',result_id.to_s)
     raise StandardError.new("ImplementationResult fixture #{result_id} does not exist") unless(File.exists?(directory_path))
+    puts result_id
     dump_file = File.open(File.join(directory_path,'dump'),'r')
     return Marshal.load(dump_file)    
   end

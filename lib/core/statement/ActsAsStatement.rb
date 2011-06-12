@@ -36,7 +36,7 @@ protected
       when 0
         return StatementStructure::BLANK_STATEMENT     
       when 1
-        return StatementStructure::IF_STATEMENT if first.kind_of?(IfContainer)
+        return StatementStructure::IF_STATEMENT if first.kind_of?(If)
         #return StatementStructure::USAGE_STATEMENT if self.classes_match?(InstanceCallContainer)
         if self.classes_match?(InstanceCallContainer)
           if first.method_call.destructive?

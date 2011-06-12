@@ -48,7 +48,7 @@ namespace :cauldren do
         ]
         results = theory.rewrite_permutations(potential_values)
         # NOTE: Rember use grep -A and -B to match particular cases
-        results[4]       
+        results[5]         
       !     
       theory_implementation = eval declaration
       
@@ -67,12 +67,12 @@ namespace :cauldren do
     namespace :results do
       
       desc "Creates a new theory result implementation with the supplied id"
-      task :create do 
+      task :create, :arg1 do |t,args|
         
         # Create the directory to save the implementation result
-        directory_path = $LOC+File.join('test','fixtures','implementation_results',ARGV[1])
+        directory_path = File.join('test','fixtures','implementation_results',args[:arg1])
         if(File.exists?(directory_path))
-          StandardLogger.instance.warning("Implementation Result already exists #{ARGV[1]} -cancelling")
+          StandardLogger.instance.warning("Implementation Result already exists #{args[:arg1]} -cancelling")
           return
         else
           FileUtils.mkdir_p(directory_path)
@@ -200,7 +200,7 @@ namespace :cauldren do
     )
     action = TheoryAction.new(
       TheoryStatement.new(StringToTheory.run(
-        'OpenStatement.new(IfContainer.new(var1.params[var6],Equivalent.new,var2[var3][:params][var6]))'
+        'OpenStatement.new(Statement.new(If.new,Container.new(var1.params[var6],Equivalent.new,var2[var3][:params][var6])))'
       )),
       StringToTheory.run('var1.statement_id')
     )

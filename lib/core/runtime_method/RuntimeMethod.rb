@@ -545,7 +545,7 @@ class RuntimeMethod < StatementGroup
     # TODO  This might need to have a number pre-fixed (I'm not certain it's overwritten)
     # runtime_class = RuntimeClass.new('Temporary'+rand(1000).to_s,tracking_method,copied,process_method,*additional_methods)
     runtime_class = RuntimeClass.new('Temporary',tracking_method,copied,process_method,*additional_methods)  
-    result = ClassEvaluation.new.evaluate_class(runtime_class,process_method.method_name,self)
+    result = ClassEvaluation.new.evaluate_class(runtime_class,process_method.method_name)
     return result 
   end
   

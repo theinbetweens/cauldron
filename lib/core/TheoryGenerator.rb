@@ -279,7 +279,7 @@ class TheoryGenerator
         actions << TheoryAction.new(
           TheoryStatement.new(
             StringToTheory.run(
-              "OpenStatement.new(IfContainer.new(#{x[:statement].write},Equivalent.new,#{y[:statement].write}))"
+              "OpenStatement.new(Statement.new(If.new,Container.new(#{x[:statement].write},Equivalent.new,#{y[:statement].write})))"
             )
           ),
           StringToTheory.run(z[:statement].write)

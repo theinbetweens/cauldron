@@ -47,7 +47,6 @@ module Cauldron
       # => Clear out the remain sexp 
       exp.shift
       exp.shift      
-      #return OpenStatement.new(IfContainer.new(*process(inner_statement_sexp)))
       return OpenStatement.new(Statement.new(If.new,Container.new(*process(inner_statement_sexp))))
     end    
     

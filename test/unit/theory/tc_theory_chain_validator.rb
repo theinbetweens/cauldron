@@ -229,7 +229,7 @@ class TestTheoryChainValidator < Test::Unit::TestCase
     last_real_method = Parser.run('last_runtime_method')    
     
     finish = OpenStatement.new(
-      IfContainer.new(InstanceCallContainer.new(real_method,AllPass.new,tc))
+      Statement.new(If.new,Container.new(InstanceCallContainer.new(real_method,AllPass.new,tc)))
     )
     finish << Statement.new(Return.new,True.new)
     potential_values = MappingValues.new([tc,tc_index_0,tc_index_1,param_0,real_method,last_real_method])  
@@ -265,7 +265,7 @@ class TestTheoryChainValidator < Test::Unit::TestCase
     real_method = Parser.run('runtime_method')
     
     finish = OpenStatement.new(
-      IfContainer.new(InstanceCallContainer.new(real_method,Pass.new,ArrayAccess.new(tc,tc_index_0)))
+      Statement.new(If.new,Container.new(InstanceCallContainer.new(real_method,Pass.new,ArrayAccess.new(tc,tc_index_0))))
     )
     finish << Statement.new(Return.new,True.new)
     potential_values = MappingValues.new([
@@ -310,7 +310,7 @@ class TestTheoryChainValidator < Test::Unit::TestCase
 #    real_method = Parser.run('runtime_method')
 #    
 #    finish = OpenStatement.new(
-#      IfContainer.new(InstanceCallContainer.new(real_method,Pass.new,ArrayAccess.new(tc,tc_index_0)))
+#      Statement.new(If.new,Container.new(InstanceCallContainer.new(real_method,Pass.new,ArrayAccess.new(tc,tc_index_0))))
 #    )
 #    finish << Statement.new(Return.new,True.new)
 #    potential_values = MappingValues.new([

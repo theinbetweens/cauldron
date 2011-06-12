@@ -273,42 +273,7 @@ class TestTheoryConnector < Test::Unit::TestCase
         initial_chain
       ).any? {|x| x.length > 1 }
      )    
-    
-    
-#    runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))
-#    test_case_1 = CTestCase.new 
-#    test_case_1[:params] = ['something']
-#    test_case_1[:output] = 'exists'
-#    test_case_2 = CTestCase.new
-#    test_case_2[:params] = ['my willpower']
-#    test_case_2[:output] = 'does not exist'
-#    test_cases = [
-#      test_case_1,test_case_2
-#    ]
-#    
-#    tc = Parser.run('test_cases')
-#    tc_index_0 = IntrinsicLiteral.new(0)
-#    tc_index_1 = IntrinsicLiteral.new(1)
-#    param_0 = IntrinsicLiteral.new(0)
-#    real_method = Parser.run('runtime_method') 
-#    last_real_method = Parser.run('last_runtime_method')
-#    
-#    finish = OpenStatement.new(
-#      IfContainer.new(InstanceCallContainer.new(real_method,AllPass.new,tc))
-#    )
-#    finish << Statement.new(Return.new,True.new)
-#    potential_values = MappingValues.new([tc,tc_index_0,tc_index_1,param_0,real_method,last_real_method])     
-#    connector = TheoryConnector.new(potential_values)
-#    assert_equal(
-#      36,
-#      connector.chain(runtime_method,test_cases,finish,[theory_1,theory_2,theory_3,theory_4]).length
-#    )
-      
-#    # DEVELOPMENT - Output each chain to a file
-#    res = connector.chain(runtime_method,test_cases,finish,[theory_1,theory_2,theory_3,theory_4])
-#    res.each_with_index do |x,i|
-#    end
-      
+     
   end
   
   def test_unify_chain_with_a_very_simple_problem
@@ -373,7 +338,7 @@ class TestTheoryConnector < Test::Unit::TestCase
     real_method = Parser.run('runtime_method')
     
     finish = OpenStatement.new(
-      IfContainer.new(InstanceCallContainer.new(real_method,Pass.new,ArrayAccess.new(tc,tc_index_0)))
+      Statement.new(If.new,Container.new(InstanceCallContainer.new(real_method,Pass.new,ArrayAccess.new(tc,tc_index_0))))
     )
     finish << Statement.new(Return.new,True.new)
     potential_values = MappingValues.new([

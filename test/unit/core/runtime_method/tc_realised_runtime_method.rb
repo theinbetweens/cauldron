@@ -98,7 +98,6 @@ class TestRealisedRuntimeMethod < Test::Unit::TestCase
       firefox = 'firefox'.to_declared_variable_statement
       statement_with_open_statement.push(firefox)
       firefox_var = firefox.declared_variable
-      #if_statement = Statement.new(IfContainer.new(InstanceCallContainer.new(firefox_var,StringLength.new),Equivalent.new,7.to_literal))
       if_statement = Statement.new(If.new,Container.new(InstanceCallContainer.new(firefox_var,StringLength.new),Equivalent.new,7.to_literal))
       open_if_statement = OpenStatement.new(if_statement)
       open_if_statement.push('IE'.to_declared_variable_statement)
