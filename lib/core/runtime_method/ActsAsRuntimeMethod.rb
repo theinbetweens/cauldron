@@ -2,7 +2,6 @@
 module ActsAsRuntimeMethod
   include WriteParameters
   
-  # TODO  Write tests
   # Returns a variable instance with the id specified.  This essential just finds the varialbe
   # at the last line of the method.
   # 
@@ -10,10 +9,6 @@ module ActsAsRuntimeMethod
   #             variable id.
   #
   def find_variable(uniq_id)
-    #return find_variable_at_line(id,self.length)
-    #statement_count
-    # TODO  I don't know whether I should be using statement_count, self.length or line_count
-    #return find_variable_at_line(id,self.length)
     
     # TODO  I don't know if progressively building up the method is necessary now
     
@@ -61,7 +56,6 @@ module ActsAsRuntimeMethod
     raise StandardError.new('Failed to find statement that declared variable '+variable_id.to_s)
   end  
   
-  # TODO  Write tests
   def find_statement_that_created_variable(uniq_id)
     self.each do |x|
       if x.kind_of?(Statement)
@@ -172,7 +166,6 @@ module ActsAsRuntimeMethod
     self.each do |statement|
       line += statement.write(tab+1)+"\n"
     end
-    #line += "\n" if self.empty?
     
     # Close the method
     tab.times {|x| line += "\t" }

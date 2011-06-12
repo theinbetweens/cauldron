@@ -1,5 +1,6 @@
 class MethodParameter < BaseVariable
   attr_reader :usage_variable
+  attr_writer :variable_id
   
   # TODO  I'm trying to move away from requirements
   #
@@ -7,6 +8,7 @@ class MethodParameter < BaseVariable
   #                         the properties of the method variable.
   #                         For example self == 6
   def initialize(*requirements)
+    #super(*requirements)
     super(nil)
   end
   
@@ -185,22 +187,5 @@ private
     return false
       
   end
-  
-  # TODO Write tests for this
-  def meets_requirements_of_instance_call(instance_call)
-    #unless instance_call.literalisable?
-    #  raise StandardError.new('Unable to litralise instance call '+instance_call.write)
-    #end
-    
-    # Attempt to litralise the variable 
-    # TODO  The variable class returns a Literal the InstanceCallContainer returns a 
-    #       value.  They don't need to do different things.
-    if(self.literalisable?)
-      return self.literalise.value == instance_call.literalise
-    else
-      raise FailedVariableMatch.new('Unable to litralise variable to see if it meets requirements')
-    end
-    
-  end  
   
 end

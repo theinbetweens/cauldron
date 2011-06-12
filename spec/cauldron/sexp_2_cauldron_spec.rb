@@ -52,7 +52,9 @@ module Cauldron
         "
         sexp      = parser.process(ruby)
         sexp2cauldron = Sexp2Cauldron.new
-        sexp2cauldron.process(sexp).basic_write.should == strip_whitespace(ruby)+"\n"
+        a = sexp2cauldron.process(sexp)
+        puts a.class.to_s
+        a.basic_write.should == strip_whitespace(ruby)+"\n"
       end
       
       it 'generates a method with a simple if statement' do
@@ -62,6 +64,21 @@ module Cauldron
             \tif(var_8 == 9)
             \t\treturn var_8
             \tend
+          end
+        "
+        sexp2cauldron = Sexp2Cauldron.new        
+        sexp      = parser.process(ruby)
+        sexp2cauldron.process(sexp).basic_write.should == strip_whitespace(ruby)+"\n"        
+      end
+      
+      it 'generates a method with an if statement and two exit points' do 
+        parser    = RubyParser.new
+        ruby      =  "
+          def method_3(var_0)
+            \tif(var_0 == 'apple')
+            \t\treturn 'fruit'
+            \tend
+            \treturn 'vegetable'
           end
         "
         sexp2cauldron = Sexp2Cauldron.new        

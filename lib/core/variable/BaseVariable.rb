@@ -9,8 +9,6 @@ class BaseVariable < Array
   
   include Variable
   include Token
-  # TODO  VariableIncluded is in Variable so i can probably get rid of the VariableIncluded
-  #include VariableIncluded
   
   # TODO  I think I'll get rid of the id parameter and just use blocks
   # 

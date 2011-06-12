@@ -26,6 +26,10 @@ module Cauldron
       self.context.shift
     end    
     
+    def process_str(exp)
+      Literal.new(exp.shift)
+    end
+    
     # => Overwritten method
     def process_lasgn(exp)
       next_exp = exp.shift
@@ -82,22 +86,44 @@ module Cauldron
       args = exp.shift
       scope = exp.shift
       
-      method = RuntimeMethod.new(MethodUsage.new)
-      statement = process(scope)
-      method << statement unless statement.nil?
+      pp args
+      puts args.length
+      usage = (args.length==2) ? process(args) : MethodUsage.new
+      
+      method = RuntimeMethod.new(usage)
+      statements = process(scope)
+      unless statements.nil?
+        statements.each do |statement|
+          puts statement.class.to_s
+          method << statement unless statement.nil?
+        end
+      end
       return method
       
     end
     
+    def process_args(exp)
+      atom = exp.shift
+      variable_id = atom.to_s.match(/var[|_]*(\d+)/)[1]
+      param = MethodParameter.new()
+      param.variable_id = variable_id
+      return MethodUsage.new(param)
+    end
+    
     def process_scope(exp)
-      return process(exp.shift)
+      block = exp.shift
+      res = process(block)
+      return res
     end
     
     def process_block(exp)
-      a = exp.shift
-      return nil if a.first == :nil
-      s = process(a)
-      return s   
+      result = []   
+      until exp.empty?
+        atom = exp.shift
+        next if atom.first == :nil
+        result << process(atom)
+      end
+      return result
     end    
     
   end

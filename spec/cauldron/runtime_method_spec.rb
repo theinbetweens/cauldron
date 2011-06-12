@@ -23,7 +23,7 @@ module Cauldron
         method_param = MethodParameter.new
         temporary_runtime_method = RuntimeMethod.new(MethodUsage.new(method_param))
         temporary_runtime_method << Statement.new(Return.new,method_param)
-        temporary_runtime_method.basic_write.should == "def method_5(var_7)\n\treturn var_7\nend\n"
+        temporary_runtime_method.basic_write.should == "def method_6(var_9)\n\treturn var_9\nend\n"
       end
     end
     
