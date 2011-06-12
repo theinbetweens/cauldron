@@ -49,10 +49,6 @@ class TestTheoryResult < Test::Unit::TestCase
     
     evaluation_code += 'return runtime_method'+"\n"        
     result = CodeEvaluation.new.evaluate_code(evaluation_code)
-    puts result.class
-    puts result.write
-    puts implementation.class  
-    puts implementation.write
     assert(true,implementation.results.all? {|x| x.validates?(result,test_cases)})
     
   end

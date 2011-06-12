@@ -28,9 +28,6 @@ module Cauldron
         !
         sexp      = parser.process(ruby)
         sexp2cauldron = Sexp2Cauldron.new
-        puts '------------------------>>>>>>>'
-        puts sexp2cauldron.process(sexp).write
-        puts '------------------------>>>>>>>'
         sexp      = parser.process(ruby)
         sexp2cauldron.process(sexp).write.should == "if(var_5 == 6)\nend"        
       end

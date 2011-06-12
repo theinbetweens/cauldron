@@ -32,9 +32,6 @@ class TestMethodValidation < Test::Unit::TestCase
 
     # Test that a runtime method returns 'Lilly'
     validation_test_2 = MethodValidation.generate_response_test(" == 'Lilly'",[])
-    puts '------------------------------------))))))))))))))))'
-    puts validation_test_2.write
-    puts '------------------------------------))))))))))))))))'
     assert(validation_test_2.kind_of?(RuntimeMethod))
     assert_equal(
       true,
