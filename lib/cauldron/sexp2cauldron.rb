@@ -29,7 +29,6 @@ module Cauldron
     
     # => Overwritten method
     def process_lasgn(exp)
-      #exp.shift
       next_exp = exp.shift
       if next_exp.to_s.match(/var(\d+)/)
         s = Statement.new(Unknown.new($1),Equal.new)
@@ -68,6 +67,13 @@ module Cauldron
     def process_arglist(exp)
       return process exp.shift
     end
+    
+    def process_defn(exp)
+      until exp.empty?
+        exp.shift
+      end
+      return RuntimeMethod.new(MethodUsage.new)
+    end    
     
   end
   

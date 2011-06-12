@@ -475,7 +475,7 @@ class TestRuntimeMethod < Test::Unit::TestCase
 
     # Create a simple method with no paramaters
     method_example_a = RuntimeMethod.new(MethodUsage.new)       
-    assert_equal("\n#\n#\ndef method_#{method_example_a.method_id.to_s}\n\nend\n",method_example_a.write(nil))
+    assert_equal("\n#\n#\ndef method_#{method_example_a.method_id.to_s}\nend\n",method_example_a.write(nil))
     
     # Test a simple method with one paramter
     #param_1 = StringVariable.new('Girm')

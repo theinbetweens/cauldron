@@ -172,7 +172,7 @@ module ActsAsRuntimeMethod
     self.each do |statement|
       line += statement.write(tab+1)+"\n"
     end
-    line += "\n" if self.empty?
+    #line += "\n" if self.empty?
     
     # Close the method
     tab.times {|x| line += "\t" }

@@ -32,6 +32,17 @@ module Cauldron
         sexp2cauldron.process(sexp).write.should == "if(var_5 == 6)\nend"        
       end
       
+      it 'generates an empty runtime method' do
+        parser    = RubyParser.new
+        ruby      =  %q!
+          def method_0
+          end
+        !
+        sexp      = parser.process(ruby)
+        sexp2cauldron = Sexp2Cauldron.new
+        sexp2cauldron.process(sexp).basic_write.should == strip_whitespace(ruby)+"\n"        
+      end
+      
     end
   end
   
