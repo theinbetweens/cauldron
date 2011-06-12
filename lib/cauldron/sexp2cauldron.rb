@@ -30,15 +30,26 @@ module Cauldron
     # => Overwritten method
     def process_lasgn(exp)
       next_exp = exp.shift
-      if next_exp.to_s.match(/var(\d+)/)
+      if next_exp.to_s.match(/var[|_]*(\d+)/)
+        puts '--------------------->>>>>>>>>>>>>var8'
+        puts $1
         s = Statement.new(Unknown.new($1),Equal.new)
+        puts s.class
+        puts s.write
       end
-      
-      if next_exp.kind_of?(Symbol)
-        res = process(exp.shift)
-        s.add res
-      end
-      s
+      pp exp
+      a = process(exp.shift)
+      puts a.class
+      s.add a
+      puts s.write
+      return s
+      # pp exp
+      # puts exp.class
+      # if next_exp.kind_of?(Symbol)
+        # res = process(exp.shift)
+        # s.add res
+      # end
+      # s
     end    
     
     def process_if(exp)      
@@ -69,10 +80,42 @@ module Cauldron
     end
     
     def process_defn(exp)
-      until exp.empty?
-        exp.shift
+      type = exp.shift
+      args = exp.shift
+      scope = exp.shift
+      
+      m = RuntimeMethod.new(MethodUsage.new)
+      puts '---------------KKKKKKKKKKKKK'
+      pp scope
+      puts '---------------KKKKKKKKKKKKK'
+      statement = process(scope)
+      puts '---------------PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPp'
+      puts statement.class
+      m << statement unless statement.nil?
+      return m
+      
+    end
+    
+    def process_scope(exp)
+      return process(exp.shift)
+    end
+    
+    def process_block(exp)
+      a = exp.shift
+      puts '----------------------MMMMMMMMMMMMMMMMMmmm'
+      pp a
+      puts a.class
+      puts a.first
+      #return nil if a.first.nil?
+      puts a.first
+      puts a.first.class
+      if a.first == :nil
+        puts '---------------- it is NILLLLLLLLLLLl'
+        return nil
       end
-      return RuntimeMethod.new(MethodUsage.new)
+      puts '----------------------MMMMMMMMMMMMMMMMMmmm'
+      s = process(a)
+      return s   
     end    
     
   end
