@@ -1,4 +1,8 @@
-require 'required'
+$LOAD_PATH << File.expand_path('../../../../lib',__FILE__)
+
+require 'cauldron'
+
+#require 'required'
 require 'test/unit'
 
 class TestTheoryAction < Test::Unit::TestCase
@@ -60,6 +64,34 @@ class TestTheoryAction < Test::Unit::TestCase
       "<runtime_method>.add_statement_at(Statement.new(Return.new, <test_cases>[0][:output]),#{TheoryVariable.variable_colour(1)}var1#{TheoryVariable::NORMAL}.statement_id)",
       @theory_action_one.map_to({9=>Parser.run('test_cases[0][:output]')}).describe
     )
+  end
+  
+  def test_map_to_with_complex_action
+    action = TheoryAction.new(
+      TheoryStatement.new(StringToTheory.run(
+        'OpenStatement.new(If.new,Container.new(var1.params[var3],Equivalent.new,var2[var4][:params][var5]))')
+      ),
+      StringToTheory.run('var1.statement_id')
+    )    
+    # #<Mapping:0xb7027288
+     # @hash=
+      # {5=>#<TheoryVariable:0xb7027148 @theory_variable_id=2>,
+       # 1=>#<TheoryVariable:0xb7027198 @theory_variable_id=1>,
+       # 2=>#<TheoryVariable:0xb70270f8 @theory_variable_id=3>,
+       # 3=>#<TheoryVariable:0xb70271fc @theory_variable_id=0>,
+       # 4=>#<TheoryVariable:0xb70270a8 @theory_variable_id=4>}>
+    m = Mapping.new({
+      1=>TheoryVariable.new(1),
+      2=>TheoryVariable.new(3),
+      3=>TheoryVariable.new(0),
+      4=>TheoryVariable.new(4),
+      5=>TheoryVariable.new(2)
+    })
+    assert_equal(
+      action.map_to(m).write,
+      "runtime_method.add_statement_at(OpenStatement.new(If.new, Container.new(var1.params[var0], Equivalent.new, var3[var4][:params][var2])),var1.statement_id)" 
+    )
+    
   end
   
   def test_map_to_case_1_theory_1_action

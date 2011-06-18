@@ -21,7 +21,7 @@ module Cauldron
       end
     end
     
-    describe 'submit' do
+    describe '#submit' do
       context "with example case \"'sparky', 'sparky'\"" do
         subject do
           terminal.submit "'sparky','sparky'"

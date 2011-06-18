@@ -289,7 +289,8 @@ class Parser
       'statement_id' => 'StatementID',
       'last' => 'Last',
       'select' => 'Select',
-      '-' => 'Subtract'
+      '-' => 'Subtract',
+      'first' => 'First'
     }
     # TODO  Need to re-structure code to better suit the parser and how it handles != statements
     if not affirmative

@@ -8,3 +8,5 @@ def strip_whitespace(ruby_code)
   res = ruby_code.strip.gsub(/\t/,'\t').gsub(/\s{2,}/,'\n')
   return res.gsub('\t',"\t").gsub('\n',"\n")
 end
+
+include Cauldron::Demos

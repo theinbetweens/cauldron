@@ -51,20 +51,6 @@ class Theory
     return Theory.new(changing_dependents,action.copy,changing_results,example_runtime_method.copy)
   end
   
-#  # NOTE: This method might not be useful.
-#  # Returns a number of theories but with the number of dependents and results limited by the
-#  # the numbers specified.
-#  #
-#  def variants(dependent_limit=4,results_limit=4)
-#    results = []
-#    @dependents.copy.permutation(dependent_limit).each do |d|
-#      @results.copy.permutation(results_limit).each do |r|
-#        results << Theory.new(d.copy,action.copy,r,example_runtime_method.copy)
-#      end
-#    end
-#    return results
-#  end
-  
   #  Loads a particular theory that has been saved to a file
   #
   def self.load_theory(theory_id)
@@ -140,13 +126,20 @@ class Theory
   #
   def map_to(mapping,values={})
     raise StandardError.new('Please use the maping datatype') unless mapping.kind_of?(Mapping)
+    # return TheoryImplementation.new(
+        # @dependents.collect {|y| y.map_to(mapping)},
+        # @action ? @action.map_to(mapping) : nil,
+        # @results.collect {|y| y.map_to(mapping)},
+        # mapping,
+        # values
+      # )    
     return TheoryImplementation.new(
         @dependents.collect {|y| y.map_to(mapping)},
         @action ? @action.map_to(mapping) : nil,
         @results.collect {|y| y.map_to(mapping)},
         mapping,
         values
-      )    
+      )       
   end
   
   # TODO  Need to write tests for this that use the mapping

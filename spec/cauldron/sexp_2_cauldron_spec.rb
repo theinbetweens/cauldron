@@ -53,7 +53,6 @@ module Cauldron
         sexp      = parser.process(ruby)
         sexp2cauldron = Sexp2Cauldron.new
         a = sexp2cauldron.process(sexp)
-        puts a.class.to_s
         a.basic_write.should == strip_whitespace(ruby)+"\n"
       end
       

@@ -112,9 +112,14 @@ class Chain
       raise StandardError.new('Only complete chains can be unified')
     end
     unified_theories = @nodes.inject([]) do |total,theory|
+      puts theory.describe
+      puts theory.theory_instance_id
       mapping = generate_theory_mapping(theory.theory_instance_id)
-      total.push theory.map_to(mapping)
+      pp mapping
+      mapped_theory = theory.map_to(mapping)
+      total.push(mapped_theory)
     end
+    puts '--------------------------------- DONE _------------------------'
     return UnifiedChain.new(unified_theories)
   end
   
@@ -161,10 +166,8 @@ class Chain
   # Attempts to add a new link to form a complete chain between the head and tail.  It starts
   # by linking to the tail and then head.
   #
-  # TODO  This needs to return an array of chains indicating the various permutation they 
-  #       could be connected.
-  #
-  # TODO  link_permutations mighht be a more appropriate name
+  # TODO  link_permutations mighht be a more appropriate name - this name is inapproriate for the 
+  # =>    the return type.
   #
   def add_link(theory,value_mapping=nil)
     
@@ -479,21 +482,6 @@ protected
     # Do through each of the dependents and then find a result with the same structure
     mappings = [@chain_mapping.copy]
     upward_links = @nodes[0...position]
-#    theory.copy.dependents.each do |dependent|
-#      if StandardLogger.instance.level == 0
-#      end
-#      each_unmet(:results,position,upward_links) do |index,link,result|
-#        if result.same_structure?(dependent)
-#          if StandardLogger.instance.level == 0
-#          end
-#          new_mappings = []
-#          mappings.each do |x|
-#            new_mappings << x.apply_mapping_update(theory,dependent.theory_component_id,link,result.theory_component_id)
-#          end
-#          mappings = new_mappings
-#        end
-#      end
-#    end
 
     theory.copy.dependents.each do |dependent|
       each_result(position,upward_links) do |index,link,result|
@@ -525,7 +513,7 @@ protected
     # links that haven't been connected with anything 
     # (don't include the head since it only has one thing to connect to)
     unless @nodes.length < 2
-      mappings = mappings.select {|x| !@chain_mapping.same?(x) }
+      #mappings = mappings.select {|x| !@chain_mapping.same?(x) }
     end
     
     # Identify any orphan variables in the action and give them uniq global ids

@@ -6,6 +6,8 @@ module Cauldron
   
   class Sexp2Cauldron < SexpProcessor
     
+    VARIABLE_EXPRESSION = /var[|_]*(\d+)/
+    
     def initialize
       super
       self.expected = Object   
@@ -33,8 +35,8 @@ module Cauldron
     # => Overwritten method
     def process_lasgn(exp)
       next_exp = exp.shift
-      if next_exp.to_s.match(/var[|_]*(\d+)/)
-        s = Statement.new(Unknown.new($1),Equal.new)
+      if next_exp.to_s.match(VARIABLE_EXPRESSION)
+        s = Statement.new(convert_to_variable(next_exp),Equal.new)
       end
       a = process(exp.shift)
       s.add a
@@ -59,10 +61,8 @@ module Cauldron
       results = []
       until exp.empty?
         atom = exp.shift
-        # => TODO NOt DRY RegExp
-        if atom.to_s.match(/var[|_]*(\d+)/)
-          variable_id = atom.to_s.match(/var[|_]*(\d+)/)[1]
-          results << Unknown.new(variable_id)
+        if atom.to_s.match(VARIABLE_EXPRESSION)
+          results << convert_to_variable(atom)
           next
         end
         if atom == :==
@@ -86,15 +86,12 @@ module Cauldron
       args = exp.shift
       scope = exp.shift
       
-      pp args
-      puts args.length
       usage = (args.length==2) ? process(args) : MethodUsage.new
       
       method = RuntimeMethod.new(usage)
       statements = process(scope)
       unless statements.nil?
         statements.each do |statement|
-          puts statement.class.to_s
           method << statement unless statement.nil?
         end
       end
@@ -104,7 +101,7 @@ module Cauldron
     
     def process_args(exp)
       atom = exp.shift
-      variable_id = atom.to_s.match(/var[|_]*(\d+)/)[1]
+      variable_id = atom.to_s.match(VARIABLE_EXPRESSION)[1]
       param = MethodParameter.new()
       param.variable_id = variable_id
       return MethodUsage.new(param)
@@ -125,6 +122,12 @@ module Cauldron
       end
       return result
     end    
+    
+  private
+   
+    def convert_to_variable(variable)
+      return Unknown.new(variable.to_s.match(VARIABLE_EXPRESSION)[1])
+    end
     
   end
   

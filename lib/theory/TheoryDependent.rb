@@ -56,10 +56,10 @@ class TheoryDependent
   # the values in the mapping hash. 
   # 
   def map_to(mapping)
-    
+
     # Duplicate the current statement before it is rewritten
     rewritten_statement = @statement.copy
-    
+
     # Find all the containers that contain TheoryVariables
     # NOTE  The statement is put in an array because select all doesn't include the array itself
     containers = [rewritten_statement].select_all {|x| x.respond_to?(:has?)}

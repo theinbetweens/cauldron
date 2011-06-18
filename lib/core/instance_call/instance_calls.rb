@@ -166,3 +166,11 @@ class Select < InstanceCall
   end
 
 end
+
+class First < InstanceCall
+  
+  def write
+    return '.first'
+  end  
+  
+end

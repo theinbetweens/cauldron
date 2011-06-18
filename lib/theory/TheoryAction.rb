@@ -53,8 +53,13 @@ class TheoryAction
     containers = [rewritten_statement,target_id].select_all {|x| x.respond_to?(:has?)}
     theory_variable_containers = containers.select {|x| x.has? {|y| y.kind_of?(TheoryVariable)}}
     
+    # Do any of the containers contain each other?
+    # => TODO Need to prevent this
+    
     # Rewrite the statement replacing the values
     theory_variable_containers.each do |z|
+      puts z.write
+      puts z.class.to_s
       z.replace_theory_variables!(mapping)
     end 
     
