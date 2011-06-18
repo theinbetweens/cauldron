@@ -9,7 +9,31 @@ module ContainsTheories
   def setup
     @theory_1 = Theory.load_theory(1)
     @theory_2 = Theory.load_theory(2)
-    @theory_3 = Theory.load_theory(3)    
+    #@theory_3 = Theory.load_theory(3)
+    @theory_3 = theory_3    
+  end
+  
+  def theory_3
+    
+    dependent_one = TheoryDependent.new(
+      StringToTheory.run(
+        "if(var1.realise2(var2[var3][:params]).params[0].value.length == var2[var3][:output])\nreturn true\nend"
+      )
+    )
+    action_one = TheoryAction.new(
+      TheoryStatement.new(
+        StringToTheory.run(
+          'Statement.new(Return.new,InstanceCallContainer.new(var1.params[0],StringLength.new))'
+        )             
+      ),
+      StringToTheory.run("var1.statement_id") 
+    )
+    result_one = TheoryResult.new(
+      StringToTheory.run("if(var1.all_pass?(var2))\nreturn true\nend"),true
+    )      
+    Theory.new([dependent_one],action_one,[result_one]) 
+        
+    
   end
   
   def load_theory_implementation(implementation_id)
@@ -67,7 +91,6 @@ module ContainsTheories
   def load_implementation_result(result_id)
     directory_path = $LOC+File.join('test','fixtures','implementation_results',result_id.to_s)
     raise StandardError.new("ImplementationResult fixture #{result_id} does not exist") unless(File.exists?(directory_path))
-    puts result_id
     dump_file = File.open(File.join(directory_path,'dump'),'r')
     return Marshal.load(dump_file)    
   end

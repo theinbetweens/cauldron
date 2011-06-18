@@ -45,6 +45,14 @@ class TheoryStatement < Statement
     #return TheoryDependent.new(rewritten_statement,@theory_component_id)
   end  
   
+  # => 
+  # => map [<TheoryVariable>=><TheoryVariable>]
+  def replace_variables_alt!(map)
+    self.each do |x|
+      x.replace_variables_alt!(map)
+    end
+  end
+  
   # TODO  Maybe use a opject to handle the output of the statement.
   def describe(tab=0)
     line = ''

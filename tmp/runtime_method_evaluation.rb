@@ -1,16 +1,10 @@
-class RuntimeMethodEvaluation18
+class RuntimeMethodEvaluation57
 
 	#
-	#	This is the method that is being evaluated using 'RuntimeMethodEvaluation18.new.method_0
+	#	This is the method that is being evaluated using 'RuntimeMethodEvaluation57.new.method_8
 	#
-	def method_0(var_1, var_2, var_3, var_4)
-		@var_0 = History.new if @var_0.nil?
-		@var_0.push(Step.new(
-      var_1,    
-      var_2,      
-      var_3,         
-      var_4
-     ))
+	def method_8(var_13)
+		return var_13
 	end
 
 end

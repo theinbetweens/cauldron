@@ -34,7 +34,7 @@ module Cauldron
       head = Theory.new([],nil,[])    
       
       link_one_action = TheoryAction.new(
-        TheoryStatement.new(StringToTheory.run('Statement.new(Return.new,var2.params[var3])')),
+        TheoryStatement.new(StringToTheory.run('Statement.new(Return.new,var1.params[var3])')),
         StringToTheory.run('var1.statement_id')
       )
       # NOTE: I need to add one result so the theory can be flagged as complete - I might not need it 
@@ -56,8 +56,6 @@ module Cauldron
       implemented_chain = chain.implement
       
       # TODO  It should generate the values too.(TheoryGenerator)
-      puts '----------------------------HERE --------------------------'
-      puts chain.length
       return {
         :initial_method=>RuntimeMethod.new(MethodUsage.new(MethodParameter.new)),
         :test_cases=>@demo_1_test_cases,
@@ -183,11 +181,7 @@ module Cauldron
         }
       )
       chain = chains[3]
-      puts '-----------------------------------'
       implemented_chain = chain.implement
-      puts '-------------======== DONE ====-----------------'
-      exit
-      #puts implemented_chain.describe
       
       return {
         :initial_method=>RuntimeMethod.new(MethodUsage.new(MethodParameter.new)),

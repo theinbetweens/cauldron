@@ -248,6 +248,32 @@ class InstanceCallContainer < CallContainer
     end
     return true
   end
+  
+  def replace_variables_alt!(map)
+    if @subject.kind_of?(TheoryVariable)
+      map.each do |key,value|
+        if @subject.theory_variable_id == key.theory_variable_id
+          @subject = value
+          break
+        end
+      end
+    elsif(@subject.kind_of?(StringLengthClass))
+    else
+      @subject.replace_variables_alt!(map)
+    end
+    
+    @parameters.each_with_index do |x,i|
+      if x.kind_of?(TheoryVariable)
+        map.each do |key,value|
+          if x == key
+            @parameters[i] = value
+          end
+        end
+      else
+        @parameters.replace_variables_alt!(map)
+      end
+    end
+  end
     
 protected
 

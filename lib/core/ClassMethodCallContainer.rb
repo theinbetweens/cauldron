@@ -41,5 +41,19 @@ class ClassMethodCallContainer < CallContainer
     end
     return true 
   end
+  
+  def replace_variables_alt!(map)
+    @parameters.each_with_index do |x,i|
+      if x.kind_of?(TheoryVariable)
+        map.each do |key,value|
+          if x.theory_variable_id == key.theory_variable_id
+            @parameters[i] = value
+          end
+        end
+      else
+        x.replace_variables_alt!(map)
+      end
+    end  
+  end
  
 end

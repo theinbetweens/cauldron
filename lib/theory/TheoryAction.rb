@@ -44,7 +44,7 @@ class TheoryAction
   # the values in the mapping hash. 
   # 
   def map_to(mapping)
-    
+
     # Duplicate the current statement before it is rewritten
     rewritten_statement = @action.copy
     target_id = @target_id.copy
@@ -55,13 +55,20 @@ class TheoryAction
     
     # Do any of the containers contain each other?
     # => TODO Need to prevent this
+    all_theory_variables = Set.new
+    theory_variable_containers.each do |x|
+      results = x.select_all([]) {|y| y.kind_of?(TheoryVariable)}
+      all_theory_variables += results
+    end
     
-    # Rewrite the statement replacing the values
-    theory_variable_containers.each do |z|
-      puts z.write
-      puts z.class.to_s
-      z.replace_theory_variables!(mapping)
-    end 
+    map = {}
+    all_theory_variables.each do |x|
+      next if mapping[x.theory_variable_id].nil?
+      map[x] = mapping[x.theory_variable_id]  
+    end
+        
+    rewritten_statement.replace_variables_alt!(map) 
+    target_id.replace_variables_alt!(map)
     
     return ActionImplementation.new(rewritten_statement,target_id,@theory_component_id)
     

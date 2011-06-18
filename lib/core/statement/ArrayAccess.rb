@@ -67,9 +67,7 @@ class ArrayAccess < InstanceCallContainer
   def equivalent?(to)
     return false if to.class != self.class
     return false unless to.array.equivalent?(@array)
-    #return false unless to.array == @array
     return false unless to.index.equivalent?(@index)
-    #return false unless to.index == @index
     return true
   end      
   
@@ -91,6 +89,32 @@ class ArrayAccess < InstanceCallContainer
       @index.replace_theory_variables!(mapping)
     end
     
+  end
+  
+  def replace_variables_alt!(map)
+    if @array.kind_of?(TheoryVariable)
+      map.each do |key,value|
+        if @array.theory_variable_id == key.theory_variable_id
+          @array = value
+          break
+        end
+      end
+    else
+      @array.replace_variables_alt!(map)
+    end
+    
+    #
+    if @index.kind_of?(TheoryVariable)
+      map.each do |key,value|
+        if @index.theory_variable_id == key.theory_variable_id
+          @index = value
+          break
+        end
+      end
+    elsif(@index.kind_of?(Literal))
+    else
+      @index.replace_variables_alt!(map)
+    end        
   end  
   
 end

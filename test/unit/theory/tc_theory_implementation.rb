@@ -1,4 +1,8 @@
-require 'required'
+$LOAD_PATH << File.expand_path('../../../../lib',__FILE__)
+
+require 'cauldron'
+
+
 require 'test/unit'
  
 class TestTheoryImplementation < Test::Unit::TestCase

@@ -112,14 +112,10 @@ class Chain
       raise StandardError.new('Only complete chains can be unified')
     end
     unified_theories = @nodes.inject([]) do |total,theory|
-      puts theory.describe
-      puts theory.theory_instance_id
       mapping = generate_theory_mapping(theory.theory_instance_id)
-      pp mapping
       mapped_theory = theory.map_to(mapping)
       total.push(mapped_theory)
     end
-    puts '--------------------------------- DONE _------------------------'
     return UnifiedChain.new(unified_theories)
   end
   
