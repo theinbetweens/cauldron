@@ -79,7 +79,8 @@ class StringToTheory < Parser
       'Container'=> 'ContainerClass',
       'Subtract'=> 'SubtractClass',
       'Times'=> 'TimesClass',
-      'Chop'=> 'ChopClass'
+      'Chop'=> 'ChopClass',
+      'TheoryStatement'=> 'TheoryStatementClass'
     }
     raise StandardError.new('Unkown constant '+token.to_s) unless constants.has_key?(token.to_s)
     eval(constants[token.to_s]+'.new')

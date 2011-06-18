@@ -81,42 +81,36 @@ module Cauldron
       # => Statement.new(Return.new,test_cases[var2][:result]) (added to the open statement)
       # => Statement.new(Return.new,test_cases[var6][:result])
       
+      # => TODO Don't actually want to include these connection hacks
+      
       link_one_action = TheoryAction.new(
         TheoryStatement.new(StringToTheory.run(
-          'OpenStatement.new(If.new,Container.new(var4.params[var1],Equivalent.new,var5[var2][:params][var3]))')
+          'OpenStatement.new(TheoryStatement.new(If.new,Container.new(var4.params[var1],Equivalent.new,var5[var2][:params][var3])))')
         ),
         StringToTheory.run('var4.statement_id')
       )
-      # => TODO Don't like including this (it needs included to identify the runtime method in the next link)
-      #"if(var4.kind_of?(RuntimeMethod))\nreturn true\nend"
-      # open = OpenStatement.new(TheoryStatement.new(If.new,Container.new(TheoryVariable.new(4))))
-      # open << TheoryStatement.new(Return.new,True.new)
-      # link_one_result = TheoryResult.new(open) 
-      # open3 = OpenStatement.new(TheoryStatement.new(If.new,Container.new(TheoryVariable.new(5))))
-      # open3 << TheoryStatement.new(Return.new,True.new)     
-      # link_one_result2 = TheoryResult.new(open3) 
-      #link_one = Theory.new([],link_one_action,[link_one_result,link_one_result2])
-      link_one = Theory.new([],link_one_action,[])
-
-      # open2 = OpenStatement.new(TheoryStatement.new(If.new,Container.new(TheoryVariable.new(4))))
-      # open2 << TheoryStatement.new(Return.new,True.new)
-      # link_two_dependent = TheoryDependent.new(open2)      
-      # open5 = OpenStatement.new(TheoryStatement.new(If.new,Container.new(TheoryVariable.new(5))))
-      # open5 << TheoryStatement.new(Return.new,True.new)
-      # link_two_dependent_2 = TheoryDependent.new(open5)          
+      link_one_result = TheoryResult.new(StringToTheory.run(
+          "if(var4.kind_of?(RuntimeMethod))\nreturn true\nend"
+        )
+      )
+      link_one = Theory.new([],link_one_action,[link_one_result])
+      
+      link_two_dependent = TheoryDependent.new(StringToTheory.run(
+        "if(var4.kind_of?(RuntimeMethod))\nreturn true\nend"
+      ))    
       link_two_action = TheoryAction.new(
         TheoryStatement.new(StringToTheory.run(
-          'Statement.new(Return.new,var5[var2][:result])'
+          'Statement.new(Return.new,var5[var2][:output])'
         )),
         StringToTheory.run('var4.first.statement_id')
       ) 
       #link_two = Theory.new([link_two_dependent,link_two_dependent_2],link_two_action,[])
-      link_two = Theory.new([],link_two_action,[])
+      link_two = Theory.new([link_two_dependent],link_two_action,[])
       
       link_three_action = TheoryAction.new(
         TheoryStatement.new(
           StringToTheory.run(
-            'Statement.new(Return.new,var5[var6][:result])'  
+            'Statement.new(Return.new,var5[var6][:output])'  
           )
         ),
         StringToTheory.run('var4.statement_id')
@@ -181,6 +175,9 @@ module Cauldron
         }
       )
       chain = chains[3]
+      
+      unified_chain = chain.unify_chain
+      
       implemented_chain = chain.implement
       
       return {

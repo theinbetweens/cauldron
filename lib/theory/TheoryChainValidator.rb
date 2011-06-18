@@ -27,6 +27,7 @@ class TheoryChainValidator
   # to the validated chain array.
   # 
   def validate_next_chain_link(validated_chains,chain,runtime_method,test_cases,position)
+    
     # Check that current link in the chain meets in dependencies 
     # if its dependents are met it isn't suppose to work
     unless chain[position].meets_dependencies?(runtime_method.copy,test_cases.copy)
