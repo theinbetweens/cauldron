@@ -30,48 +30,81 @@ module Cauldron
         # => var5 => 0 context var2[x][:params][var5] 
         # => var6 => 0 context var2[var6]
         
-        head = Theory.new([],nil,[])
+        # => TODO This might duplicate demoes
+        
+        head_result = TheoryResult.new(StringToTheory.run(
+            "if(var1.kind_of?(RuntimeMethod))\nreturn true\nend"
+          )
+        )
+        head = Theory.new([],nil,[head_result])
+        
+        # => link #1
+        link_one_dependent = TheoryDependent.new(StringToTheory.run(
+            "if(var1.kind_of?(RuntimeMethod))\nreturn true\nend"
+          )
+        ) 
         link_one_action = TheoryAction.new(
           TheoryStatement.new(StringToTheory.run(
             'OpenStatement.new(If.new,Container.new(var1.params[var3],Equivalent.new,var2[var4][:params][var5]))')
           ),
           StringToTheory.run('var1.statement_id')
         )
-        link_one = Theory.new([],link_one_action,[])
+        link_one_result = TheoryResult.new(StringToTheory.run(
+          "if(var1.length == 1)\nreturn true\nend"
+        ))
+        link_one = Theory.new([link_one_dependent],link_one_action,[link_one_result])
+        
+        
         chain = Chain.new
-        chains = chain.add_link(head)    
+        chains = chain.add_link(head)
+        puts '-----------------------------::'
+        puts chains.length    
         chain = chains.first
         
         head_id = chain.first.theory_id
         last_id = chain.last.theory_id
-        
+        puts 'Adding link -'
+        puts link_one.describe
         chains = chain.add_link(link_one)
-        
+        puts '-----------------------------::'
+        puts chains.length    
+          
         # => Find the chan with link_one in the middle
         order = [head_id,link_one.theory_id,last_id]
         chain = chains.detect do |c|
           c.collect {|t| t.theory_id} == order
         end
-        
         chain.complete?.should_not == true
-        
-        # => 
+
+        # =>
+        link_two_dependent = TheoryDependent.new(StringToTheory.run(
+          "if(var1.length == 1)\nreturn true\nend"
+        ))                  
         link_two_action = TheoryAction.new(
           TheoryStatement.new(StringToTheory.run(
             'Statement.new(Return.new,var2[var4][:result])'
           )),
           StringToTheory.run('var1.first.statement_id')
-        ) 
-        link_two = Theory.new([],link_two_action,[])
+        )
+        link_two_result = TheoryResult.new(StringToTheory.run(
+          "if(var1.history(var2[var4][:params]) == var2[var4][:output])\nreturn true\nend"
+        ))                  
+        link_two = Theory.new([link_two_dependent],link_two_action,[link_two_result])
+        
         
         chains = chain.add_link(link_two)
         order = [head_id,link_one.theory_id,link_two.theory_id,last_id]
         chain = chains.detect do |c|
           c.collect {|t| t.theory_id} == order
         end
+        puts '================================================'
+        puts chain.describe
         chain.complete?.should_not == true
         
         # => Create the third action link
+        link_three_dependent = TheoryDependent.new(StringToTheory.run(
+          "if(var1.history(var2[var4][:params]) == var2[var4][:output])\nreturn true\nend"        
+        ))                  
         link_three_action = TheoryAction.new(
           TheoryStatement.new(
             StringToTheory.run(
@@ -80,7 +113,7 @@ module Cauldron
           ),
           StringToTheory.run('var4.statement_id')
         )
-        link_three = Theory.new([],link_three_action,[])                
+        link_three = Theory.new([link_three_dependent],link_three_action,[])                
         
         # => Add the link to the chain
         chains = chain.add_link(link_three)
@@ -102,6 +135,8 @@ module Cauldron
           c.collect {|t| t.theory_id} == order
         end
         chain.complete?.should == true
+        
+        puts chain.describe
             
       end
     end

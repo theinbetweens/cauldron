@@ -10,3 +10,4 @@ def strip_whitespace(ruby_code)
 end
 
 include Cauldron::Demos
+include Cauldron::Conversion

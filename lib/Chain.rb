@@ -508,8 +508,16 @@ protected
     # Strip out any mappings that are identical to original they are 
     # links that haven't been connected with anything 
     # (don't include the head since it only has one thing to connect to)
+    # => TODO Do I like this? It means I'm including some forced connections
     unless @nodes.length < 2
-      #mappings = mappings.select {|x| !@chain_mapping.same?(x) }
+      
+      # Identify the mappings that are the same
+      puts '----------- Identifying loose mapping'
+      puts mappings.length
+      mappings = mappings.select {|x| !@chain_mapping.same?(x) }
+      puts '----------- Updated mapping'
+      puts mappings.length      
+      # => TODO Should inlcude error/warning and exit when there are no new mappings
     end
     
     # Identify any orphan variables in the action and give them uniq global ids

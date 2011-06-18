@@ -10,10 +10,12 @@ module Cauldron
     end
     
     def brew(test_cases)
+      puts 'About to start brewing...'
       
       # * Load each of the theories from the directory
       saved_theory_file_paths = Dir.glob(File.join(theory_repository_path,'*','dump'))
       theories = saved_theory_file_paths.collect {|x| Marshal.load(File.open(x,'r'))}    
+      puts theories.length
       
       # Prepare the theory chain connector
       runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))    
@@ -32,7 +34,7 @@ module Cauldron
       connector = TheoryConnector.new(potential_values)        
       
       # Attempt to generate a complete chain for the solution
-      chains = connector.generate_chains(runtime_method,test_cases,theories) 
+      chains = connector.generate_chains(runtime_method,test_cases,theories)
       if chains.empty?
         raise StandardError.new('Failed to generate a chain for this problem')
       end       

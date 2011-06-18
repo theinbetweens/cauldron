@@ -1,10 +1,10 @@
-class RuntimeMethodEvaluation89
+class RuntimeMethodEvaluation82
 
 	#
-	#	This is the method that is being evaluated using 'RuntimeMethodEvaluation89.new.method_6
+	#	This is the method that is being evaluated using 'RuntimeMethodEvaluation82.new.method_10
 	#
-	def method_6(var_12)
-		return var_12
+	def method_10(var_17)
+		return var_17
 	end
 
 end
