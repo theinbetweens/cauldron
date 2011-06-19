@@ -117,25 +117,33 @@ module Cauldron
       )
       link_two_result = TheoryResult.new(StringToTheory.run(
         "if(var1.history(var2[var4][:params]) == var2[var4][:output])\nreturn true\nend"
-      ))                  
-      link_two = Theory.new([link_two_dependent],link_two_action,[link_two_result])      
+      ))   
+      # TODO  Don't want to have to include this one
+      link_two_result_2 = TheoryResult.new(StringToTheory.run(
+        "if(var6.kind_of?(Fixnum))\nreturn true\nend"
+      ))
+                     
+      link_two = Theory.new([link_two_dependent],link_two_action,[link_two_result,link_two_result_2])      
       
       # => LINK #3
       link_three_dependent = TheoryDependent.new(StringToTheory.run(
         "if(var1.history(var2[var4][:params]) == var2[var4][:output])\nreturn true\nend"        
-      ))                  
+      ))   
+      link_three_dependent_2 = TheoryDependent.new(StringToTheory.run(
+        "if(var6.kind_of?(Fixnum))\nreturn true\nend"
+      ))
       link_three_action = TheoryAction.new(
         TheoryStatement.new(
           StringToTheory.run(
             'Statement.new(Return.new,var2[var6][:result])'  
           )
         ),
-        StringToTheory.run('var4.statement_id')
+        StringToTheory.run('var1.statement_id')
       )
       link_three_result = TheoryResult.new(StringToTheory.run(
         "if(var1.history(var2[var6][:params]) == var2[var6][:output])\nreturn true\nend"
       ))
-      link_three = Theory.new([link_three_dependent],link_three_action,[link_three_result])         
+      link_three = Theory.new([link_three_dependent,link_three_dependent_2],link_three_action,[link_three_result])         
       
       # => LINK #4
       link_four_dependent = TheoryDependent.new(StringToTheory.run(
@@ -195,11 +203,12 @@ module Cauldron
       end
       
       puts chain.describe
-      puts '----------------------'
-      puts chain.highlight_broken_links
-      puts chain.broken_link_count
+      # puts '----------------------'
+      # puts chain.highlight_broken_links
+      # puts chain.broken_link_count
+      puts '============================================'      
       puts chain.complete?
-      puts '============================================'
+      
       unified_chain = chain.unify_chain
       
       implemented_chain = chain.implement

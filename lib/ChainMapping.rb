@@ -39,10 +39,6 @@ class ChainMapping
   def same?(chain_map)
     return false if @mapping.length != chain_map.mapping.length
     return false if @history.length != chain_map.history.length
-    
-    puts '--------------------SAME--------------------'
-    pp @history
-    pp chain_map.history
     return @history == chain_map.history
   end
   

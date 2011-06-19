@@ -511,20 +511,23 @@ protected
     unless @nodes.length < 2
       
       # Identify the mappings that are the same
-      puts '----------- Identifying loose mapping'
-      puts mappings.length
       mappings = mappings.select {|x| !@chain_mapping.same?(x) }
-      puts '----------- Updated mapping'
-      puts mappings.length      
       # => TODO Should inlcude error/warning and exit when there are no new mappings
     end
     
     # Identify any orphan variables in the action and give them uniq global ids
     mappings.each do |mapping|
       theory.orphan_action_variables.each do |x|
-        mapping.add_mapping(mapping.next_free_global_id,theory.theory_instance_id,x.theory_variable_id)
+        mapping.add_mapping(
+          mapping.next_free_global_id,
+          theory.theory_instance_id,
+          x.theory_variable_id
+        )
       end
     end
+    
+    #puts '-----------------------------------------CREATING MAPPING -------'
+    #pp mappings
         
     # Create a new nodes array with the new theory in place
     updated_nodes = @nodes.copy
@@ -544,137 +547,6 @@ protected
   def add_tail(theory,value_mapping={})
     @nodes.push(theory.copy)
   end
-  
-#  # TODO  I don't think this is used
-#  def update_unified_theory_variables(unified_theory_variables_mapping,chain_front,dependent,theory)
-#    
-#      # TODO   Once the mapping is in place for all the theory vairables in the 
-#      #        in the dependent then the dependent should be mapped, written out
-#      #        and compared to the result instead of the same_structure? method.
-#
-#      # Find all the results that have the same structure as the dependent
-#      # TODO  It should probably preference the earliest theories first.
-#      matching_theories = chain_front.select do |t|
-#        t.results.any? {|x| x.same_structure?(dependent)}
-#      end
-#      
-#      # Check that a matching theory was found in the chain
-#      if matching_theories.empty?
-#        # Couldn't find a theory that meets this theories depdenents - add the theory will
-#        # need to add a another link to the chain to connect this theory with the head.
-#        return unified_theory_variables_mapping
-#      end
-#      
-#      # Go through the matching thoeries and find the result that matched the dependent
-#      matching_results = matching_theories.inject([]) do |total,t|
-#        # TODO  Presumes there is only one result
-#        res = t.results.select {|x| x.same_structure?(dependent)}.first
-#        total << {:theory_id=>t.theory_id,:result=>res,:theory=>t}
-#      end
-#
-#      # Check how many results meet the dependents
-#      raise StandardError.new('Currently only handling one result to dependent match') unless matching_results.length == 1
-#      linking_result = matching_results.first
-#      
-#      # Link two theories so that the share the same global mapping
-#      @chain_mapping.connect(
-#        theory,
-#        dependent.theory_component_id,
-#        linking_result[:theory],
-#        linking_result[:result].theory_component_id
-#      )   
-#    return unified_theory_variables_mapping
-#    
-#  end
-  
-#  def map_to_tail(global_mapping,theory)
-#
-#    # * Check whether there are any dependents from the back of the chain not met
-#    
-#    # Attempt to connect the theories results to the unmet dependents.
-#    # NOTE: The theories position is always one away from the head so
-#    # [:head]
-#    # [:x]  <-----------this is where the new link will go.
-#    # [:linkB]
-#    # [:linkA] 
-#    # [:tail]
-#    
-#    possible_mappings = [global_mapping.copy]
-#    valid_mappings = [global_mapping.copy]
-#
-#    # 1.  Find all the unmet dependents down the chain e.g. :tail, :linkA and :linkB
-#    # TODO  Need to generate some nice diagrams for what's happing - very har to visualise
-#    
-#    # TEMP: This is the dependent for the tail of the chain - the head doesn't have any dependents
-#    unless unmet_dependents_and_link.empty?
-#      unmet_dependents_and_link.each do |dep_and_link|
-#        
-#        dependent = dep_and_link[:dependent]
-#        # TODO  This is very similar to the code above - re-factor
-#        # Do any of the results have the same structure as the dependent?
-#        if theory.results.any? {|x| x.same_structure?(dep_and_link[:dependent])}
-#          
-#          valid_mappings = []
-#          
-#          results = theory.results.select {|x| x.same_structure?(dep_and_link[:dependent])}
-#          possible_mappings.each do |mapping|
-#            results.each do |res|
-#              
-#              begin 
-#                new_mapping = potential_tail_mapping(mapping.copy,theory.copy,res.copy,dep_and_link[:dependent].copy,dep_and_link[:theory].copy)
-#                # TODO  Create special MappingError
-#              rescue StandardError => e
-#                StandardLogger.instance.error e
-#                next
-#              end
-#              valid_mappings << new_mapping
-#            end
-#          end
-#          
-#          # Make the valid mappings the possible mappings for the next stage                      
-#          possible_mappings = valid_mappings
-#          
-#        end
-#        
-#      end
-#      
-#    end    
-#    
-#    if valid_mappings.empty?
-#      raise StandardError.new('Unable to perform valid mapping')
-#    else
-#      # TODO  Should be returning all the potential mapping
-#      return valid_mappings[0]
-#    end
-#    
-#    #return global_mapping
-#  end
-  
-#  # Returns the updated mapping if a possible match is found otherwise it raises 
-#  # an error.
-#  #
-#  def potential_tail_mapping(global_mapping,new_theory,new_result,existing_dependent,existing_theory)
-#    
-#    # Check that the result and dependent have the same number of theory variables
-#    if new_result.theory_variables.length != existing_dependent.theory_variables.length
-#      raise StandardError.new('The result and dependent that are being linked do not have the same number of theory_variables')
-#    end
-#    
-#    new_result.theory_variables.zip(existing_dependent.theory_variables) do |result_theory_variable,dependent_theory_variable|
-#      # Add the results of the theory to the global variables.
-#
-#      # So these two variables need the same global variable
-#      # TODO  This presumes that the same theory isn't being used in the chain            
-#      global_mapping.connect(
-#        new_theory,
-#        new_result.theory_component_id,
-#        existing_theory,
-#        existing_dependent.theory_component_id
-#      )            
-#    end     
-#    return global_mapping
-#    
-#  end
   
   # Returns the global id of the variable given the theory id and the variable
   # id.
