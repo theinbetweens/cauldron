@@ -87,13 +87,19 @@ module Cauldron
       head_result = TheoryResult.new(StringToTheory.run(
         "if(var1.kind_of?(RuntimeMethod))\nreturn true\nend")
       )
-      head = Theory.new([],nil,[head_result])
+      head_result_2 = TheoryResult.new(StringToTheory.run(
+        "if(var2.length == 2)\nreturn true\nend")
+      )      
+      head = Theory.new([],nil,[head_result,head_result_2])
       
       # => LINK #1
       link_one_dependent = TheoryDependent.new(StringToTheory.run(
           "if(var1.kind_of?(RuntimeMethod))\nreturn true\nend"
         )
-      ) 
+      )
+      link_one_dependent_2 = TheoryDependent.new(StringToTheory.run(
+        "if(var2.length == 2)\nreturn true\nend")
+      )       
       link_one_action = TheoryAction.new(
         TheoryStatement.new(StringToTheory.run(
           'OpenStatement.new(If.new,Container.new(var1.params[var3],Equivalent.new,var2[var4][:params][var5]))')
@@ -101,14 +107,26 @@ module Cauldron
         StringToTheory.run('var1.statement_id')
       )
       link_one_result = TheoryResult.new(StringToTheory.run(
-        "if(var1.length == 1)\nreturn true\nend"
+        "if(var1.kind_of?(RuntimeMethod))\nreturn true\nend"
       ))
-      link_one = Theory.new([link_one_dependent],link_one_action,[link_one_result])      
+      link_one_result_2 = TheoryResult.new(StringToTheory.run(
+        "if(var2.length == 2)\nreturn true\nend"
+      ))
+      link_one_result_3 = TheoryResult.new(StringToTheory.run(
+        "if(var4.kind_of?(Fixnum))\nreturn true\nend"
+      ))            
+      link_one = Theory.new([link_one_dependent,link_one_dependent_2],link_one_action,[link_one_result,link_one_result_2,link_one_result_3])      
       
       # => LINK #2
       link_two_dependent = TheoryDependent.new(StringToTheory.run(
-        "if(var1.length == 1)\nreturn true\nend"
-      ))                  
+        "if(var1.kind_of?(RuntimeMethod))\nreturn true\nend"
+      ))
+      link_two_dependent_2 = TheoryDependent.new(StringToTheory.run(
+        "if(var2.length == 2)\nreturn true\nend"
+      ))
+      link_two_dependent_3 = TheoryDependent.new(StringToTheory.run(
+        "if(var4.kind_of?(Fixnum))\nreturn true\nend"
+      ))                                    
       link_two_action = TheoryAction.new(
         TheoryStatement.new(StringToTheory.run(
           'Statement.new(Return.new,var2[var4][:result])'
@@ -123,7 +141,11 @@ module Cauldron
         "if(var6.kind_of?(Fixnum))\nreturn true\nend"
       ))
                      
-      link_two = Theory.new([link_two_dependent],link_two_action,[link_two_result,link_two_result_2])      
+      link_two = Theory.new(
+        [link_two_dependent,link_two_dependent_2,link_two_dependent_3],
+        link_two_action,
+        [link_two_result,link_two_result_2]
+      )      
       
       # => LINK #3
       link_three_dependent = TheoryDependent.new(StringToTheory.run(
@@ -210,7 +232,7 @@ module Cauldron
       puts chain.complete?
       
       unified_chain = chain.unify_chain
-      puts unify_chain.describe
+      puts unified_chain.describe
       
       implemented_chain = chain.implement
       
