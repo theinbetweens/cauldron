@@ -144,7 +144,6 @@ class Chain
   
   # TODO  Really need a method to highlight what is connected to what
   
-  # DEVELOPMENT
   # Writes out the chain but highlights any of links in the chain weren't connected 
   # to a dependent.
   # 
@@ -448,7 +447,7 @@ protected
     
     if potentential_values.length > 1 
       unless potentential_values.collect {|y| y.write}.uniq.length == 1
-        raise StandardError.new('There is more than one possible value for this - it is ok if there the same')
+        raise StandardError.new('There is more than one possible value for this('+global_id.to_s+') - it is ok if there the same')
       end
     end
     return potentential_values[0]    

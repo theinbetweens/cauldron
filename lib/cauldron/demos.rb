@@ -83,99 +83,123 @@ module Cauldron
       
       # => TODO Don't actually want to include these connection hacks
       
+      # => HEAD
+      head_result = TheoryResult.new(StringToTheory.run(
+        "if(var1.kind_of?(RuntimeMethod))\nreturn true\nend")
+      )
+      head = Theory.new([],nil,[head_result])
+      
+      # => LINK #1
+      link_one_dependent = TheoryDependent.new(StringToTheory.run(
+          "if(var1.kind_of?(RuntimeMethod))\nreturn true\nend"
+        )
+      ) 
       link_one_action = TheoryAction.new(
         TheoryStatement.new(StringToTheory.run(
-          'OpenStatement.new(TheoryStatement.new(If.new,Container.new(var4.params[var1],Equivalent.new,var5[var2][:params][var3])))')
+          'OpenStatement.new(If.new,Container.new(var1.params[var3],Equivalent.new,var2[var4][:params][var5]))')
         ),
-        StringToTheory.run('var4.statement_id')
+        StringToTheory.run('var1.statement_id')
       )
       link_one_result = TheoryResult.new(StringToTheory.run(
-          "if(var4.kind_of?(RuntimeMethod))\nreturn true\nend"
-        )
-      )
-      link_one = Theory.new([],link_one_action,[link_one_result])
+        "if(var1.length == 1)\nreturn true\nend"
+      ))
+      link_one = Theory.new([link_one_dependent],link_one_action,[link_one_result])      
       
+      # => LINK #2
       link_two_dependent = TheoryDependent.new(StringToTheory.run(
-        "if(var4.kind_of?(RuntimeMethod))\nreturn true\nend"
-      ))    
+        "if(var1.length == 1)\nreturn true\nend"
+      ))                  
       link_two_action = TheoryAction.new(
         TheoryStatement.new(StringToTheory.run(
-          'Statement.new(Return.new,var5[var2][:output])'
+          'Statement.new(Return.new,var2[var4][:result])'
         )),
-        StringToTheory.run('var4.first.statement_id')
-      ) 
-      #link_two = Theory.new([link_two_dependent,link_two_dependent_2],link_two_action,[])
-      link_two = Theory.new([link_two_dependent],link_two_action,[])
+        StringToTheory.run('var1.first.statement_id')
+      )
+      link_two_result = TheoryResult.new(StringToTheory.run(
+        "if(var1.history(var2[var4][:params]) == var2[var4][:output])\nreturn true\nend"
+      ))                  
+      link_two = Theory.new([link_two_dependent],link_two_action,[link_two_result])      
       
+      # => LINK #3
+      link_three_dependent = TheoryDependent.new(StringToTheory.run(
+        "if(var1.history(var2[var4][:params]) == var2[var4][:output])\nreturn true\nend"        
+      ))                  
       link_three_action = TheoryAction.new(
         TheoryStatement.new(
           StringToTheory.run(
-            'Statement.new(Return.new,var5[var6][:output])'  
+            'Statement.new(Return.new,var2[var6][:result])'  
           )
         ),
         StringToTheory.run('var4.statement_id')
       )
-      link_three = Theory.new([],link_three_action,[])
-      
-      link_four_result = TheoryResult.new(StringToTheory.run(
-        "if(var4.all_pass?(var5))\nreturn true\nend"
+      link_three_result = TheoryResult.new(StringToTheory.run(
+        "if(var1.history(var2[var6][:params]) == var2[var6][:output])\nreturn true\nend"
       ))
-      link_four = Theory.new([],nil,[link_four_result])
-         
+      link_three = Theory.new([link_three_dependent],link_three_action,[link_three_result])         
+      
+      # => LINK #4
+      link_four_dependent = TheoryDependent.new(StringToTheory.run(
+        "if(var1.history(var2[var6][:params]) == var2[var6][:output])\nreturn true\nend"
+      ))      
+      link_four_result = TheoryResult.new(StringToTheory.run(
+        "if(var1.all_pass?(var2))\nreturn true\nend"
+      ))
+      link_four = Theory.new([link_four_dependent],nil,[link_four_result])      
+      
       chain = Chain.new
-      chain = chain.add_link(head).first
-      chains = chain.add_link(
-        link_one,
-        {
-          4=>IntrinsicRuntimeMethod.new,
-          5=>IntrinsicTestCases.new,
-          1=>IntrinsicLiteral.new(0),
-          2=>IntrinsicLiteral.new(0),
-          3=>IntrinsicLiteral.new(0)
-        }
-      )
+      chains = chain.add_link(head)
       chain = chains.first
       
-      chains = chain.add_link(
-        link_two,
-        {
-          4=>IntrinsicRuntimeMethod.new,
-          5=>IntrinsicTestCases.new,
-          1=>IntrinsicLiteral.new(0),
-          2=>IntrinsicLiteral.new(0),
-          3=>IntrinsicLiteral.new(0),
-          6=>IntrinsicLiteral.new(1) 
-        }
-      )
-      chain = chains[1]
+      head_id = chain.first.theory_id
+      last_id = chain.last.theory_id
+      
+      values = {
+        4=>IntrinsicRuntimeMethod.new,
+        5=>IntrinsicTestCases.new,
+        1=>IntrinsicLiteral.new(0),
+        2=>IntrinsicLiteral.new(0),
+        3=>IntrinsicLiteral.new(0),
+        6=>IntrinsicLiteral.new(1)          
+      }
       
       chains = chain.add_link(
-        link_three,
-        {
-          4=>IntrinsicRuntimeMethod.new,
-          5=>IntrinsicTestCases.new,
-          1=>IntrinsicLiteral.new(0),
-          2=>IntrinsicLiteral.new(0),
-          3=>IntrinsicLiteral.new(0),
-          6=>IntrinsicLiteral.new(1) 
-        }
+        link_one,values
       )
-      
-      chain = chains[2]
+      order = [head_id,link_one.theory_id,last_id]
+      chain = chains.detect do |c|
+        c.collect {|t| t.theory_id} == order
+      end      
       
       chains = chain.add_link(
-        link_four,
-        {
-          4=>IntrinsicRuntimeMethod.new,
-          5=>IntrinsicTestCases.new,
-          1=>IntrinsicLiteral.new(0),
-          2=>IntrinsicLiteral.new(0),
-          3=>IntrinsicLiteral.new(0),
-          6=>IntrinsicLiteral.new(1)          
-        }
+        link_two,values
       )
-      chain = chains[3]
+      order = [head_id,link_one.theory_id,link_two.theory_id,last_id]
+      chain = chains.detect do |c|
+        c.collect {|t| t.theory_id} == order
+      end
       
+      chains = chain.add_link(
+        link_three,values
+      )
+      order = [head_id,link_one.theory_id,link_two.theory_id,link_three.theory_id,last_id]
+      chain = chains.detect do |c|
+        c.collect {|t| t.theory_id} == order
+      end
+      
+      chains = chain.add_link(
+        link_four,values
+      )
+      order = [head_id,link_one.theory_id,link_two.theory_id,link_three.theory_id,link_four.theory_id,last_id]
+      chain = chains.detect do |c|
+        c.collect {|t| t.theory_id} == order
+      end
+      
+      puts chain.describe
+      puts '----------------------'
+      puts chain.highlight_broken_links
+      puts chain.broken_link_count
+      puts chain.complete?
+      puts '============================================'
       unified_chain = chain.unify_chain
       
       implemented_chain = chain.implement
