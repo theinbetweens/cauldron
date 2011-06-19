@@ -102,7 +102,7 @@ module Cauldron
       )       
       link_one_action = TheoryAction.new(
         TheoryStatement.new(StringToTheory.run(
-          'OpenStatement.new(If.new,Container.new(var1.params[var3],Equivalent.new,var2[var4][:params][var5]))')
+          'OpenStatement.new(TheoryStatement.new(If.new,Container.new(var1.params[var3],Equivalent.new,var2[var4][:params][var5])))')
         ),
         StringToTheory.run('var1.statement_id')
       )
@@ -129,35 +129,47 @@ module Cauldron
       ))                                    
       link_two_action = TheoryAction.new(
         TheoryStatement.new(StringToTheory.run(
-          'Statement.new(Return.new,var2[var4][:result])'
+          'Statement.new(Return.new,var2[var4][:output])'
         )),
         StringToTheory.run('var1.first.statement_id')
       )
+      # link_two_result = TheoryResult.new(StringToTheory.run(
+        # "if(var1.history(var2[var4][:params]) == var2[var4][:output])\nreturn true\nend"
+      # ))   
       link_two_result = TheoryResult.new(StringToTheory.run(
-        "if(var1.history(var2[var4][:params]) == var2[var4][:output])\nreturn true\nend"
-      ))   
+        "if(var2[var4][:params].length == 1)\nreturn true\nend"
+      ))        
       # TODO  Don't want to have to include this one
       link_two_result_2 = TheoryResult.new(StringToTheory.run(
         "if(var6.kind_of?(Fixnum))\nreturn true\nend"
       ))
+      link_two_result_3 = TheoryResult.new(StringToTheory.run(
+        "if(var1.kind_of?(RuntimeMethod))\nreturn true\nend"
+      ))      
                      
       link_two = Theory.new(
         [link_two_dependent,link_two_dependent_2,link_two_dependent_3],
         link_two_action,
-        [link_two_result,link_two_result_2]
+        [link_two_result,link_two_result_2,link_two_result_3]
       )      
       
       # => LINK #3
+      # link_three_dependent = TheoryDependent.new(StringToTheory.run(
+        # "if(var1.history(var2[var4][:params]) == var2[var4][:output])\nreturn true\nend"        
+      # ))
       link_three_dependent = TheoryDependent.new(StringToTheory.run(
-        "if(var1.history(var2[var4][:params]) == var2[var4][:output])\nreturn true\nend"        
-      ))   
+        "if(var2[var4][:params].length == 1)\nreturn true\nend"        
+      ))         
       link_three_dependent_2 = TheoryDependent.new(StringToTheory.run(
         "if(var6.kind_of?(Fixnum))\nreturn true\nend"
       ))
+      link_three_dependent_3 = TheoryDependent.new(StringToTheory.run(
+        "if(var1.kind_of?(RuntimeMethod))\nreturn true\nend"
+      ))      
       link_three_action = TheoryAction.new(
         TheoryStatement.new(
           StringToTheory.run(
-            'Statement.new(Return.new,var2[var6][:result])'  
+            'Statement.new(Return.new,var2[var6][:output])'  
           )
         ),
         StringToTheory.run('var1.statement_id')
@@ -166,13 +178,13 @@ module Cauldron
       #  "if(var1.history(var2[var6][:params]) == var2[var6][:output])\nreturn true\nend"
       #))
       link_three_result = TheoryResult.new(StringToTheory.run(
-       "if(var1.kind_of?(RuntimeMethod))\nreturn true\nend"
+        "if(var2[var4][:params].length == 1)\nreturn true\nend" 
       ))
       link_three_result_2 = TheoryResult.new(StringToTheory.run(
         "if(var2.length == 2)\nreturn true\nend"
       ))             
       link_three = Theory.new(
-        [link_three_dependent,link_three_dependent_2],
+        [link_three_dependent,link_three_dependent_2,link_three_dependent_3],
         link_three_action,
         [link_three_result,link_three_result_2]
       )         
@@ -244,8 +256,8 @@ module Cauldron
       # puts '----------------------'
       # puts chain.highlight_broken_links
       # puts chain.broken_link_count
-      puts '============================================'      
-      puts chain.complete?
+      #puts '============================================'      
+      #puts chain.complete?
       
       unified_chain = chain.unify_chain
       puts unified_chain.describe

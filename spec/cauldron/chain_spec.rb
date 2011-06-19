@@ -141,40 +141,6 @@ module Cauldron
       end
     end
     
-    describe '#unify_chain' do
-      it 'can unify a chain with a "if statement in"' do
-        head = Theory.new([],nil,[])
-        link_one_action = TheoryAction.new(
-          TheoryStatement.new(StringToTheory.run(
-            'OpenStatement.new(If.new,Container.new(var1.params[var3],Equivalent.new,var2[var4][:params][var5]))')
-          ),
-          StringToTheory.run('var1.statement_id')
-        )
-        link_one = Theory.new([],link_one_action,[])
-        chain = Chain.new
-        chains = chain.add_link(head)    
-        chain = chains.first
-        head_id = chain.first.theory_id
-        last_id = chain.last.theory_id
-        chains = chain.add_link(link_one)
-        order = [head_id,link_one.theory_id,last_id]
-        chain = chains.detect do |c|
-          c.collect {|t| t.theory_id} == order
-        end              
-        link_two_result = TheoryResult.new(StringToTheory.run(
-          "if(var1.all_pass?(var2))\nreturn true\nend"
-        ))
-        link_two = Theory.new([],nil,[link_two_result])          
-        chains = chain.add_link(link_two)
-        order = [head_id,link_one.theory_id,link_two.theory_id,last_id]
-        chain = chains.detect do |c|
-          c.collect {|t| t.theory_id} == order
-        end
-        puts '-------------------------------************************'
-        puts chain.unify_chain.describe
-      end
-    end
-    
   end
 
 end

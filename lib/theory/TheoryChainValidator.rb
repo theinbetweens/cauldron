@@ -65,6 +65,7 @@ class TheoryChainValidator
     else
       # Theory was wrong
       chain[position].results.each do |x|
+        puts x.class.to_s
         unless x.validates?(result,test_cases)
           StandardLogger.instance.info('The following result failed to be met')
           StandardLogger.instance.info(x.write)
@@ -94,6 +95,9 @@ class TheoryChainValidator
     evaluation_code += "last_runtime_method = runtime_method.copy"+"\n"
     evaluation_code += action.write+"\n"
     evaluation_code += 'return runtime_method'+"\n"
+    puts '-------------------------EVALUATION CODE-----------------'
+    puts evaluation_code
+    puts '-------------------------EVALUATION CODE END-----------------'
     eval evaluation_code    
   rescue NoMethodError => e
     return nil
