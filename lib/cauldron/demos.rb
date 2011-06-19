@@ -162,11 +162,11 @@ module Cauldron
       last_id = chain.last.theory_id
       
       values = {
-        4=>IntrinsicRuntimeMethod.new,
-        5=>IntrinsicTestCases.new,
-        1=>IntrinsicLiteral.new(0),
-        2=>IntrinsicLiteral.new(0),
+        1=>IntrinsicRuntimeMethod.new,
+        2=>IntrinsicTestCases.new,
         3=>IntrinsicLiteral.new(0),
+        4=>IntrinsicLiteral.new(0),
+        5=>IntrinsicLiteral.new(0),
         6=>IntrinsicLiteral.new(1)          
       }
       
@@ -179,7 +179,7 @@ module Cauldron
       end      
       
       chains = chain.add_link(
-        link_two,values
+        link_two
       )
       order = [head_id,link_one.theory_id,link_two.theory_id,last_id]
       chain = chains.detect do |c|
@@ -187,7 +187,7 @@ module Cauldron
       end
       
       chains = chain.add_link(
-        link_three,values
+        link_three
       )
       order = [head_id,link_one.theory_id,link_two.theory_id,link_three.theory_id,last_id]
       chain = chains.detect do |c|
@@ -202,7 +202,7 @@ module Cauldron
         c.collect {|t| t.theory_id} == order
       end
       
-      puts chain.describe
+      #puts chain.describe
       # puts '----------------------'
       # puts chain.highlight_broken_links
       # puts chain.broken_link_count
@@ -210,6 +210,7 @@ module Cauldron
       puts chain.complete?
       
       unified_chain = chain.unify_chain
+      puts unify_chain.describe
       
       implemented_chain = chain.implement
       
