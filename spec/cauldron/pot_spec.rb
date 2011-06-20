@@ -30,6 +30,10 @@ module Cauldron
         pot = Cauldron::Pot.new
         pot.clear
         pot.simmer(demo_two)
+        cases = []
+        cases << convert_to_example(separate_values("'carrot','vegtable'"))
+        cases << convert_to_example(separate_values("'fish','animal'"))
+        pot.brew(cases)        
       end
       
     end
