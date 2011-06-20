@@ -1,13 +1,10 @@
-class RuntimeMethodEvaluation90
+class RuntimeMethodEvaluation101
 
 	#
-	#	This is the method that is being evaluated using 'RuntimeMethodEvaluation90.new.method_12
+	#	This is the method that is being evaluated using 'RuntimeMethodEvaluation101.new.method_6
 	#
-	def method_12(var_21)
-		if(var_21 == 'fish')
-			return 'animal'
-		end
-		return 'vegtable'
+	def method_6(var_12)
+		return var_12
 	end
 
 end

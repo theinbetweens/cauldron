@@ -352,6 +352,8 @@ class Chain
     res = []
     unify_chain.theory_variables.each do |var|
       
+      puts '--------variable creation for '+var.write
+      
       intrinsic_value = global_id_intrinsic_value(var.theory_variable_id)
       if intrinsic_value.kind_of?(IntrinsicRuntimeMethod)
         res << {
@@ -369,6 +371,7 @@ class Chain
         }        
       else
         
+        puts 'Not intrinsic---------->?'
         # TODO  This whole bit is just really rushed------------------ write tests! 
 
         # Find all the statements that include that variable 
@@ -379,10 +382,14 @@ class Chain
         written_components = unified_components.collect {|x| x.write}
         written_components = written_components.select {|x| x.include?('var'+var.theory_variable_id.to_s)}
         
+        puts 'written_components.length: '+written_components.length.to_s
         # => DEV
         temp_component = written_components.first
+        puts 'temp_component: '+temp_component
         # => MATCH var0.params[var2] in runtime_method.add_statement_at(OpenStatement.new(TheoryStatement.new(If.new, Container.new(var0.params[var2], Equivalent.new, var1[var4][:params][var3]))),var0.statement_id)
-        reg = eval('/[\w\d\.]*\['+var.write+'\]/')
+        reg = eval('/[\w\d\.\[\]:]*\['+var.write+'\]/')
+        
+        puts temp_component.match(reg)
         
         # TODO  Should use the Parser to find the statement with the varx in
         #var_match = /\s.*\[var[\d]\]/
