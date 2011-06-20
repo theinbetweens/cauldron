@@ -351,6 +351,7 @@ class Chain
     raise StandardError.new('This should only be called on complete chains') unless complete?
     res = []
     unify_chain.theory_variables.each do |var|
+      
       intrinsic_value = global_id_intrinsic_value(var.theory_variable_id)
       if intrinsic_value.kind_of?(IntrinsicRuntimeMethod)
         res << {
@@ -378,10 +379,21 @@ class Chain
         written_components = unified_components.collect {|x| x.write}
         written_components = written_components.select {|x| x.include?('var'+var.theory_variable_id.to_s)}
         
+        # => DEV
+        temp_component = written_components.first
+        # => MATCH var0.params[var2] in runtime_method.add_statement_at(OpenStatement.new(TheoryStatement.new(If.new, Container.new(var0.params[var2], Equivalent.new, var1[var4][:params][var3]))),var0.statement_id)
+        reg = eval('/[\w\d\.]*\['+var.write+'\]/')
+        
         # TODO  Should use the Parser to find the statement with the varx in
+        #var_match = /\s.*\[var[\d]\]/
+        #var_match = /^[\s|\(]+(.*\[var[\d]\])/
+        var_match = reg
         usage_statements = written_components.inject([]) do |total,x|
-          unless x.write.match(/\s.*\[var[\d]\]/).nil?
-            total << TheoryStatement.new(StringToTheory.run(x.write.match(/\s.*\[var[\d]\]/)[0]))
+          
+          #unless x.write.match(/\s.*\[var[\d]\]/).nil?
+          unless x.write.match(var_match).nil?
+            match = x.write.match(var_match)[0]
+            total << TheoryStatement.new(StringToTheory.run(match))
           end
           total
         end

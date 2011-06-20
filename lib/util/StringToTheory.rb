@@ -41,7 +41,7 @@ class StringToTheory < Parser
   def self.run(statement_string)
     statement_string.gsub!(/<runtime_method>/,'runtime_method')
     return super(statement_string)
-
+    
   end
   
   # TODO  This method is very similar to the Parser

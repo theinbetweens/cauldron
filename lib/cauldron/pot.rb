@@ -55,10 +55,15 @@ module Cauldron
     
     def simmer(demo)
       raise StandardError.new('This demo does not work') unless demo_works?(demo)
-      
+      puts '------------------demo works'      
       # Generate a master theory for each stage of the runtime method when following the theory chains
       generator = TheoryGenerator.new
-      master_theories = generator.master_theories(demo[:chain],demo[:initial_method],demo[:test_cases])
+      master_theories = generator.master_theories(
+        demo[:chain],
+        demo[:initial_method],
+        demo[:test_cases]
+      )
+      puts '||||||||||||||||||||||||||================>>>>>>>>>>>> generated master theories'
       
       # Add each of the theories in the chain to cauldron
       master_theories.each {|x| save_theory(x,master_repository_path)}

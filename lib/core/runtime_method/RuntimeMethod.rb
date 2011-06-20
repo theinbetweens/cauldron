@@ -134,7 +134,6 @@ class RuntimeMethod < StatementGroup
   # groups.
   # 
   def add_statement_at(statement,position)
-    puts '------------------------ADDING STATEMENT AT Position: '+position.to_s
     if position == self.statement_id
       push(statement)
       puts self.write
@@ -143,7 +142,6 @@ class RuntimeMethod < StatementGroup
     statement_groups = self.select_all {|x| x.kind_of?(StatementGroup) && x.statement_id == position}
     unless statement_groups.empty?
       statement_groups.first.push(statement)
-      puts self.write
       return
     end
     raise StandardError.new('The is no statement group with the id '+position.to_s)

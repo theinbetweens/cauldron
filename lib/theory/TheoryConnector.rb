@@ -43,27 +43,19 @@ class TheoryConnector
     
     # Find a theory that can act as the head
     possible_head_theories = theories.select {|x| x.dependents.length == 0}
-    puts 'possible_head_theories: '+possible_head_theories.length.to_s
-    puts possible_head_theories.length.to_s
-
     
     # Create the initial chains
     possible_chains = []
     possible_head_theories.each do |x|
       possible_chains += intial_chain.copy.add_link(x)
     end
-    
-    puts 'possible_chains.length.to_s: '
-    puts possible_chains.length.to_s
         
     # Check the initial chains incase they're complete
     complete_chains = []
     if possible_chains.any? {|x| x.complete? }
       complete_chains += possible_chains.select {|x| x.complete?}
       possible_chains.delete_if {|x| x.complete?}
-    end
-    puts 'complete_chains.length.to_s: ' 
-    puts complete_chains.length.to_s       
+    end       
     
     # Continue to add theories to the chains until they are complete or the theories are exhausted
     possible_chains.each do |x|

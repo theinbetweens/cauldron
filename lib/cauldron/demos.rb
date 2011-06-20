@@ -102,8 +102,8 @@ module Cauldron
       )       
       link_one_action = TheoryAction.new(
         TheoryStatement.new(StringToTheory.run(
-          'OpenStatement.new(TheoryStatement.new(If.new,Container.new(var1.params[var3],Equivalent.new,var2[var4][:params][var5])))')
-        ),
+          'OpenStatement.new(TheoryStatement.new(If.new,Container.new(var1.params[var3],Equivalent.new,var2[var4][:params][var5])))'
+        )),
         StringToTheory.run('var1.statement_id')
       )
       link_one_result = TheoryResult.new(StringToTheory.run(
@@ -252,15 +252,7 @@ module Cauldron
         c.collect {|t| t.theory_id} == order
       end
       
-      #puts chain.describe
-      # puts '----------------------'
-      # puts chain.highlight_broken_links
-      # puts chain.broken_link_count
-      #puts '============================================'      
-      #puts chain.complete?
-      
       unified_chain = chain.unify_chain
-      puts unified_chain.describe
       
       implemented_chain = chain.implement
       

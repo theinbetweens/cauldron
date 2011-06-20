@@ -120,14 +120,11 @@ protected
     #last_runtime_method.history2(test_cases[0][:params]).each do |x|
     #end
     # TODO    For future debugging I really need to generate a runtime method from a string.
-    puts duplicate_statement.write
     eval duplicate_statement.write
     throw :theory_result_failed
   rescue NoMethodError => e
-    puts e
     throw :theory_result_failed
   rescue TypeError => e
-    puts e
     throw :theory_result_failed
   end
   
