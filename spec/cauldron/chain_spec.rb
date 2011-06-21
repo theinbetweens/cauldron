@@ -57,17 +57,11 @@ module Cauldron
         
         chain = Chain.new
         chains = chain.add_link(head)
-        puts '-----------------------------::'
-        puts chains.length    
         chain = chains.first
         
         head_id = chain.first.theory_id
         last_id = chain.last.theory_id
-        puts 'Adding link -'
-        puts link_one.describe
         chains = chain.add_link(link_one)
-        puts '-----------------------------::'
-        puts chains.length    
           
         # => Find the chan with link_one in the middle
         order = [head_id,link_one.theory_id,last_id]
@@ -97,8 +91,6 @@ module Cauldron
         chain = chains.detect do |c|
           c.collect {|t| t.theory_id} == order
         end
-        puts '================================================'
-        puts chain.describe
         chain.complete?.should_not == true
         
         # => Create the third action link
@@ -135,8 +127,6 @@ module Cauldron
           c.collect {|t| t.theory_id} == order
         end
         chain.complete?.should == true
-        
-        puts chain.describe
             
       end
     end

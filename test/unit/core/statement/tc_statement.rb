@@ -130,10 +130,7 @@ class TestStatement < Test::Unit::TestCase
   def test_variable_subst
    
     # Create the substitute variable (the one to replace the current one) self.class = String
-    class_req = Requirement.new(InstanceCallContainer.new(This.new,ClassCall.new),Equal.new,StringClass.new)
-    # TODO  If this is 8 it still works - it should raise an exception since it is a conflict
-    string_value_req = Requirement.new(This.new,Equal.new,Literal.new('tests'))
-    subst_variable = MethodParameter.new(class_req)
+    subst_variable = MethodParameter.new
 
     # Create the variable to be replaced self.class = String
     replacable_variable = Unknown.new
@@ -406,7 +403,7 @@ class TestStatement < Test::Unit::TestCase
     
     #   c.  Retrieve the history instance for the runtime method
     history_2 = runtime_method_2.history(ParametersContainer.new,[calling_runtime_method_2])
-
+    
     assert_equal(true,statement_2.realise2(history_2).find_variable(unknown_variable_2.variable_id).kind_of?(StringVariable))
     assert_equal('sparky',statement_2.realise2(history_2).find_variable(unknown_variable_2.variable_id).value)
 

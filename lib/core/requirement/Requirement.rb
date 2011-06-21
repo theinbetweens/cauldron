@@ -10,6 +10,7 @@ class Requirement < Array
   alias :array_push :push
   
   def initialize(*parameters)
+    #raise StandardError.new('---------------------This is redundant')
     super()
     parameters.each do |param|
       self.push param

@@ -12,7 +12,7 @@ class TestMethod < Test::Unit::TestCase
     @simple_method_usage = MethodUsage.new()
     
     # Create the simple runtime method
-    @simple_method = RuntimeMethod.new(@simple_method_usage)
+    @simple_method = RuntimeMethod.new(@simple_method_usage,0)
     
     # Create the usage for a method with two paramters
     param_1 = MethodParameter.new
@@ -20,9 +20,6 @@ class TestMethod < Test::Unit::TestCase
     
     # Create the method with paramaters
     @method_with_paramaters = RuntimeMethod.new(@parameter_method_usage)
-    
-    # Setting the method paramaters 
-    #@method_with_paramaters.parameters = [MethodParameter.new(Requirement.new(This.new,Equal.new,Literal.new('test')))]
         
   end
   
@@ -81,7 +78,7 @@ class TestMethod < Test::Unit::TestCase
     original_method = RuntimeMethod.new(parameter_method_usage)
     
     # Add parameters to the method
-    param_values = MethodParameter.new(Requirement.new(This.new,Equal.new,Literal.new('test')))
+    param_values = MethodParameter.new
     #original_method.parameters = [param_values]
     
     # Check the number of paramaters

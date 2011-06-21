@@ -9,7 +9,7 @@ class TestMethodUsage < Test::Unit::TestCase
     @empty_method_usage = MethodUsage.new
     
     # Requires a string variable
-    @method_var_a = MethodParameter.new('flipping'.to_requirement)
+    @method_var_a = MethodParameter.new
     @string_paramater_case = MethodUsage.new(@method_var_a)
 
   end

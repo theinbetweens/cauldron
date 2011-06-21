@@ -45,15 +45,6 @@ class String
     return Literal.new(self.clone)
   end 
   
-  # TODO  Write tests
-  # Returns a requirement instance declaring this as a literal.
-  #
-  # Example 'test'.to_requirement -> Requirement.new(This.new,Equivalent.new,'test'.to_literal)
-  #
-  def to_requirement
-    return Requirement.new(This.new,Equivalent.new,self.to_literal)
-  end
-  
   # Returns a statement declaring a variable with the value of
   # this string e.g. 
   #
@@ -67,19 +58,11 @@ class String
   # TODO  There is a BASH command `quote` and `quote_readline` that
   # might be more useful here.
   def escape_single_quotes
-    # TODO   I don't properly follow this
     return self.gsub(/[']/, '\\\\\'')    
   end
   
   def cauldron_method_calls
     return ['.length']
-  end  
-
-protected
-  
-  def identify(x)
-    # Check if it is a assignment
-    
   end
   
 end

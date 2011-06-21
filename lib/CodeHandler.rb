@@ -1,5 +1,3 @@
-# TODO  Look into matrix
-require "matrix"
 require "tsort"
 
 # A code handler continualy considers how to extend the complexity 
@@ -12,8 +10,6 @@ require "tsort"
 # Essentially it just tries to create as many uniquely new variables as it
 # can.  Note they are consider unique if the process to create them is 
 # new, NOT whether or not there value is new.
-#
-# TODO  Look up dynamic refactoring
 #
 class CodeHandler
   

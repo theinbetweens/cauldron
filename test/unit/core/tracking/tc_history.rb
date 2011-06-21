@@ -1,3 +1,5 @@
+$LOAD_PATH << File.expand_path('../../../../../lib',__FILE__)
+
 require 'required'
 require 'test/unit'
 
@@ -9,7 +11,7 @@ class TestHistory < Test::Unit::TestCase
     @simple_runtime_method = RuntimeMethod.new(MethodUsage.new,nil.to_var)        
     
     # Create a method that is passed a string
-    @grim_fandango_method_var = MethodParameter.new('Grim Fandango'.to_requirement)
+    @grim_fandango_method_var = MethodParameter.new
     @grim_fandango = 'Grim Fandango'.to_var(@grim_fandango_method_var.variable_id)
     @string_runtime_method = RuntimeMethod.new(MethodUsage.new(@grim_fandango_method_var),nil)
         

@@ -369,7 +369,6 @@ class Chain
         }        
       else
         
-        #puts 'Not intrinsic---------->?'
         # TODO  This whole bit is just really rushed------------------ write tests! 
 
         # Find all the statements that include that variable 
@@ -383,12 +382,10 @@ class Chain
         #puts 'written_components.length: '+written_components.length.to_s
         # => DEV
         temp_component = written_components.first
-        #puts 'temp_component: '+temp_component
+
         # => MATCH var0.params[var2] in runtime_method.add_statement_at(OpenStatement.new(TheoryStatement.new(If.new, Container.new(var0.params[var2], Equivalent.new, var1[var4][:params][var3]))),var0.statement_id)
         reg = eval('/[\w\d\.\[\]:]*\['+var.write+'\]/')
-        
-        #puts temp_component.match(reg)
-        
+                
         # TODO  Should use the Parser to find the statement with the varx in
         #var_match = /\s.*\[var[\d]\]/
         #var_match = /^[\s|\(]+(.*\[var[\d]\])/
@@ -543,9 +540,6 @@ protected
         )
       end
     end
-    
-    #puts '-----------------------------------------CREATING MAPPING -------'
-    #pp mappings
         
     # Create a new nodes array with the new theory in place
     updated_nodes = @nodes.copy

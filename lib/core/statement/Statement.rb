@@ -505,12 +505,8 @@ class Statement < Array
     raise FailedToFindVariableError.new('Couldn\'t find a variable with the id '+uniq_id.to_s+' in "'+self.write+'"')    
   end
 
-  # TODO  This doesn't check anything
-  #
   def replace_variable!(id,var)
-    
-    unless var.kind_of?(Variable) then raise StandardError.new('Only expecting a variable') end
-    
+
     # Find the variable to be replaced
     target = self.find_actual_variable(id)  
  
@@ -533,6 +529,23 @@ class Statement < Array
     end
     
   end     
+  
+  # TODO  Not sure whether both replace_variable! and subst_variable! are both needed  - either ways
+  #       their names aren't descriptive enough to distinguish that one uses the uniq_id and one uses
+  #       the variable.   
+  #
+  def subst_variable!(id,var)
+    # => TODO Use replace_variable_if?
+    self.each_with_index do |token,i|
+      if token.kind_of?(Variable) && id == token.variable_id
+        self[i] = var
+        next
+      end
+      if token.kind_of?(Container)
+        self[i] = token.subst_variable!(id,var)
+      end
+    end
+  end
   
   # Returns a declaration for this statement.  So it will look something
   # like - 
@@ -1134,14 +1147,6 @@ protected
     if self.length == 1 and detect_class(DefCall)
       @confirmed = true
     end
-    
-  end
-  
-  # This runs some simple checks of the structure of the statement
-  # for example if the statement had two = signs then that would
-  # invalidate it.
-  # 
-  def validate_statment_structure
     
   end
   

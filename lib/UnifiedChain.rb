@@ -58,23 +58,14 @@ class UnifiedChain < Chain
     # (need to work out what is the runtime method and what the test cases)
     
     # TEMP: Why are these implemented theories
-    @nodes.first.all_theory_variables
+    # @nodes.first.all_theory_variables
     
     # Create the theory generator
     generator = TheoryGenerator.new()
     
     #accessors, temp_mapping = generator.generate_accessors_and_mapping(test_cases,runtime_method,1)
     accessors, temp_mapping = generator.generate_accessors_and_mapping(test_cases,runtime_method,3)
-    
-    puts '-------------------------- implementation_permuatations --------------->>>>>>>>>>>'
-    puts '-----------accessors'
-    pp accessors
-    puts '-----------temp_mapping'
-    pp temp_mapping
-    
-    puts 'temp_mapping.length.to_s: '+temp_mapping.length.to_s
-    puts 'missing_intrinsic_values.length.to_s: '+missing_intrinsic_values.length.to_s
-    
+
     if temp_mapping.length > missing_intrinsic_values.length
 
       # Now to assign real values to the chain
@@ -92,7 +83,7 @@ class UnifiedChain < Chain
       intrinsic_res = res.collect {|x| x.to_intrinsic}
       value_permutaions = intrinsic_res.permutation(theory_variable_ids.length).to_a
       uniq_value_permutations = value_permutaions.collect {|x| x.to_set}.uniq
-      
+      puts 'uniq_value_permutations: '+uniq_value_permutations.length.to_s
       possible_mappings = []
       
       theory_variable_id_permutations = theory_variable_ids.permutation(theory_variable_ids.length).to_a
@@ -113,10 +104,6 @@ class UnifiedChain < Chain
       return possible_mappings.inject([]) { |total,mapping| total << self.copy.implement(mapping) }
       
     else
-      puts temp_mapping.length
-      pp temp_mapping
-      puts missing_intrinsic_values.length
-      pp missing_intrinsic_values
       raise StandardError.new('Could not generate enough real vlaues to test theory - try increasing the itterations')
     end
     

@@ -131,6 +131,11 @@ class OpenStatement < StatementGroup
     end    
   end
   
+  def subst_variable!(id,var)
+    @statement.subst_variable!(id,var)
+    self.each {|statement| statement.subst_variable!(id,var) }
+  end
+  
   # Returns the statement_id of the embeded statement. 
   #
   # TODO  The nested statement should maybe have an idea 

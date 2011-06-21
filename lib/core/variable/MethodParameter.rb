@@ -2,14 +2,8 @@ class MethodParameter < BaseVariable
   attr_reader :usage_variable
   attr_writer :variable_id
   
-  # TODO  I'm trying to move away from requirements
-  #
-  # @param  *requirements   Any number of requirements that describe the 
-  #                         the properties of the method variable.
-  #                         For example self == 6
-  def initialize(*requirements)
-    #super(*requirements)
-    super(nil)
+  def initialize(id=nil)
+    super(id)
   end
   
   # Returns true if this variables meets the requirements of the
@@ -85,9 +79,7 @@ class MethodParameter < BaseVariable
   end  
 
   def copy
-    result = self.class.new(*self) {{:variable_id => self.variable_id,:uniq_id=>@uniq_id, :uniq_id_history=>@uniq_id_history.copy}}
-    result.instance_variable = @instance_variable
-    return result
+    return Marshal.load(Marshal.dump(self))
   end  
   
   # Returns a reference to the usage variable that is represented 

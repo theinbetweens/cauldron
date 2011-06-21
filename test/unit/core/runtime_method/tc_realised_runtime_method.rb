@@ -8,9 +8,9 @@ class TestRealisedRuntimeMethod < Test::Unit::TestCase
   def setup
     
     # Create the method usage 
-    @method_var_a = MethodParameter.new(Requirement.new(InstanceCallContainer.new(This.new,ClassCall.new),Equivalent.new,StringClass.new))
+    @method_var_a = MethodParameter.new
     # Not used in the method
-    @method_var_b = MethodParameter.new(Requirement.new(InstanceCallContainer.new(This.new,ClassCall.new),Equivalent.new,StringClass.new))
+    @method_var_b = MethodParameter.new
     @single_parameter_usage = MethodUsage.new(@method_var_a,@method_var_b)
     
     # Create the simple method used in the tests

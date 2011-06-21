@@ -52,7 +52,6 @@ class TheoryConnector
         
     # Check the initial chains incase they're complete
     complete_chains = []
-    puts 'Any complete: '+possible_chains.any? {|x| x.complete? }.to_s
     if possible_chains.any? {|x| x.complete? }
       complete_chains += possible_chains.select {|x| x.complete?}
       possible_chains.delete_if {|x| x.complete?}
@@ -62,17 +61,9 @@ class TheoryConnector
     possible_chains.each do |x|
       
       # Remove the head theory to avoid it being re-used
-      #puts 'x.first.theory_id: '+x.first.theory_id.to_s
       head_free_theories = theories.copy
-      #puts 'A: head_free_theories: '+head_free_theories.length.to_s
       head_free_theories.delete_if {|theory| theory.theory_id == x.first.theory_id}
-      #puts 'B: head_free_theories: '+head_free_theories.length.to_s
-      #puts '========================================================LLLL'
-      #puts 'head_free_theories.length.to_s: '+head_free_theories.length.to_s
-      #puts '------------------------------'
-      #exit
 
-      #complete_chains += extend_chain(x,theories)
       complete_chains += extend_chain(x,head_free_theories)
     end
     return complete_chains

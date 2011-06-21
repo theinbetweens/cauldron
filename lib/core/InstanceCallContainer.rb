@@ -288,9 +288,9 @@ protected
     copied_subject = @subject.copy
     
     # Retrieve any requirements associated with the method call
-    @method_call.requirements do |req|
-      copied_subject.push(req)
-    end
+    # @method_call.requirements do |req|
+      # copied_subject.push(req)
+    # end
     return copied_subject
     
   end

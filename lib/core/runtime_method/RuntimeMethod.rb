@@ -11,6 +11,7 @@ class RuntimeMethod < StatementGroup
   
   attr_reader :method_id, :method_return, :usage
   attr_writer :method_id
+    
   
   alias :statement_group_push :array_push
   
@@ -24,13 +25,16 @@ class RuntimeMethod < StatementGroup
   #                         parameters.length
   # @param  method_return   The response variable to return or nil if nothing is returned
   #
-  def initialize(usage,method_return=nil,*statements)  
+  #def initialize(usage,method_return=nil,*statements)
+  def initialize(usage,method_id=nil,*statements)      
     super(*statements)
     
     # Set the method id for the generated method
-    @method_id = @@METHOD_ID
-    
-    @@METHOD_ID += 1
+    if method_id.nil?
+      @@METHOD_ID += 1
+      method_id = @@METHOD_ID
+    end 
+    @method_id = method_id
     
     # Save how the method should be used
     @usage = usage
@@ -77,6 +81,55 @@ class RuntimeMethod < StatementGroup
       @method_return.to_declaration,
       *self.collect {|x| x.to_declaration}
     )  
+  end
+  
+  def reset_ids!
+    copied_method = copy
+    copied_method.method_id = '0'
+    unique_variable_ids = variables.collect {|x| x.variable_id}.uniq
+    pp unique_variable_ids
+    reset_variable_ids = (0...unique_variable_ids.length)
+    pp reset_variable_ids
+    mapping = {}
+    unique_variable_ids.zip(reset_variable_ids.to_a) do |var_id,reset_id|
+      mapping[var_id] = reset_id
+    end
+    puts copied_method.usage.class.to_s
+    
+    puts '-------------------------------'
+    method_parameters = []
+    @usage.each do |x|
+      puts x.variable_id
+      puts mapping[x.variable_id]
+      method_parameters.push(MethodParameter.new(mapping[x.variable_id]))
+    end
+    usage = MethodUsage.new(*method_parameters)
+    
+    copied_method.usage = usage
+    
+    replacement_mapping = {}
+    mapping.each do |var_id,reset_id|
+      replacement_mapping[var_id] = Unknown.new(reset_id)
+    end
+    
+    copied_method.each do |statement|
+      replacement_mapping.each do |var_id,value|
+        statement.subst_variable!(var_id,value)
+      end
+    end
+    
+    # copied_method.each do |statement|
+      # #x.replace_variable!(replacement_mapping)
+      # replacement_mapping.each do |var_id,value|
+        # statement.replace_variable!(var_id,value)
+      # end
+    # end
+    
+    copied_method
+  end
+  
+  def variables
+    return @usage
   end
   
   # Returns an array of variables that are available at a particular line
@@ -328,9 +381,8 @@ class RuntimeMethod < StatementGroup
 
   # Returns a duplicate method but without any statements in it
   #
-  def copy_base
-    copied_method = RuntimeMethod.new(@usage.copy,@method_return.copy)      
-    copied_method.method_id = method_id 
+  def copy_base     
+    copied_method = RuntimeMethod.new(@usage.copy,method_id) 
     return copied_method
   end      
   
@@ -376,8 +428,12 @@ class RuntimeMethod < StatementGroup
   # Returns a statement that declares the runtime method instance.
   # e.g. RuntimeMethod.new(MethodUsage.new,ResponseVariable.new)
   #
-  def declaration_statement
-    new_runtime_method = ClassMethodCallContainer.new(RuntimeMethodClass.new,New.new,@usage.declaration_statement,@method_return.declaration_statement)    
+  def declaration_statement    
+    new_runtime_method = ClassMethodCallContainer.new(
+                            RuntimeMethodClass.new,
+                            New.new,
+                            @usage.declaration_statement
+    )
     return Statement.new(new_runtime_method)
   end
   
@@ -535,7 +591,7 @@ class RuntimeMethod < StatementGroup
     copied = self.copy.trackify(params,tracking_method)
     
     # Create a method to call the method and return the results
-    process_method = RuntimeMethod.new(MethodUsage.new,History.new)
+    process_method = RuntimeMethod.new(MethodUsage.new)
     track_statement = Statement.new( DefCall.new(NilVariable.new,copied,*params.collect {|x|  x.value} ) )
     process_method << track_statement
     return_statement = Statement.new( Return.new,instance_tracking_variable )
@@ -780,38 +836,10 @@ class RuntimeMethod < StatementGroup
     return IntrinsicRuntimeMethod.new()
   end
   
-private  
+protected
   
-#  # TODO  Not sure this is needed
-  # This returns an array of variables and def_calls by replacing
-  # any supplied runtime_method instances with def_calls.
-  #
-  def convert_methods_to_def_calls(available)
-    updated_available = []
-    available.each do |x|
-      if(x.kind_of?(RuntimeMethod))
-        
-        # Create a copy of available values (removing the call for this method)
-        copied_available = available.collect! {|x| x.copy}
-
-        # Separate the variables from the runtime method
-        copied_avialable_vars = copied_available.find_all {|y| y.kind_of?(Variable)}        
-
-        # Separate the runtime method calls from the variables excluding the current method
-        copied_avialable_methods = copied_available.find_all {|y| y.kind_of?(RuntimeMethod)}        
-        copied_avialable_methods.delete_if {|y| y.method_id == x.method_id }
-        
-        # Combine the two so that the method used is excluded to prevent recursive calls                        
-        safe_copied_available = copied_avialable_methods+copied_avialable_vars
-        
-        # Convert any runtime method instances to def_call instances
-        updated_available += x.callable_combinations(safe_copied_available)
-        
-      else
-        updated_available.push(x)
-      end
-    end    
-    return updated_available    
-  end    
-    
+  def usage=(usage)
+    @usage = usage
+  end
+  
 end

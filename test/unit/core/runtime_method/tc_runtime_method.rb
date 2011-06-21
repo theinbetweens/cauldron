@@ -8,9 +8,9 @@ class TestRuntimeMethod < Test::Unit::TestCase
   def setup
     
     # Create the method usage 
-    @method_var_a = MethodParameter.new(Requirement.new(InstanceCallContainer.new(This.new,ClassCall.new),Equivalent.new,StringClass.new))
+    @method_var_a = MethodParameter.new
     # Not used in the method
-    @method_var_b = MethodParameter.new(Requirement.new(InstanceCallContainer.new(This.new,ClassCall.new),Equivalent.new,StringClass.new))
+    @method_var_b = MethodParameter.new
     @single_parameter_usage = MethodUsage.new(@method_var_a,@method_var_b)
     
     # Create the simple method used in the tests
@@ -36,7 +36,7 @@ class TestRuntimeMethod < Test::Unit::TestCase
     @method_b = RuntimeMethod.new(MethodUsage.new)
     
     # Create a method that accepts one string parameter and some string parameters to use
-    @method_c = RuntimeMethod.new(MethodUsage.new(MethodParameter.new(Requirement.new(InstanceCallContainer.new(This.new,ClassCall.new),Equivalent.new,StringClass.new))))
+    @method_c = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))
     @var_g = 'Monkey'.to_var
     @var_h = 'Island'.to_var   
     @var_i = '3'.to_var
@@ -47,12 +47,12 @@ class TestRuntimeMethod < Test::Unit::TestCase
     @method_d = RuntimeMethod.new(MethodUsage.new(),@method_respnse_a)
     
     # Create a method that excepts two string parameters
-    @method_usage_var_b = MethodParameter.new(Requirement.new(InstanceCallContainer.new(This.new,ClassCall.new),Equivalent.new,StringClass.new))
-    @method_usage_var_c = MethodParameter.new(Requirement.new(InstanceCallContainer.new(This.new,ClassCall.new),Equivalent.new,StringClass.new))
+    @method_usage_var_b = MethodParameter.new()
+    @method_usage_var_c = MethodParameter.new()
     @method_e = RuntimeMethod.new(MethodUsage.new(@method_usage_var_b,@method_usage_var_c))
     
-    @method_usage_var_e = MethodParameter.new(Requirement.new(InstanceCallContainer.new(This.new,ClassCall.new),Equivalent.new,StringClass.new))
-    @method_usage_var_f = MethodParameter.new(Requirement.new(InstanceCallContainer.new(This.new,ClassCall.new),Equivalent.new,StringClass.new))
+    @method_usage_var_e = MethodParameter.new()
+    @method_usage_var_f = MethodParameter.new()
     @method_respnse_b = 'Halo'.to_var
     @method_f = RuntimeMethod.new(MethodUsage.new(@method_usage_var_e,@method_usage_var_f),@method_respnse_b)
     
@@ -171,7 +171,13 @@ class TestRuntimeMethod < Test::Unit::TestCase
     # Check that each of the variables has the correct evaluated value
     local_var_a = 'test'.to_var
     local_var_b = 'LividKel'.to_var
-    assert_equal(local_var_a.value,@simple_method.literal_value_of_var(@method_var_a.variable_id,ParametersContainer.new(local_var_a,local_var_b)))        
+    assert_equal(
+      local_var_a.value,
+      @simple_method.literal_value_of_var(
+        @method_var_a.variable_id,
+        ParametersContainer.new(local_var_a,local_var_b)
+      )
+    )        
     assert_equal(9,@simple_method.literal_value_of_var(@var_b.variable_id,ParametersContainer.new(local_var_a,local_var_b)))        
     assert_equal(local_var_a.value.clone.chop,@simple_method.literal_value_of_var(@var_c.variable_id,ParametersContainer.new(local_var_a,local_var_b)))            
     assert_equal(local_var_a.value.clone.chop.length,@simple_method.literal_value_of_var(@var_d.variable_id,ParametersContainer.new(local_var_a,local_var_b)))            
@@ -202,24 +208,6 @@ class TestRuntimeMethod < Test::Unit::TestCase
     assert_equal(9,@method_e.callable_combinations([@var_g,@var_h,@var_i]).length)                      
 
   end
-
-  # Tests the method that converts any runtime method instances to def_calls
-  # using the other variables available to it.
-  #
-  def test_convert_methods_to_def_calls
-   
-    # Check that when there are no runtime methdods just the supplied variables are returned
-    assert_equal(2,@method_c.send(:convert_methods_to_def_calls,[@var_g,@var_h]).length)      
-    
-    # Check that a single runtime method is converted to a def_call
-    assert(@method_c.send(:convert_methods_to_def_calls,[@method_d]).last.kind_of?(DefCall))      
-    
-    # Check that method_f (excepts two parameters) gets changed into 4 different def_calls
-    # 2 = both variables
-    # 4 = @method_f using both variables in different combinations
-    assert_equal(6,@method_c.send(:convert_methods_to_def_calls,[@var_g,@var_h,@method_f]).length)      
-    
-  end
   
   # TODO  Need to test with methods that require parameters (var_a) etc
   def test_history                                      
@@ -230,7 +218,7 @@ class TestRuntimeMethod < Test::Unit::TestCase
     
     # Check that history retains the correct variable ids
     manny = 'Manny'.to_var
-    string_runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new('Manny'.to_requirement)),nil)   
+    string_runtime_method = RuntimeMethod.new(MethodUsage.new(),nil)   
     
     # Add a statement to the runtime method
     manny_length_var = Unknown.new
@@ -276,7 +264,7 @@ class TestRuntimeMethod < Test::Unit::TestCase
   def test_trackify
     
     # Create a simple method to be trackified
-    manny = MethodParameter.new(Requirement.new(This.new,Equivalent.new,'Manny'.to_literal))
+    manny = MethodParameter.new()
     string_runtime_method = RuntimeMethod.new(MethodUsage.new(manny),nil)
     
     # Add a statement to the runtime method
@@ -341,11 +329,9 @@ class TestRuntimeMethod < Test::Unit::TestCase
   def test_realise
     
     # Create a simple runtime method and check that the paramaters are valid
-    var_a = MethodParameter.new('Grim'.to_requirement)
-    var_b = MethodParameter.new('fandango'.to_requirement)        
-    var_g = MethodParameter.new(
-      Requirement.new(InstanceCallContainer.new(This.new,ClassCall.new),Equivalent.new,ArrayClass.new)
-    )
+    var_a = MethodParameter.new
+    var_b = MethodParameter.new        
+    var_g = MethodParameter.new
     simple_method = RuntimeMethod.new(MethodUsage.new(var_a,var_b,var_g))
     
     # Check that realise returns an identical runtime method
@@ -372,7 +358,7 @@ class TestRuntimeMethod < Test::Unit::TestCase
     assert_not_equal(true,realised_instance_1.available_variables(ParametersContainer.new(var_a_value,var_b_value,var_g_value)).any? {|x| x.value == 'WARREN' })
     
     # Check that invalid paramters and undeclared parameters are caught
-    temp_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new(Requirement.new(InstanceCallContainer.new(This.new,ClassCall.new),Equivalent.new,StringClass.new))))
+    temp_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))
     assert_raises(StandardError) {temp_method.realise2([])}
     
     # Now let's add a few statements to the method
@@ -383,7 +369,7 @@ class TestRuntimeMethod < Test::Unit::TestCase
     assert_equal(
       "\n#\n#\t@param\t[StringVariable] 'Grim'\n#\t@param\t[StringVariable] 'fandango'\n#\t@param\t[StringVariable] 'Threepwood'\n#\n#\n"\
       "def method_0(var_#{simple_method.usage[0].variable_id}, var_#{simple_method.usage[1].variable_id}, var_#{simple_method.usage[2].variable_id})"\
-      "\n\tvar_58 = var_33.length\nend\n",
+      "\n\tvar_64 = var_35.length\nend\n",
       realised_instance_2.write
     )
     
@@ -397,7 +383,7 @@ class TestRuntimeMethod < Test::Unit::TestCase
       "#\t@param\t[StringVariable] 'fandango'\n"\
       "#\t@param\t[StringVariable] 'Threepwood'\n"\
       "#\n#\ndef method_0(var_#{simple_method.usage[0].variable_id}, var_#{simple_method.usage[1].variable_id}, var_#{simple_method.usage[2].variable_id})\n"\
-      "\tvar_58 = var_#{simple_method.usage[0].variable_id}.length\n\tvar_68 = var_#{simple_method.usage[0].variable_id}.chop\nend\n",
+      "\tvar_64 = var_#{simple_method.usage[0].variable_id}.length\n\tvar_76 = var_#{simple_method.usage[0].variable_id}.chop\nend\n",
       realised_simple_method_3.write
     )
     
@@ -416,7 +402,7 @@ class TestRuntimeMethod < Test::Unit::TestCase
     simple_method_written_4 = simple_method.write
     realised_simple_method_4 = simple_method.realise2(['Grim','fandango','Threepwood'])
     assert_equal(
-      "\n#\n#\t@param\t[StringVariable] 'Grim'\n#\t@param\t[StringVariable] 'fandango'\n#\t@param\t[StringVariable] 'Threepwood'\n#\n#\ndef method_0(var_33, var_34, var_35)\n\tvar_58 = var_33.length\n\tvar_68 = var_33.chop\n\tvar_79 = var_34.length\n\tvar_80 = var_79 + var_58\nend\n",
+      "\n#\n#\t@param\t[StringVariable] 'Grim'\n#\t@param\t[StringVariable] 'fandango'\n#\t@param\t[StringVariable] 'Threepwood'\n#\n#\ndef method_0(var_35, var_36, var_37)\n\tvar_64 = var_35.length\n\tvar_76 = var_35.chop\n\tvar_89 = var_36.length\n\tvar_90 = var_89 + var_64\nend\n",
       realised_simple_method_4.write
     )
     
@@ -461,14 +447,6 @@ class TestRuntimeMethod < Test::Unit::TestCase
     
   end
   
-#  def test_realise_when_it_contains_a_method_variable
-#  
-#    runtime_method = RuntimeMethod.new(MethodUsage.new)
-#    runtime_method << Statement.new(Unknown.new,Equal.new,ClassMethodCallContainer.new(MethodParameterClass.new,New.new))
-#    assert_nothing_raised(runtime_method.realise2(ParametersContainer.new))
-#    
-#  end
-  
   # Test that the runtime methods are written properly.  
   #
   def test_write
@@ -479,26 +457,24 @@ class TestRuntimeMethod < Test::Unit::TestCase
     
     # Test a simple method with one paramter
     #param_1 = StringVariable.new('Girm')
-    param_1 = MethodParameter.new(Requirement.new(This.new,Equivalent.new,'Grim'.to_literal))
+    param_1 = MethodParameter.new
     method_example_b = RuntimeMethod.new(MethodUsage.new(param_1))
     assert_not_equal("#\n#\ndef method_"+method_example_b.method_id.to_s+"\n\nend\n",method_example_b.write)    
       
     # Test that neested methods are writen properly      
-    assert_equal("\n#\n#\ndef method_7\n\tvar_26 = ''\n\tvar_27 = 'x'\n\t3.times do |var_28|\n\t\tvar_26 = var_26 + var_27\n\tend\n\nend\n",@build_xxx_method.write)  
+    assert_equal("\n#\n#\ndef method_6\n\tvar_28 = ''\n\tvar_29 = 'x'\n\t3.times do |var_30|\n\t\tvar_28 = var_28 + var_29\n\tend\n\nend\n",@build_xxx_method.write)  
     
     # Test how the method is written with tabs
-    assert_equal("\n\t#\n\t#\n\tdef method_7\n\t\tvar_26 = ''\n\t\tvar_27 = 'x'\n\t\t3.times do |var_28|\n\t\t\tvar_26 = var_26 + var_27\n\t\tend\n\n\tend\n",@build_xxx_method.write(nil,1))      
-    
-    # TODO  Test write with passed in parameters         
+    assert_equal("\n\t#\n\t#\n\tdef method_6\n\t\tvar_28 = ''\n\t\tvar_29 = 'x'\n\t\t3.times do |var_30|\n\t\t\tvar_28 = var_28 + var_29\n\t\tend\n\n\tend\n",@build_xxx_method.write(nil,1))      
+         
   end
   
   def test_push
     
     # Create a method that is passed a string
     #manny = 'Manny'.to_var
-    manny = MethodParameter.new('Manny'.to_requirement)
-    string_runtime_method = RuntimeMethod.new(MethodUsage.new(manny),nil)
-    #string_runtime_method.parameters = [manny]    
+    manny = MethodParameter.new
+    string_runtime_method = RuntimeMethod.new(MethodUsage.new(manny),nil)    
     
     manny_length_var = Unknown.new
     a_equals_manny_length = Statement.new(manny_length_var,Equal.new,InstanceCallContainer.new(manny_length_var,StringLength.new))
@@ -520,7 +496,7 @@ class TestRuntimeMethod < Test::Unit::TestCase
     #   end
     # end
     string_runtime_method = RuntimeMethod.new(
-      MethodUsage.new(MethodParameter.new(Requirement.new(This.new,Equivalent.new,'Manny'.to_literal))),nil
+      MethodUsage.new(MethodParameter.new),nil
     )
     
     manny_length_var = Unknown.new
@@ -571,7 +547,7 @@ class TestRuntimeMethod < Test::Unit::TestCase
     assert_nothing_raised() {literal_return_runtime_method.to_declaration}
 
     # Test a simple runtime method that accepts a parameter
-    single_parameter_runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new('test'.to_requirement)),nil)        
+    single_parameter_runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new()),nil)        
     assert_nothing_raised() {single_parameter_runtime_method.to_declaration}
     
     # Test that a runtime method that contains one statement is duplicated correctly

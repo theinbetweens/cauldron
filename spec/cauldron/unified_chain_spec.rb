@@ -23,6 +23,32 @@ module Cauldron
       end
     end
     
+    describe '#implementation_permuatations' do
+      context 'when using demo one chain' do
+        
+        it 'creates the just one implementation permutation' do
+          temp = Object.new
+          temp.extend(Cauldron::Demos)
+          demo = temp.demo_one
+          unified_chain = demo[:chain].unify_chain
+          test_cases = demo[:test_cases]
+          pp test_cases
+          unified_chain.implementation_permuatations(
+            RuntimeMethod.new(MethodUsage.new(MethodParameter.new)),
+            test_cases,
+            Mapping.new
+          )          
+          
+          unified_chain.implementation_permuatations(
+            RuntimeMethod.new(MethodUsage.new(MethodParameter.new)),
+            test_cases,
+            Mapping.new
+          ).length.should == 1
+        end
+        
+      end
+    end
+    
   end
 
 end

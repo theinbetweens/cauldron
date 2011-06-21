@@ -35,7 +35,7 @@ module Cauldron
       it 'generates an empty runtime method' do
         parser    = RubyParser.new
         ruby      =  %q!
-          def method_0
+          def method_4
           end
         !
         sexp      = parser.process(ruby)
@@ -46,7 +46,7 @@ module Cauldron
       it 'generates a method with a simple statement' do 
         parser    = RubyParser.new
         ruby      =  "
-          def method_1
+          def method_3
             \tvar_8 = 9
           end
         "
@@ -59,7 +59,7 @@ module Cauldron
       it 'generates a method with a simple if statement' do
         parser    = RubyParser.new
         ruby      =  "
-          def method_2
+          def method_6
             \tif(var_8 == 9)
             \t\treturn var_8
             \tend
@@ -83,6 +83,33 @@ module Cauldron
         sexp2cauldron = Sexp2Cauldron.new        
         sexp      = parser.process(ruby)
         sexp2cauldron.process(sexp).basic_write.should == strip_whitespace(ruby)+"\n"        
+      end
+      
+      it 'generates the solution to demo 1' do
+        parser    = RubyParser.new
+        ruby      =  "
+          def method_0(var_0)
+            \treturn var_0
+          end
+        "
+        sexp2cauldron = Sexp2Cauldron.new        
+        sexp      = parser.process(ruby)
+        sexp2cauldron.process(sexp).basic_write.should == strip_whitespace(ruby)+"\n"         
+      end
+      
+      it 'can parse the solution to demo 2' do
+        parser    = RubyParser.new
+        ruby      =  "
+          def method_0(var_0)
+            \tif(var_0 == 'fish')
+            \t\treturn 'animal'
+            \tend
+            \treturn 'vegtable'
+          end
+        "
+        sexp2cauldron = Sexp2Cauldron.new        
+        sexp      = parser.process(ruby)
+        sexp2cauldron.process(sexp).basic_write.should == strip_whitespace(ruby)+"\n"         
       end
       
     end

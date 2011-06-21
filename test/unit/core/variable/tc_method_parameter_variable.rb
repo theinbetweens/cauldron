@@ -12,11 +12,11 @@ class TestMethodParameterVariable < Test::Unit::TestCase
   end  
 
   def test_initialize
-    assert_nothing_raised(){MethodParameter.new('Grim'.to_requirement)}
+    assert_nothing_raised(){MethodParameter.new}
   end
   
   def test_initialize_variable_id_is_created
-    assert(MethodParameter.new('Grim'.to_requirement).variable_id.kind_of?(Fixnum))
+    assert(MethodParameter.new.variable_id.kind_of?(Fixnum))
   end
       
 end

@@ -47,14 +47,13 @@ module Cauldron
       inner_statement_sexp = exp.shift 
       scope = process(exp.shift)   # => The content of the if statement
       exp.shift
-      open_statement = OpenStatement.new(Statement.new(If.new,Container.new(*process(inner_statement_sexp))))
+      open_statement = OpenStatement.new(Statement.new(If.new,Container.new(process(inner_statement_sexp))))
       open_statement << scope unless scope.nil?
       return open_statement
     end    
     
     def process_return(exp)
-      s = Statement.new(Return.new,*process(exp.shift))
-      return s
+      return Statement.new(Return.new,process(exp.shift))
     end
     
     def process_call(exp)
@@ -74,7 +73,7 @@ module Cauldron
         next if res.nil?
         results << res     
       end
-      return results
+      return Statement.new(*results)
     end    
     
     def process_arglist(exp)
@@ -87,8 +86,8 @@ module Cauldron
       scope = exp.shift
       
       usage = (args.length==2) ? process(args) : MethodUsage.new
-      
-      method = RuntimeMethod.new(usage)
+      method_id = type.to_s.match(/method_(\d)+/)[1]
+      method = RuntimeMethod.new(usage,method_id)
       statements = process(scope)
       unless statements.nil?
         statements.each do |statement|
@@ -121,7 +120,12 @@ module Cauldron
         result << process(atom)
       end
       return result
-    end    
+    end
+    
+    def process_lvar(exp)
+      var = exp.shift
+      return convert_to_variable(var)
+    end
     
   private
    

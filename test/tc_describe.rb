@@ -18,8 +18,7 @@ System.reset
   def test_nothing_is_added
     
     # Create the method variable for the method (self = 'test')
-    requirement = Requirement.new(This.new,Equal.new,Literal.new('test'))
-    method_variable = MethodParameter.new(requirement)
+    method_variable = MethodParameter.new
     
 #    # Create runtime method with one parameter ('test')
 #    runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))

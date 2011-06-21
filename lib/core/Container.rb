@@ -16,6 +16,15 @@ class Container
     end
   end     
 
+  def subst_variable!(id,var)
+    @tokens.each_with_index do |token,i|
+      if token.kind_of?(Variable) && id == token.variable_id
+        @tokens[i] = var
+      end
+    end
+    self
+  end
+
   def write(tab=0)
     line = '('
     tab.times {line += "\t" }

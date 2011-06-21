@@ -1,13 +1,9 @@
-class RuntimeMethodEvaluation536
+class RuntimeMethodEvaluation207
 
 	#
-	#	This is the method that is being evaluated using 'RuntimeMethodEvaluation536.new.method_10
+	#	This is the method that is being evaluated using 'RuntimeMethodEvaluation207.new.method_13
 	#
-	def method_10(var_24)
-		if(var_24 == nil)
-			return 'vegtable'
-		end
-		return 'vegtable'
+	def method_13(var_48)
 	end
 
 end

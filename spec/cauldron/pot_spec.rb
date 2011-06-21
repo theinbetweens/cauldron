@@ -23,25 +23,38 @@ module Cauldron
         cases = []
         cases << convert_to_example(separate_values("'sparky','sparky'"))
         cases << convert_to_example(separate_values("'kel','kel'"))
-        pot.brew(cases)
+        
+        ruby      =  "
+            def method_0(var_0)
+              \treturn var_0
+            end
+          "             
+        parser    = RubyParser.new          
+        sexp      = parser.process(ruby)
+        sexp2cauldron = Sexp2Cauldron.new      
+        pot.brew(cases).reset_ids!.basic_write.should == sexp2cauldron.process(sexp).basic_write  
       end
       
       it 'can come up with a solution that fits demo two' do
-        #pending('Checking able to remove theories')
         pot = Cauldron::Pot.new
-        
         pot.clear
         pot.simmer(demo_two)
         cases = []
         cases << convert_to_example(separate_values("'carrot','vegtable'"))
         cases << convert_to_example(separate_values("'fish','animal'"))
-        # puts '--------------------------STARTING to Brew --------------'
         
-        #puts pot.brew(cases).class
-        res = pot.brew(cases)
-        puts '-------------------__DONE ------------'
-        puts res.class.to_s
-        puts res.write
+        ruby      =  "
+                        def method_0(var_0)
+                          \tif(var_0 == 'fish')
+                          \t\treturn 'animal'
+                          \tend
+                          \treturn 'vegtable'
+                        end        
+                     "
+        parser    = RubyParser.new          
+        sexp      = parser.process(ruby)
+        sexp2cauldron = Sexp2Cauldron.new
+        pot.brew(cases).reset_ids!.basic_write.should == sexp2cauldron.process(sexp).basic_write                     
       end
       
     end
