@@ -136,7 +136,6 @@ class RuntimeMethod < StatementGroup
   def add_statement_at(statement,position)
     if position == self.statement_id
       push(statement)
-      puts self.write
       return
     end
     statement_groups = self.select_all {|x| x.kind_of?(StatementGroup) && x.statement_id == position}

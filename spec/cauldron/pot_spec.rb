@@ -27,13 +27,21 @@ module Cauldron
       end
       
       it 'can come up with a solution that fits demo two' do
+        #pending('Checking able to remove theories')
         pot = Cauldron::Pot.new
+        
         pot.clear
         pot.simmer(demo_two)
         cases = []
         cases << convert_to_example(separate_values("'carrot','vegtable'"))
         cases << convert_to_example(separate_values("'fish','animal'"))
-        pot.brew(cases)        
+        # puts '--------------------------STARTING to Brew --------------'
+        
+        #puts pot.brew(cases).class
+        res = pot.brew(cases)
+        puts '-------------------__DONE ------------'
+        puts res.class.to_s
+        puts res.write
       end
       
     end

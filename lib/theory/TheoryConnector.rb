@@ -52,6 +52,7 @@ class TheoryConnector
         
     # Check the initial chains incase they're complete
     complete_chains = []
+    puts 'Any complete: '+possible_chains.any? {|x| x.complete? }.to_s
     if possible_chains.any? {|x| x.complete? }
       complete_chains += possible_chains.select {|x| x.complete?}
       possible_chains.delete_if {|x| x.complete?}
@@ -59,7 +60,20 @@ class TheoryConnector
     
     # Continue to add theories to the chains until they are complete or the theories are exhausted
     possible_chains.each do |x|
-      complete_chains += extend_chain(x,theories)
+      
+      # Remove the head theory to avoid it being re-used
+      #puts 'x.first.theory_id: '+x.first.theory_id.to_s
+      head_free_theories = theories.copy
+      #puts 'A: head_free_theories: '+head_free_theories.length.to_s
+      head_free_theories.delete_if {|theory| theory.theory_id == x.first.theory_id}
+      #puts 'B: head_free_theories: '+head_free_theories.length.to_s
+      #puts '========================================================LLLL'
+      #puts 'head_free_theories.length.to_s: '+head_free_theories.length.to_s
+      #puts '------------------------------'
+      #exit
+
+      #complete_chains += extend_chain(x,theories)
+      complete_chains += extend_chain(x,head_free_theories)
     end
     return complete_chains
     
@@ -68,13 +82,20 @@ class TheoryConnector
   # TODO  Need to watch out here for infinite chain connections
   def extend_chain(chain,theories)
     complete_chains = []
+    
     theories.each do |x|
       extended_chains = chain.copy.add_link(x)
       next if extended_chains.empty?
+      
+      # Don't allow the same theory to be added twice - for now
+      updated_theories = theories.copy
+      updated_theories.delete_if {|theory| theory.theory_id == x.theory_id}
+      
       complete_chains += extended_chains.select {|y| y.complete?}
       extended_chains.delete_if {|y| y.complete?}
       extended_chains.each do |y|
-        complete_chains += extend_chain(y,theories)
+        #complete_chains += extend_chain(y,theories)
+        complete_chains += extend_chain(y,updated_theories)
       end
     end
     return complete_chains

@@ -17,7 +17,10 @@ class TheoryChainValidator
       raise StandardError.new('Failed to generate a valid runtime method') if validated_chains.length == 0
       
       # Select the first chain and return the runtime method it generates
-      return build_method_from_chain(validated_chains.first,runtime_method.copy,test_cases)
+      puts '==========================BUILDING METHOD FROM CHAIN ============================'
+      results =  build_method_from_chain(validated_chains.first,runtime_method.copy,test_cases)
+      puts 'results.length: '+results.length.to_s
+      return results
       
   end 
   
@@ -64,12 +67,12 @@ class TheoryChainValidator
       end
     else
       # Theory was wrong
-      chain[position].results.each do |x|
-        unless x.validates?(result,test_cases)
-          StandardLogger.instance.info('The following result failed to be met')
-          StandardLogger.instance.info(x.write)
-        end
-      end
+      # chain[position].results.each do |x|
+        # unless x.validates?(result,test_cases)
+          # StandardLogger.instance.info('The following result failed to be met')
+          # StandardLogger.instance.info(x.write)
+        # end
+      # end
       return nil
     end    
     

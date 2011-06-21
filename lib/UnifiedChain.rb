@@ -35,7 +35,7 @@ class UnifiedChain < Chain
     implemented_nodes = @nodes.inject([]) do |total,theory|
       total << theory.map_to(mapping)
     end
-    return ImplementedChain.new(implemented_nodes)
+    return ImplementedChain.new(implemented_nodes,mapping)
   end
   
   # Returns an array of implemented chains using the various value
@@ -62,14 +62,28 @@ class UnifiedChain < Chain
     
     # Create the theory generator
     generator = TheoryGenerator.new()
-    accessors, temp_mapping = generator.generate_accessors_and_mapping(test_cases,runtime_method,1)
+    
+    #accessors, temp_mapping = generator.generate_accessors_and_mapping(test_cases,runtime_method,1)
+    accessors, temp_mapping = generator.generate_accessors_and_mapping(test_cases,runtime_method,3)
+    
+    puts '-------------------------- implementation_permuatations --------------->>>>>>>>>>>'
+    puts '-----------accessors'
+    pp accessors
+    puts '-----------temp_mapping'
+    pp temp_mapping
+    
+    puts 'temp_mapping.length.to_s: '+temp_mapping.length.to_s
+    puts 'missing_intrinsic_values.length.to_s: '+missing_intrinsic_values.length.to_s
+    
     if temp_mapping.length > missing_intrinsic_values.length
 
       # Now to assign real values to the chain
       
       # Apply the values in the various permutaions 
       # (this is very crude and means that odd calls )
-      theory_variable_ids = @nodes.first.all_theory_variables.collect {|x| x.theory_variable_id }
+      #theory_variable_ids = @nodes.first.all_theory_variables.collect {|x| x.theory_variable_id }
+      
+      theory_variable_ids = self.theory_variables.collect {|x| x.theory_variable_id }
       
       # Get the posible sets for values in an array so that non of the arrays contain all the same values
       res = temp_mapping.values.collect {|x| x}
@@ -99,6 +113,10 @@ class UnifiedChain < Chain
       return possible_mappings.inject([]) { |total,mapping| total << self.copy.implement(mapping) }
       
     else
+      puts temp_mapping.length
+      pp temp_mapping
+      puts missing_intrinsic_values.length
+      pp missing_intrinsic_values
       raise StandardError.new('Could not generate enough real vlaues to test theory - try increasing the itterations')
     end
     

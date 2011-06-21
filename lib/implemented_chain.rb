@@ -3,11 +3,12 @@
 #
 class ImplementedChain
   
+  attr_reader :mapping
   # 
   #
   # 
-  def initialize(nodes)
-    @nodes = nodes
+  def initialize(nodes,mapping)
+    @nodes, @mapping = nodes, mapping
   end
   
   def each(&block)

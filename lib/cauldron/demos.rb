@@ -183,10 +183,13 @@ module Cauldron
       link_three_result_2 = TheoryResult.new(StringToTheory.run(
         "if(var2.length == 2)\nreturn true\nend"
       ))             
+      link_three_result_3 = TheoryResult.new(StringToTheory.run(
+        "if(var1.length == 2)\nreturn true\nend"
+      ))       
       link_three = Theory.new(
         [link_three_dependent,link_three_dependent_2,link_three_dependent_3],
         link_three_action,
-        [link_three_result,link_three_result_2]
+        [link_three_result,link_three_result_2,link_three_result_3]
       )         
       
       # => LINK #4
@@ -199,10 +202,17 @@ module Cauldron
       link_four_dependent_2 = TheoryDependent.new(StringToTheory.run(
         "if(var2.length == 2)\nreturn true\nend"
       ))                  
+      link_four_dependent_3 = TheoryDependent.new(StringToTheory.run(
+        "if(var1.length == 2)\nreturn true\nend"
+      ))          
       link_four_result = TheoryResult.new(StringToTheory.run(
         "if(var1.all_pass?(var2))\nreturn true\nend"
       ))      
-      link_four = Theory.new([link_four_dependent,link_four_dependent_2],nil,[link_four_result])      
+      link_four = Theory.new(
+        [link_four_dependent,link_four_dependent_2,link_four_dependent_3],
+        nil,
+        [link_four_result]
+      )      
       
       chain = Chain.new
       chains = chain.add_link(head)
