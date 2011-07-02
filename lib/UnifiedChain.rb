@@ -54,9 +54,43 @@ class UnifiedChain < Chain
     total_variables = self.theory_variables.length
     puts 'Total Variables: '+total_variables.to_s
     
+    available_values = [IntrinsicRuntimeMethod.new,IntrinsicTestCases.new]    
+    
     valid_mappings = [Mapping.new]
     
-    available_values = [IntrinsicRuntimeMethod.new,IntrinsicTestCases.new]
+    @nodes.each_with_index do |node,index|
+      puts 'Starting node: '+index.to_s
+      puts 'node.dependents.length: '+node.dependents.length.to_s
+      node.dependents.each do |dependent|
+        if index == 0
+          chain = runtime_method.copy
+        else
+          chain = partial_chain(index-1) 
+        end
+        valid_mappings = extend_mapping(valid_mappings,dependent,runtime_method.copy,test_cases.copy,chain,available_values)  
+      end
+      
+      unless node.action.nil?
+        puts 'node.action: '+node.action.class.to_s
+        if index == 0
+          chain = runtime_method.copy
+        else
+          chain = partial_chain(index-1) 
+        end            
+        puts node.action.write
+        valid_mappings = extend_mapping(valid_mappings,node.action,runtime_method.copy,test_cases.copy,chain,available_values)
+      end
+      
+      puts 'node.results.length: '+node.results.length.to_s
+      node.results.each do |result|
+        chain = partial_chain(index) 
+        valid_mappings = extend_mapping(valid_mappings,result,runtime_method.copy,test_cases.copy,chain,available_values)
+        pp valid_mappings
+      end
+      
+    end
+      
+    
     
     chain = partial_chain(0)    
     valid_mappings = extend_mapping(valid_mappings,@nodes[1].action,runtime_method.copy,test_cases.copy,chain,available_values)
@@ -74,14 +108,17 @@ class UnifiedChain < Chain
     
     new_mappings = [] 
     component.theory_variables.each do |var|
-      next if valid_mappings.first.has_key?(var.theory_variable_id)
+      #next if valid_mappings.first.has_key?(var.theory_variable_id)
       valid_mappings.each do |mapping|
+        
+        next if mapping.has_key?(var.theory_variable_id)
         
         implemented_chain = chain.implement(Mapping.new(mapping))
         implemented_runtime_method = TheoryChainValidator.new.build_method_from_chain(implemented_chain,runtime_method.copy,test_cases.copy)        
         
         possible_values = available_values-mapping.values    
         
+        begin 
         values = intrinsic_values_for_variable(
           var.theory_variable_id,
           component,
@@ -90,6 +127,13 @@ class UnifiedChain < Chain
           test_cases.copy,
           possible_values    
         )
+        rescue NoMethodError => e
+          puts e
+          puts valid_mappings.length
+          valid_mappings = valid_mappings-[mapping]
+          puts valid_mappings.length
+          next
+        end
         values = values.uniq      
          values.each do |value|
            valid_mappings.each do |mapping|
