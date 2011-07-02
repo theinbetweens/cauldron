@@ -42,42 +42,26 @@ class UnifiedChain < Chain
     
     # Get the initially available intrinsic values
     intrinsic_values = [IntrinsicRuntimeMethod.new,IntrinsicTestCases.new]
-        
-    
-    puts @nodes.first.dependents.length
-    puts @nodes.first.action
-    puts @nodes.first.describe
-    puts @nodes.first.results.length
-    
-    puts @nodes[1].action.theory_variables.length
-    puts @nodes[1].action.describe
-    @nodes[1].action.theory_variables.each do |x|
-      puts x.write
-    end
-    
     
     valid_mappings = []
-    @nodes[1].action.theory_variables.each do |x|
-      puts '===========LLLLLLLLLLLLLLLl========>>>>>>>>>'+x.write
-
-      @nodes[1].action.statements_with_variable(x.theory_variable_id).each do |statement|
-        reg = eval('/^var'+x.theory_variable_id.to_s+'\./')
+    @nodes[1].action.theory_variables.each do |var|
+      
+      @nodes[1].action.statements_with_variable(var.theory_variable_id).each do |statement|
+        reg = eval('/^var'+var.theory_variable_id.to_s+'\./')
         next unless statement.write.match(reg)
         
-        mappings = mapping_permutations([x.theory_variable_id],intrinsic_values)
+        mappings = mapping_permutations([var.theory_variable_id],intrinsic_values)
         
         mappings.each do |mapping|
           valid_mappings << mapping if valid_mapping?(runtime_method.copy,test_cases.copy,statement,mapping)
         end
         
       end
+     
+      
     end
     
-    puts '==========================================================>> '
     valid_mappings = valid_mappings.uniq 
-    pp valid_mappings
-    puts '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
-    puts '00000000000000000000000000000000000000000000000000000000000000000000'
     extended_mappings = []
      
     @nodes[1].action.theory_variables.each do |var|
@@ -103,8 +87,6 @@ class UnifiedChain < Chain
        
     end
     
-    
-    puts '0-0000000000--'
     extended_mappings = extended_mappings.uniq
     
     chain_validator = TheoryChainValidator.new
@@ -112,7 +94,6 @@ class UnifiedChain < Chain
     chain = UnifiedChain.new(links)
     chain.last.results = []
     more_mapping = []
-    puts '-----------------------------------__HJAHSKJDHSA ============'
     extended_mappings.each do |mapping|
       
       #puts chain.implement(Mapping.new(mapping)).describe
@@ -122,17 +103,12 @@ class UnifiedChain < Chain
       @nodes[1].results.each do |result|
         result.theory_variables.each do |var|
           next if valid_mappings.first.has_key?(var.theory_variable_id)
-          #puts var.describe
           
           # => Get the values for the variable
           variable_values = []
-          puts '---------FINDING STATEMTNED'
           result.statements_with_variable(var.theory_variable_id).each do |statement|
-            #puts statement.write
             variable_values += values_for_variable_as_argument(var,statement,mapping,intrinsic_values,implemented_runtime_method.copy,test_cases.copy)
           end
-          puts '============================'
-          puts variable_values.length
           
           variable_values.each do |value|
             temp_mapping = mapping.copy
@@ -150,15 +126,15 @@ class UnifiedChain < Chain
     
   end
   
+  def valid_mapping_permutations(runtime_method,test_cases)
+    
+  end
+  
   def values_for_variable_as_argument(var,statement,mapping,values,runtime_method,test_cases)
     intrinsic_statement = statement.map_to(mapping)
-    puts intrinsic_statement.write
-    puts '--------------------------------------->>>'
     results = []
     values.each do |value|
       literal = intrinsic_statement.write.gsub(/var(\d)+/,value.write)
-      puts '================'
-      puts literal
       begin
         eval literal
         results << value
