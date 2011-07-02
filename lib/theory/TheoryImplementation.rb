@@ -63,12 +63,12 @@ class TheoryImplementation < Theory
     return false
   end    
 
-  # Returns all the theory vairables in this theory
-  # dependent. 
-  #
-  # TODO  What is the point in this - why only the actions?
-  def theory_variables
-    return @action.select_all {|x| x.kind_of?(TheoryVariable)}
-  end
+  # # Returns all the theory vairables in this theory
+  # # dependent. 
+  # #
+  # # TODO  What is the point in this - why only the actions?
+  # def theory_variables
+    # return @action.select_all {|x| x.kind_of?(TheoryVariable)}
+  # end
 
 end

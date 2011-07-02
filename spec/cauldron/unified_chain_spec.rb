@@ -26,27 +26,44 @@ module Cauldron
     describe '#implementation_permuatations' do
       context 'when using demo one chain' do
         
-        it 'creates the just one implementation permutation' do
+        it 'creates just one implementation permutation' do
           temp = Object.new
           temp.extend(Cauldron::Demos)
           demo = temp.demo_one
           unified_chain = demo[:chain].unify_chain
-          test_cases = demo[:test_cases]
-          pp test_cases
-          unified_chain.implementation_permuatations(
-            RuntimeMethod.new(MethodUsage.new(MethodParameter.new)),
-            test_cases,
-            Mapping.new
-          )          
+          test_cases = demo[:test_cases]   
           
           unified_chain.implementation_permuatations(
             RuntimeMethod.new(MethodUsage.new(MethodParameter.new)),
             test_cases,
             Mapping.new
           ).length.should == 1
+          unified_chain.implementation_permuatations(
+            RuntimeMethod.new(MethodUsage.new(MethodParameter.new)),
+            test_cases,
+            Mapping.new
+          )[0].should be_kind_of(ImplementedChain)
         end
         
       end
+      
+      describe '#mapping_permutations' do
+        before(:each) {
+          temp = Object.new
+          temp.extend(Cauldron::Demos)
+          demo = temp.demo_one
+          @unified_chain = demo[:chain].unify_chain          
+        }
+        it 'should create four permutations with one variable id and four values' do
+          values = [IntrinsicRuntimeMethod.new,IntrinsicTestCases.new,IntrinsicLiteral.new(0),IntrinsicLiteral.new(1)]
+          @unified_chain.mapping_permutations([0],values).length.should == 4
+        end
+        it 'should create 9 permutations with three variable id and three values' do
+          values = [IntrinsicRuntimeMethod.new,IntrinsicTestCases.new,IntrinsicLiteral.new(1)]
+          @unified_chain.mapping_permutations([0,1,2],values).length.should == 6
+        end
+      end
+      
     end
     
   end

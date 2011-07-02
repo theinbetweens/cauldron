@@ -48,7 +48,13 @@ class CallContainer < Array
      @parameters.select_all(results,&block)
      return results
   end
-
+  
+  def map_to(mapping)
+    a = copy
+    a.replace_theory_variables!(mapping)
+    return a
+  end
+  
   def replace_theory_variables!(mapping)
     @parameters.each_with_index do |x,i|
       if x.kind_of?(TheoryVariable) && mapping.has_key?(x.theory_variable_id)

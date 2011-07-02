@@ -24,6 +24,23 @@ module TheoryComponent
     return @statement.tokens
   end
   
+  def statements_with_variable(variable_id)
+    
+    # Duplicate the current statement before it is rewritten
+    rewritten_statement = @statement.copy
+    
+    # Find all containers of VariableDeclarations that declare a TheoryVariable
+    containers = [rewritten_statement].select_all {|x| x.respond_to?(:has?)}
+    theory_variable_containers = containers.select {|x| x.has? {|y| y.kind_of?(TheoryVariable)}}
+    
+    results = theory_variable_containers.select do |x|
+      reg = eval '/var'+variable_id.to_s+'/'
+      x.write.match(reg)
+    end
+    return results
+    
+  end  
+  
   # Returns an array of any of the accessors in the statement.  An accessor
   # is the chain to access a property e.g. in the following statement =>
   #

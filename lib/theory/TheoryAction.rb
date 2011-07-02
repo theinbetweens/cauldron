@@ -78,5 +78,23 @@ class TheoryAction
     return TheoryAction.new(@action.copy,@target_id,@theory_component_id)
   end
   
+  def statements_with_variable(variable_id)
+    
+    # Duplicate the current statement before it is rewritten
+    rewritten_statement = @action.copy
+    target_id = @target_id.copy
+    
+    # Find all containers of VariableDeclarations that declare a TheoryVariable
+    containers = [rewritten_statement,target_id].select_all {|x| x.respond_to?(:has?)}
+    theory_variable_containers = containers.select {|x| x.has? {|y| y.kind_of?(TheoryVariable)}}
+    
+    results = theory_variable_containers.select do |x|
+      reg = eval '/var'+variable_id.to_s+'/'
+      x.write.match(reg)
+    end
+    return results
+    
+  end
+  
   
 end
