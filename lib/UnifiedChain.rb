@@ -108,10 +108,9 @@ class UnifiedChain < Chain
     
     new_mappings = [] 
     component.theory_variables.each do |var|
-      #next if valid_mappings.first.has_key?(var.theory_variable_id)
+      next if valid_mappings.first.has_key?(var.theory_variable_id)
       valid_mappings.each do |mapping|
-        
-        next if mapping.has_key?(var.theory_variable_id)
+
         
         implemented_chain = chain.implement(Mapping.new(mapping))
         implemented_runtime_method = TheoryChainValidator.new.build_method_from_chain(implemented_chain,runtime_method.copy,test_cases.copy)        
