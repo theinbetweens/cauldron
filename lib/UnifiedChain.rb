@@ -39,124 +39,136 @@ class UnifiedChain < Chain
   end
 
   def implementation_permuatations2(runtime_method,test_cases,mapping)
-    
-    # Get the initially available intrinsic values
-    intrinsic_values = [IntrinsicRuntimeMethod.new,IntrinsicTestCases.new]
-    
-    valid_mappings = []
-    @nodes[1].action.theory_variables.each do |var|
-      
-      @nodes[1].action.statements_with_variable(var.theory_variable_id).each do |statement|
-        reg = eval('/^var'+var.theory_variable_id.to_s+'\./')
-        next unless statement.write.match(reg)
-        
-        mappings = mapping_permutations([var.theory_variable_id],intrinsic_values)
-        
-        mappings.each do |mapping|
-          valid_mappings << mapping if valid_mapping?(runtime_method.copy,test_cases.copy,statement,mapping)
-        end
-        
-      end
-     
-      
-    end
-    
-    valid_mappings = valid_mappings.uniq 
-    extended_mappings = []
-     
-    @nodes[1].action.theory_variables.each do |var|
-      
-      next if valid_mappings.first.has_key?(var.theory_variable_id)
-      
-      variable_values = []
-      @nodes[1].action.statements_with_variable(var.theory_variable_id).each do |statement|  
-        valid_mappings.each do |mapping|
-          variable_values += values_for_variable(var,statement,mapping,runtime_method.copy,test_cases.copy)
-        end
-      end         
-      variable_values = variable_values.uniq
 
-      extended_mappings = []
-      valid_mappings.each do |mapping|
-        variable_values.each do |value|
-          copied_mapping = mapping.copy
-          copied_mapping[var.theory_variable_id] = IntrinsicLiteral.new(value)
-          extended_mappings << copied_mapping
-        end
-      end
-       
-    end
-    
-    extended_mappings = extended_mappings.uniq
-    
-    chain_validator = TheoryChainValidator.new
-    links = @nodes[1..1].collect {|x| x.copy }
-    chain = UnifiedChain.new(links)
-    chain.last.results = []
-    more_mapping = []
-    extended_mappings.each do |mapping|
-      
-      #puts chain.implement(Mapping.new(mapping)).describe
-      implemented_chain = chain.implement(Mapping.new(mapping))
-      implemented_runtime_method = TheoryChainValidator.new.build_method_from_chain(implemented_chain,runtime_method.copy,test_cases.copy)
-      
-      @nodes[1].results.each do |result|
-        result.theory_variables.each do |var|
-          next if valid_mappings.first.has_key?(var.theory_variable_id)
-          
-          # => Get the values for the variable
-          variable_values = []
-          result.statements_with_variable(var.theory_variable_id).each do |statement|
-            variable_values += values_for_variable_as_argument(var,statement,mapping,intrinsic_values,implemented_runtime_method.copy,test_cases.copy)
-          end
-          
-          variable_values.each do |value|
-            temp_mapping = mapping.copy
-            temp_mapping[var.theory_variable_id] = value
-            more_mapping << temp_mapping
-          end      
-          
-        end  
-      end
-      
-    end
+    more_mapping = valid_mapping_permutations(runtime_method.copy,test_cases.copy)
 
-    more_mapping = more_mapping.collect {|x| Mapping.new(x)}
     return more_mapping.inject([]) { |total,mapping| total << self.copy.implement(mapping) }
     
   end
   
   def valid_mapping_permutations(runtime_method,test_cases)
     
+    # Get the initially available intrinsic values
+    intrinsic_values = [IntrinsicRuntimeMethod.new,IntrinsicTestCases.new]
+    
+    total_variables = self.theory_variables.length
+    puts 'Total Variables: '+total_variables.to_s
+    
+    valid_mappings = [Mapping.new]
+    
+    available_values = [IntrinsicRuntimeMethod.new,IntrinsicTestCases.new]
+    
+    chain = partial_chain(0)    
+    valid_mappings = extend_mapping(valid_mappings,@nodes[1].action,runtime_method.copy,test_cases.copy,chain,available_values)
+    pp valid_mappings
+    valid_mappings = extend_mapping(valid_mappings,@nodes[1].action,runtime_method.copy,test_cases.copy,chain,available_values)
+    pp valid_mappings
+    @nodes[1].results.each do |result|
+      valid_mappings = extend_mapping(valid_mappings,result,runtime_method.copy,test_cases.copy,chain,available_values)
+    end
+    return valid_mappings.collect {|x| Mapping.new(x)} 
+    
   end
   
-  def values_for_variable_as_argument(var,statement,mapping,values,runtime_method,test_cases)
-    intrinsic_statement = statement.map_to(mapping)
-    results = []
-    values.each do |value|
-      literal = intrinsic_statement.write.gsub(/var(\d)+/,value.write)
-      begin
-        eval literal
-        results << value
-      rescue
+  def extend_mapping(valid_mappings,component,runtime_method,test_cases,chain,available_values)
+    
+    new_mappings = [] 
+    component.theory_variables.each do |var|
+      next if valid_mappings.first.has_key?(var.theory_variable_id)
+      valid_mappings.each do |mapping|
+        
+        implemented_chain = chain.implement(Mapping.new(mapping))
+        implemented_runtime_method = TheoryChainValidator.new.build_method_from_chain(implemented_chain,runtime_method.copy,test_cases.copy)        
+        
+        possible_values = available_values-mapping.values    
+        
+        values = intrinsic_values_for_variable(
+          var.theory_variable_id,
+          component,
+          mapping,
+          implemented_runtime_method,
+          test_cases.copy,
+          possible_values    
+        )
+        values = values.uniq      
+         values.each do |value|
+           valid_mappings.each do |mapping|
+             copied_mapping = mapping.copy
+             copied_mapping[var.theory_variable_id] = value
+             new_mappings << copied_mapping 
+           end
+         end
+       end
+    end
+    unless new_mappings.empty?
+      valid_mappings = new_mappings
+    end
+    return valid_mappings    
+    
+  end
+  
+  def intrinsic_values_for_variable(id,component,mapping,runtime_method,test_cases,intrinsic_values)
+    #intrinsic_values = [IntrinsicRuntimeMethod.new,IntrinsicTestCases.new]
+    
+    values = []
+    component.statements_with_variable(id).each do |statement|
+      reg = eval('/^var'+id.to_s+'\./')
+        if statement.write.match(reg)
+        
+        intrinsic_values.each do |value|
+          temp_mapping = mapping.copy
+          temp_mapping[id] = value
+          if valid_mapping?(runtime_method.copy,test_cases.copy,statement,temp_mapping)
+            values << value
+          end
+        end
         next
       end
+      # values for index
+      index_values = []
+      intrinsic_statement = statement.map_to(mapping)
+      if intrinsic_statement.select_all {|z| z.kind_of?(TheoryVariable)}.length > 0
+        if m = intrinsic_statement.write.match(/([\w\.]+)\[var(\d)+\]/)
+          method_call = $1
+          if m2 = method_call.match(/var(\d+)/)
+            next 
+          end
+          literal = evaluate_statement(method_call,runtime_method.copy,test_cases.copy)
+          literal.length.times do |n|
+            index_values << IntrinsicLiteral.new(n)
+          end        
+        end    
+      end      
+      values += index_values
+      
+      #variable_values = []
+      #result.statements_with_variable(var.theory_variable_id).each do |statement|
+      #variable_values += values_for_variable_as_argument(var,statement,mapping,intrinsic_values,implemented_runtime_method.copy,test_cases.copy)
+      #end
+      #values += variable_values
+      
+      #intrinsic_statement = statement.map_to(mapping)
+      variable_values = []
+      intrinsic_values.each do |value|
+        literal = intrinsic_statement.write.gsub(/var(\d)+/,value.write)
+        begin
+          eval literal
+          variable_values << value
+        rescue
+          next
+        end
+      end
+      #return results
+      values += variable_values      
+      
+      
     end
-    return results
+    return values
   end
   
-  def values_for_variable(var,statement,mapping,runtime_method,test_cases)
-    results = []
-    intrinsic_statement = statement.map_to(mapping)
-    if intrinsic_statement.select_all {|z| z.kind_of?(TheoryVariable)}.length > 0
-      if m = intrinsic_statement.write.match(/([\w\.]+)\[var(\d)+\]/)
-        literal = evaluate_statement($1,runtime_method.copy,test_cases.copy)
-        literal.length.times do |n|
-          results << n
-        end        
-      end    
-    end
-    return results
+  def partial_chain(limit)
+    links = @nodes[1..limit].collect {|x| x.copy }
+    UnifiedChain.new(links)    
   end
   
   def mapping_permutations(keys,values)

@@ -38,13 +38,50 @@ module Cauldron
             test_cases,
             Mapping.new
           ).length.should == 1
+        end
+        
+        it 'is a unified chain' do 
+          temp = Object.new
+          temp.extend(Cauldron::Demos)
+          demo = temp.demo_one
+          unified_chain = demo[:chain].unify_chain
+          test_cases = demo[:test_cases]   
+                    
           unified_chain.implementation_permuatations(
             RuntimeMethod.new(MethodUsage.new(MethodParameter.new)),
             test_cases,
             Mapping.new
-          )[0].should be_kind_of(ImplementedChain)
+          )[0].should be_kind_of(ImplementedChain)          
+          
+          unified_chain.implementation_permuatations(
+            RuntimeMethod.new(MethodUsage.new(MethodParameter.new)),
+            test_cases,
+            Mapping.new
+          )[0].write.should_not include('var')          
+          
         end
-        
+        context 'when using demo two' do
+          it 'creates just one implementation permutation' do
+            temp = Object.new
+            temp.extend(Cauldron::Demos)
+            demo = temp.demo_two
+            unified_chain = demo[:chain].unify_chain   
+            test_cases = demo[:test_cases]   
+          
+            unified_chain.implementation_permuatations(
+              RuntimeMethod.new(MethodUsage.new(MethodParameter.new)),
+              test_cases,
+              Mapping.new
+            ).length.should == 1
+                
+            unified_chain.implementation_permuatations(
+              RuntimeMethod.new(MethodUsage.new(MethodParameter.new)),
+              test_cases,
+              Mapping.new
+            )[0].write.should_not include('var')              
+                             
+          end
+        end
       end
       
       describe '#mapping_permutations' do
