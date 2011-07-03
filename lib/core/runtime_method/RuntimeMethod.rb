@@ -94,13 +94,11 @@ class RuntimeMethod < StatementGroup
     unique_variable_ids.zip(reset_variable_ids.to_a) do |var_id,reset_id|
       mapping[var_id] = reset_id
     end
-    puts copied_method.usage.class.to_s
+    pp mapping
     
     puts '-------------------------------'
     method_parameters = []
     @usage.each do |x|
-      puts x.variable_id
-      puts mapping[x.variable_id]
       method_parameters.push(MethodParameter.new(mapping[x.variable_id]))
     end
     usage = MethodUsage.new(*method_parameters)
@@ -112,18 +110,20 @@ class RuntimeMethod < StatementGroup
       replacement_mapping[var_id] = Unknown.new(reset_id)
     end
     
+    puts '* Starting to update statements: '
     copied_method.each do |statement|
+      puts statement.write
       replacement_mapping.each do |var_id,value|
+        puts '-- var_id'
+        puts var_id
+        puts '-- value'
+        puts value
+        puts statement.class.to_s
         statement.subst_variable!(var_id,value)
       end
+      puts statement.write
+      puts '============================'
     end
-    
-    # copied_method.each do |statement|
-      # #x.replace_variable!(replacement_mapping)
-      # replacement_mapping.each do |var_id,value|
-        # statement.replace_variable!(var_id,value)
-      # end
-    # end
     
     copied_method
   end

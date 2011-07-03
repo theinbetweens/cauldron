@@ -12,12 +12,19 @@ class TheoryChainValidator
   def build(runtime_method,test_cases,theory_implementation_chains,potential_values=[])
       validated_chains = []
       theory_implementation_chains.each do |chain|
-        validate_next_chain_link(validated_chains,chain,runtime_method.copy,test_cases,0)
+        validate_next_chain_link(validated_chains,chain,runtime_method.copy,test_cases.copy,0)
       end  
       raise StandardError.new('Failed to generate a valid runtime method') if validated_chains.length == 0
       
       # Select the first chain and return the runtime method it generates
-      results =  build_method_from_chain(validated_chains.first,runtime_method.copy,test_cases)
+      puts '===================== VALIDATED CHAINS ======================='
+      puts validated_chains.length
+      puts validated_chains.first.describe
+      puts '============================================'
+      results =  build_method_from_chain(validated_chains.first,runtime_method.copy,test_cases.copy)
+      puts '============================================= METHOD BUILT'
+      puts results.class.to_s
+      puts results.write
       return results
       
   end 

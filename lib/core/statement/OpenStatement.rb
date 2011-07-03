@@ -133,7 +133,13 @@ class OpenStatement < StatementGroup
   
   def subst_variable!(id,var)
     @statement.subst_variable!(id,var)
-    self.each {|statement| statement.subst_variable!(id,var) }
+    puts '-----subst_variable'
+    
+    #self.each {|statement| statement.subst_variable!(id,var) }
+    self.each do |statement|
+      puts statement.write(1) 
+      statement.subst_variable!(id,var)
+    end
   end
   
   # Returns the statement_id of the embeded statement. 

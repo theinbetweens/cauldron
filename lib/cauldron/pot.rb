@@ -11,24 +11,17 @@ module Cauldron
     
     def brew(test_cases)
       
+      puts '=====================================STARTING BREW============================================'
+      
       # * Load each of the theories from the directory
       saved_theory_file_paths = Dir.glob(File.join(theory_repository_path,'*','dump'))
       theories = saved_theory_file_paths.collect {|x| Marshal.load(File.open(x,'r'))}    
-      
-      # Prepare the theory chain connector
-      # runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))    
-      # tc = Parser.run('test_cases')
-      # tc_index_0 = IntrinsicLiteral.new(0)
-      # tc_index_1 = IntrinsicLiteral.new(1)
-      # param_0 = IntrinsicLiteral.new(0)
-      # real_method = Parser.run('runtime_method')
       
       runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))    
       tc = Parser.run('test_cases')
       tc_index_0 = IntrinsicLiteral.new(0)
       tc_index_1 = IntrinsicLiteral.new(1)
       param_0 = IntrinsicLiteral.new(0)
-      #tc_param_0 = IntrinsicLiteral.new(0)
       real_method = Parser.run('runtime_method')     
       
       # TODO  Still need to include last_real_method
@@ -57,25 +50,12 @@ module Cauldron
         end
       end
       
-      # Now validate each of the chains to check they work
-      # chains.each do |chain|
-        # chain_permutations = chain.unify_chain.implementation_permuatations(runtime_method,test_cases,Mapping.new)
-      # end
-      # # TEMP just concentrate of one implementation_permutation
-      # implementation_permutations = chains.first.unify_chain.implementation_permuatations(runtime_method,test_cases,Mapping.new)
-#       
-      # #puts '* Implementing permutations: '+implementation_permuatations.length.to_s
-#       
-      # # Go through each of the permutations and create the runtime method for the chain
-      # validator = TheoryChainValidator.new
-      # result = validator.build(runtime_method,test_cases,implementation_permutations)
-      # return result
-      
-      # TEMP just concentrate of one implementation_permutation
       chains.each do |chain|
 
         unified_chain = chain.unify_chain
         implementation_permutations = unified_chain.implementation_permuatations(runtime_method.copy,test_cases.copy,Mapping.new)
+        
+        puts 'implementation_permuatations.length: '+implementation_permutations.length.to_s
         
         # Go through each of the permutations and create the runtime method for the chain
         validator = TheoryChainValidator.new
@@ -85,6 +65,9 @@ module Cauldron
           StandardLogger.instance.warning e
           next 
         end
+        puts '------------------------------------------------RETURNING RESULT'
+        puts result.write
+        puts result.class.to_s
         return result      
       end
       return nil

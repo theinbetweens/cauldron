@@ -52,23 +52,20 @@ class UnifiedChain < Chain
     intrinsic_values = [IntrinsicRuntimeMethod.new,IntrinsicTestCases.new]
     
     total_variables = self.theory_variables.length
-    puts 'Total Variables: '+total_variables.to_s
     
     available_values = [IntrinsicRuntimeMethod.new,IntrinsicTestCases.new]    
     
     valid_mappings = [Mapping.new]
     
-    itteration_limit = 6
+    #itteration_limit = 6
+    itteration_limit = 8
     
     @nodes.each_with_index do |node,index|
-      #if index > 2
-      #  raise StandardError.new('-------------index ')
-      #end
-      puts 'Starting node: '+index.to_s
-      puts 'node.dependents.length: '+node.dependents.length.to_s
+
       node.dependents.each do |dependent|
         if index == 0
-          chain = runtime_method.copy
+          #chain = runtime_method.copy
+          chain = partial_chain(0)
         else
           chain = partial_chain(index-1) 
         end
@@ -78,7 +75,7 @@ class UnifiedChain < Chain
           limit += 1
         end  
         if limit > itteration_limit
-          raise StandardError.new('Unable to resolve '+dependent.write)
+          #raise StandardError.new('Unable to resolve '+dependent.write)
         end
         puts 'DEPENDENT: valid_mappings.length.to_s: '+valid_mappings.length.to_s
       end
@@ -86,7 +83,8 @@ class UnifiedChain < Chain
       unless node.action.nil?
         puts 'node.action: '
         if index == 0
-          chain = runtime_method.copy
+          #chain = runtime_method.copy
+          chain = partial_chain(0)
         else
           chain = partial_chain(index-1) 
         end
@@ -96,9 +94,8 @@ class UnifiedChain < Chain
           valid_mappings = extend_mapping(valid_mappings,node.action,runtime_method.copy,test_cases.copy,chain,available_values)
           limit += 1
         end
-        if limit > itteration_limit
-          puts 'valid_mappings.length.to_s: '+valid_mappings.length.to_s          
-          raise StandardError.new('Unable to resolve '+node.action.write)
+        if limit > itteration_limit  
+          raise StandardError.new('Unable to resolve action: '+node.action.write)
         end
         puts 'ACTION: valid_mappings.length.to_s: '+valid_mappings.length.to_s        
       end
@@ -112,25 +109,16 @@ class UnifiedChain < Chain
           limit += 1
         end
         if limit > itteration_limit
-          raise StandardError.new('Unable to resolve '+result.write)
+          pp valid_mappings
+          puts self.describe
+          #raise StandardError.new('Unable to resolve '+result.write)
         end
-        puts result.write
-        puts 'RESULT: valid_mappings.length.to_s: '+valid_mappings.length.to_s
-        pp valid_mappings      
+        puts 'RESULT: valid_mappings.length.to_s: '+valid_mappings.length.to_s      
           
       end
       
     end
       
-    
-    # chain = partial_chain(0)    
-    # valid_mappings = extend_mapping(valid_mappings,@nodes[1].action,runtime_method.copy,test_cases.copy,chain,available_values)
-    # pp valid_mappings
-    # valid_mappings = extend_mapping(valid_mappings,@nodes[1].action,runtime_method.copy,test_cases.copy,chain,available_values)
-    # pp valid_mappings
-    # @nodes[1].results.each do |result|
-      # valid_mappings = extend_mapping(valid_mappings,result,runtime_method.copy,test_cases.copy,chain,available_values)
-    # end
     return valid_mappings.collect {|x| Mapping.new(x)} 
     
   end
@@ -151,14 +139,16 @@ class UnifiedChain < Chain
       next if valid_mappings.first.has_key?(var.theory_variable_id)
       valid_mappings.each do |mapping|
 
-        
+        #next if mapping.has_key?(var.theory_variable_id)
+        puts '* Looking for variable: '+var.describe
+        puts 'chain: '+chain.class.to_s
         implemented_chain = chain.implement(Mapping.new(mapping))
         implemented_runtime_method = TheoryChainValidator.new.build_method_from_chain(
                                         implemented_chain,runtime_method.copy,test_cases.copy
                                       )        
 
         possible_values = available_values-mapping.values   
-        
+        puts '* possible_values: '+possible_values.length.to_s
         begin 
         values = intrinsic_values_for_variable(
           var.theory_variable_id,
@@ -169,24 +159,35 @@ class UnifiedChain < Chain
           possible_values    
         )
         rescue NoMethodError => e
-          puts 'ERROR: '
+          puts 'ERROR: =========================================='
           puts e
           puts valid_mappings.length
           valid_mappings = valid_mappings-[mapping]
           puts valid_mappings.length
           next
         end
+        puts '* values'
+        pp values
         values = values.uniq      
         values.each do |value|
-          #valid_mappings.each do |mapping|
-            copied_mapping = mapping.copy
-            copied_mapping[var.theory_variable_id] = value
-            new_mappings << copied_mapping 
-          #end
+          copied_mapping = mapping.copy
+          copied_mapping[var.theory_variable_id] = value
+          new_mappings << copied_mapping 
         end
       end
       
     end
+    # => QUICK Hack
+    new_mappings = identify_uniq_mappings(new_mappings)
+    longest_mapping = new_mappings.inject(0) do |highest,m| 
+      if(m.length > highest) 
+        highest = m.length
+      end
+      highest
+    end
+    res = new_mappings.select {|x| x.length == longest_mapping}
+    new_mappings = res
+    
     unless new_mappings.empty?
       valid_mappings = new_mappings
     end
@@ -194,8 +195,41 @@ class UnifiedChain < Chain
     
   end
   
+  def identify_uniq_mappings(mappings)
+    uniq_mappings = []
+    count = mappings.length
+    until mappings.empty?
+      mapping = mappings.shift
+      already_exists = mappings.any? do |x|
+        next false unless x.length == mapping.length
+        next false unless x.keys.sort == mapping.keys.sort
+        all_values_the_same = true 
+        x.each do |key,value|
+          if mapping[key].class != value.class
+            all_values_the_same = false
+          end 
+          if mapping[key].class == value.class
+            if mapping[key].kind_of?(IntrinsicLiteral)
+              if mapping[key].write != value.write
+                all_values_the_same = false
+              end
+            end
+          end
+        end
+        next false unless all_values_the_same
+        next true
+      end
+      unless already_exists
+        uniq_mappings << mapping
+      end
+    end
+    if uniq_mappings.length == 0 && count != 0
+      raise StandardError.new('uniq_mappings should not be 0')
+    end
+    return uniq_mappings
+  end
+  
   def intrinsic_values_for_variable(id,component,mapping,runtime_method,test_cases,intrinsic_values)
-    #intrinsic_values = [IntrinsicRuntimeMethod.new,IntrinsicTestCases.new]
     
     values = []
     component.statements_with_variable(id).each do |statement|
@@ -205,12 +239,14 @@ class UnifiedChain < Chain
         intrinsic_values.each do |value|
           temp_mapping = mapping.copy
           temp_mapping[id] = value
+          # => TODO Not validating the component - e.g. if(var1.kind_of?(RuntimeMethod))
           if valid_mapping?(runtime_method.copy,test_cases.copy,statement,temp_mapping)
             values << value
           end
         end
         next
       end
+      
       # values for index
       index_values = []
       intrinsic_statement = statement.map_to(mapping)

@@ -45,16 +45,17 @@ module Cauldron
         
         ruby      =  "
                         def method_0(var_0)
-                          \tif(var_0 == 'fish')
-                          \t\treturn 'animal'
+                          \tif(var_0 == 'carrot')
+                          \t\treturn 'vegtable'
                           \tend
-                          \treturn 'vegtable'
+                          \treturn 'animal'
                         end        
                      "
         parser    = RubyParser.new          
         sexp      = parser.process(ruby)
         sexp2cauldron = Sexp2Cauldron.new
         pot.brew(cases).reset_ids!.basic_write.should == sexp2cauldron.process(sexp).basic_write                     
+        #pot.brew(cases).basic_write.should == sexp2cauldron.process(sexp).basic_write
       end
       
     end

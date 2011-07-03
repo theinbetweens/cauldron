@@ -72,14 +72,8 @@ module Cauldron
               RuntimeMethod.new(MethodUsage.new(MethodParameter.new)),
               test_cases,
               Mapping.new
-            ).length.should == 1
-                
-            # unified_chain.implementation_permuatations(
-              # RuntimeMethod.new(MethodUsage.new(MethodParameter.new)),
-              # test_cases,
-              # Mapping.new
-            # )[0].write.should_not include('var')              
-                             
+            ).each {|chain| chain.write.should_not include('var')}          
+                                       
           end
         end
       end

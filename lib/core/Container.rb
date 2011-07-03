@@ -17,9 +17,14 @@ class Container
   end     
 
   def subst_variable!(id,var)
+    puts 'Container: ==========subst_variable: '
     @tokens.each_with_index do |token,i|
+      puts token.class.to_s
       if token.kind_of?(Variable) && id == token.variable_id
         @tokens[i] = var
+      end
+      if token.kind_of?(Statement)
+        token.subst_variable!(id,var)
       end
     end
     self
