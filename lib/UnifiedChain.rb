@@ -58,7 +58,12 @@ class UnifiedChain < Chain
     
     valid_mappings = [Mapping.new]
     
+    itteration_limit = 6
+    
     @nodes.each_with_index do |node,index|
+      #if index > 2
+      #  raise StandardError.new('-------------index ')
+      #end
       puts 'Starting node: '+index.to_s
       puts 'node.dependents.length: '+node.dependents.length.to_s
       node.dependents.each do |dependent|
@@ -67,41 +72,76 @@ class UnifiedChain < Chain
         else
           chain = partial_chain(index-1) 
         end
-        valid_mappings = extend_mapping(valid_mappings,dependent,runtime_method.copy,test_cases.copy,chain,available_values)  
+        limit = 0
+        until has_all_variables_been_found?(dependent,valid_mappings) or limit > itteration_limit
+          valid_mappings = extend_mapping(valid_mappings,dependent,runtime_method.copy,test_cases.copy,chain,available_values)
+          limit += 1
+        end  
+        if limit > itteration_limit
+          raise StandardError.new('Unable to resolve '+dependent.write)
+        end
+        puts 'DEPENDENT: valid_mappings.length.to_s: '+valid_mappings.length.to_s
       end
       
       unless node.action.nil?
-        puts 'node.action: '+node.action.class.to_s
+        puts 'node.action: '
         if index == 0
           chain = runtime_method.copy
         else
           chain = partial_chain(index-1) 
-        end            
-        puts node.action.write
-        valid_mappings = extend_mapping(valid_mappings,node.action,runtime_method.copy,test_cases.copy,chain,available_values)
+        end
+        limit = 0            
+        until has_all_variables_been_found?(node.action,valid_mappings) or limit > itteration_limit
+          puts node.action.write
+          valid_mappings = extend_mapping(valid_mappings,node.action,runtime_method.copy,test_cases.copy,chain,available_values)
+          limit += 1
+        end
+        if limit > itteration_limit
+          puts 'valid_mappings.length.to_s: '+valid_mappings.length.to_s          
+          raise StandardError.new('Unable to resolve '+node.action.write)
+        end
+        puts 'ACTION: valid_mappings.length.to_s: '+valid_mappings.length.to_s        
       end
       
       puts 'node.results.length: '+node.results.length.to_s
       node.results.each do |result|
-        chain = partial_chain(index) 
-        valid_mappings = extend_mapping(valid_mappings,result,runtime_method.copy,test_cases.copy,chain,available_values)
-        pp valid_mappings
+        chain = partial_chain(index)
+        limit = 0            
+        until has_all_variables_been_found?(result,valid_mappings) or limit > itteration_limit
+          valid_mappings = extend_mapping(valid_mappings,result,runtime_method.copy,test_cases.copy,chain,available_values)
+          limit += 1
+        end
+        if limit > itteration_limit
+          raise StandardError.new('Unable to resolve '+result.write)
+        end
+        puts result.write
+        puts 'RESULT: valid_mappings.length.to_s: '+valid_mappings.length.to_s
+        pp valid_mappings      
+          
       end
       
     end
       
     
-    
-    chain = partial_chain(0)    
-    valid_mappings = extend_mapping(valid_mappings,@nodes[1].action,runtime_method.copy,test_cases.copy,chain,available_values)
-    pp valid_mappings
-    valid_mappings = extend_mapping(valid_mappings,@nodes[1].action,runtime_method.copy,test_cases.copy,chain,available_values)
-    pp valid_mappings
-    @nodes[1].results.each do |result|
-      valid_mappings = extend_mapping(valid_mappings,result,runtime_method.copy,test_cases.copy,chain,available_values)
-    end
+    # chain = partial_chain(0)    
+    # valid_mappings = extend_mapping(valid_mappings,@nodes[1].action,runtime_method.copy,test_cases.copy,chain,available_values)
+    # pp valid_mappings
+    # valid_mappings = extend_mapping(valid_mappings,@nodes[1].action,runtime_method.copy,test_cases.copy,chain,available_values)
+    # pp valid_mappings
+    # @nodes[1].results.each do |result|
+      # valid_mappings = extend_mapping(valid_mappings,result,runtime_method.copy,test_cases.copy,chain,available_values)
+    # end
     return valid_mappings.collect {|x| Mapping.new(x)} 
     
+  end
+  
+  def has_all_variables_been_found?(component,mappings)
+    component.theory_variables.each do |var|
+      mappings.each do |mapping|
+        return false unless mapping.has_key? var.theory_variable_id
+      end
+    end
+    return true
   end
   
   def extend_mapping(valid_mappings,component,runtime_method,test_cases,chain,available_values)
@@ -113,9 +153,11 @@ class UnifiedChain < Chain
 
         
         implemented_chain = chain.implement(Mapping.new(mapping))
-        implemented_runtime_method = TheoryChainValidator.new.build_method_from_chain(implemented_chain,runtime_method.copy,test_cases.copy)        
-        
-        possible_values = available_values-mapping.values    
+        implemented_runtime_method = TheoryChainValidator.new.build_method_from_chain(
+                                        implemented_chain,runtime_method.copy,test_cases.copy
+                                      )        
+
+        possible_values = available_values-mapping.values   
         
         begin 
         values = intrinsic_values_for_variable(
@@ -127,6 +169,7 @@ class UnifiedChain < Chain
           possible_values    
         )
         rescue NoMethodError => e
+          puts 'ERROR: '
           puts e
           puts valid_mappings.length
           valid_mappings = valid_mappings-[mapping]
@@ -134,14 +177,15 @@ class UnifiedChain < Chain
           next
         end
         values = values.uniq      
-         values.each do |value|
-           valid_mappings.each do |mapping|
-             copied_mapping = mapping.copy
-             copied_mapping[var.theory_variable_id] = value
-             new_mappings << copied_mapping 
-           end
-         end
-       end
+        values.each do |value|
+          #valid_mappings.each do |mapping|
+            copied_mapping = mapping.copy
+            copied_mapping[var.theory_variable_id] = value
+            new_mappings << copied_mapping 
+          #end
+        end
+      end
+      
     end
     unless new_mappings.empty?
       valid_mappings = new_mappings

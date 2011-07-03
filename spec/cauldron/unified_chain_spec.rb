@@ -62,7 +62,6 @@ module Cauldron
         end
         context 'when using demo two' do
           it 'creates just one implementation permutation' do
-            pending('need to update the code for this to work')
             temp = Object.new
             temp.extend(Cauldron::Demos)
             demo = temp.demo_two
