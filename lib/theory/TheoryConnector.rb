@@ -45,14 +45,12 @@ class TheoryConnector
     
     # Find a theory that can act as the head
     possible_head_theories = theories.select {|x| x.dependents.length == 0}
-    puts '* possible_head_theories: '+possible_head_theories.length.to_s
     
     # Create the initial chains
     possible_chains = []
     possible_head_theories.each do |x|
       possible_chains += intial_chain.copy.extension_permutaions(x)
     end
-    puts '* possible_chains: '+possible_chains.length.to_s 
         
     # Check the initial chains incase they're complete
     complete_chains = []
@@ -60,8 +58,6 @@ class TheoryConnector
       complete_chains += possible_chains.select {|x| x.complete?}
       possible_chains.delete_if {|x| x.complete?}
     end       
-    puts '* complete_chains: '+complete_chains.length.to_s
-    
     return complete_chains unless complete_chains.empty?
     
     possible_chains.each do |chain|
@@ -69,34 +65,16 @@ class TheoryConnector
       # Remove the head theory to avoid it being re-used
       head_free_theories = theories.copy
       head_free_theories.delete_if {|theory| theory.theory_id == chain.first.theory_id}      
-      
-      #return complete_chain(chain,head_free_theories)
+
       complete_chains += complete_chain(chain,head_free_theories)
     end
     return complete_chains
     
-    # # Continue to add theories to the chains until they are complete or the theories are exhausted
-    # possible_chains.each do |chain|
-#       
-      # # Remove the head theory to avoid it being re-used
-      # head_free_theories = theories.copy
-      # head_free_theories.delete_if {|theory| theory.theory_id == chain.first.theory_id}
-# 
-      # complete_chains += extend_chain(chain,head_free_theories)
-    # end
-    # return complete_chains
-    
   end
   
   def complete_chain(chain,theories)
-    
-    # => pp chain.unmet_dependents_ids
-    # => TODO I would like to be able to highlight the dependent
-    
     chains = converge_chain(chain,theories)
-
-    return chains
-    #puts 'chain.broken_link_count: '+chain.broken_link_count.to_s 
+    return chains 
     
   end
   
@@ -114,8 +92,6 @@ class TheoryConnector
     # Are any of the chains complete
     if extended_chains.any? {|x| x.complete? }
       return extended_chains.select {|x| x.complete?}      
-    else
-      puts '* Chain is not complete yet'
     end
     
     closer_chains = []

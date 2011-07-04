@@ -11,7 +11,15 @@ module Cauldron
         lambda {pot.simmer(demo_one)}.should_not raise_error
       end
       it 'can simmer with demo two' do 
-        pot = Cauldron::Pot.new        
+        pot = Cauldron::Pot.new
+        pot.clear
+        lambda {pot.simmer(demo_two)}.should_not raise_error        
+      end
+      it 'can simmer with both demo one and two' do
+        pot = Cauldron::Pot.new
+        pot.clear
+        lambda {pot.simmer(demo_one)}.should_not raise_error
+        lambda {pot.simmer(demo_two)}.should_not raise_error        
       end
     end
     

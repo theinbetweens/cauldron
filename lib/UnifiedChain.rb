@@ -140,9 +140,6 @@ class UnifiedChain < Chain
           possible_values    
         )
         rescue NoMethodError => e
-          puts 'ERROR: =========================================='
-          puts e
-          puts valid_mappings.length
           valid_mappings = valid_mappings-[mapping]
           next
         end
