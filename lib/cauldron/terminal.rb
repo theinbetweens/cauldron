@@ -16,7 +16,7 @@ module Cauldron
       @pot = Cauldron::Pot.new
       @pot.clear
       @output.puts '* Adding example case'      
-      @pot.simmer(demo('1'))
+      #@pot.simmer(demo('1'))
       @pot.simmer(demo_two)
       
       @output.puts "Thanks for trying Cauldron - it's at really early stage right now"

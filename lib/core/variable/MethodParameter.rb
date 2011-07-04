@@ -62,11 +62,7 @@ class MethodParameter < BaseVariable
     
     # Print out each of the requirements
     copied_var.each do |x|  
-      
-      #tmp = gets      
       desc = x.describe(context)
-
-      #tmp = gets
       desc.each_line do |l|
         line += "\t"+l
       end      

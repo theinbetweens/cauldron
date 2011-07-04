@@ -145,7 +145,6 @@ class RuntimeMethod < StatementGroup
 
     concept.each_unknown do |unknown|
       
-      #temp = gets
       # Go through each of the varialbes and see if they could be the unknown
       available_variables.each do |var|
 

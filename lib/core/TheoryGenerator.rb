@@ -17,14 +17,7 @@ class TheoryGenerator
     #   * Create the values array [{:value=>x,:statement=>:step=>}]
     master_theories = []
     chain.each_theory_progression(initial_runtime_method,test_cases) do |implemented_theory,theory|
-    
-      # TODO  Include this as a test to confirm an exception is raised
-      # QUICK:  Adding a new value in the test cases :after so it changes the output
-      #         and the variable mapping - the error should be picked up.
-#      if implemented_theory.accessor_values[:after][1]
-#        implemented_theory.accessor_values[:after][1].push({:params=>["pip"],:output=>"pip"})
-#      end
-      
+          
       dependent_accessors = retrieve_accessors(implemented_theory.accessor_values[:before],creation_history)
       result_accessors = retrieve_accessors(implemented_theory.accessor_values[:after],creation_history)
       

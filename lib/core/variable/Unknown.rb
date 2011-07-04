@@ -62,12 +62,8 @@ class Unknown < BaseVariable
     line += write
     
     # Print out each of the requirements
-    copied_var.each do |x|  
-      
-      #tmp = gets      
+    copied_var.each do |x|        
       desc = x.describe(context)
-
-      #tmp = gets
       desc.each_line do |l|
         line += "\t"+l
       end      

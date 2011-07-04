@@ -62,6 +62,8 @@ class TheoryConnector
     end       
     puts '* complete_chains: '+complete_chains.length.to_s
     
+    return complete_chains unless complete_chains.empty?
+    
     possible_chains.each do |chain|
       
       # Remove the head theory to avoid it being re-used
@@ -88,10 +90,6 @@ class TheoryConnector
   
   def complete_chain(chain,theories)
     
-    # Find theories that meet dependents
-    puts 'chain.broken_link_count: '+chain.broken_link_count.to_s
-    puts chain.length.to_s
-    
     # => pp chain.unmet_dependents_ids
     # => TODO I would like to be able to highlight the dependent
     
@@ -103,18 +101,13 @@ class TheoryConnector
   end
   
   def converge_chain(chain,theories,step=0)
-    puts '--------------------------'+step.to_s+'---------------------'
-    puts chain.write
-    
+
     complete_chains = []
     extended_chains = []
     theories.each do |theory|
-      #last_position = chain.length-1
       last_position = 1
       chains = chain.add_link_to(theory,last_position,[])
-      next if chains.empty?
-      puts step.to_s+' - '+chains.length.to_s
-      
+      next if chains.empty?      
       extended_chains += chains
     end    
     
@@ -137,12 +130,9 @@ class TheoryConnector
         complete_chains += converge_chain(x,theories,step+1)
       end
     else
-      puts '* Non of the chains are closer'
-      gets
       extended_chains.each do |x|
         theories.each do |theory|
           copied_chain = x.copy
-          #last_position = copied_chain.length-1
           last_position = 1
           chains = copied_chain.add_link_to(theory,last_position,[])
           chains.each do |z|
