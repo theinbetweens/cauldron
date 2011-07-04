@@ -42,8 +42,8 @@ module Cauldron
       link_one_result = TheoryResult.new(StringToTheory.run("if(var1.all_pass?(var2))\nreturn true\nend"))
       link_one = Theory.new([],link_one_action,[link_one_result])
       chain = Chain.new
-      chain = chain.add_link(head).first
-      chain = chain.add_link(
+      chain = chain.extension_permutaions(head).first
+      chain = chain.extension_permutaions(
         link_one,
         {
           1=>IntrinsicRuntimeMethod.new,
@@ -215,7 +215,7 @@ module Cauldron
       )      
       
       chain = Chain.new
-      chains = chain.add_link(head)
+      chains = chain.extension_permutaions(head)
       chain = chains.first
       
       head_id = chain.first.theory_id
@@ -230,7 +230,7 @@ module Cauldron
         6=>IntrinsicLiteral.new(1)          
       }
       
-      chains = chain.add_link(
+      chains = chain.extension_permutaions(
         link_one,values
       )
       order = [head_id,link_one.theory_id,last_id]
@@ -238,7 +238,7 @@ module Cauldron
         c.collect {|t| t.theory_id} == order
       end      
       
-      chains = chain.add_link(
+      chains = chain.extension_permutaions(
         link_two,values
       )
       order = [head_id,link_one.theory_id,link_two.theory_id,last_id]
@@ -246,7 +246,7 @@ module Cauldron
         c.collect {|t| t.theory_id} == order
       end
       
-      chains = chain.add_link(
+      chains = chain.extension_permutaions(
         link_three,values
       )
       order = [head_id,link_one.theory_id,link_two.theory_id,link_three.theory_id,last_id]
@@ -254,7 +254,7 @@ module Cauldron
         c.collect {|t| t.theory_id} == order
       end
       
-      chains = chain.add_link(
+      chains = chain.extension_permutaions(
         link_four,values
       )
       order = [head_id,link_one.theory_id,link_two.theory_id,link_three.theory_id,link_four.theory_id,last_id]

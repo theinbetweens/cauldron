@@ -38,17 +38,21 @@ class TheoryConnector
   #
   def generate_chains(runtime_method,test_cases,theories)
     
+    theories = remove_irrelevant_theories(theories)
+
     # Create the inital chain (with the head and tail)
     intial_chain = Chain.new
     
     # Find a theory that can act as the head
     possible_head_theories = theories.select {|x| x.dependents.length == 0}
+    puts '* possible_head_theories: '+possible_head_theories.length.to_s
     
     # Create the initial chains
     possible_chains = []
     possible_head_theories.each do |x|
-      possible_chains += intial_chain.copy.add_link(x)
+      possible_chains += intial_chain.copy.extension_permutaions(x)
     end
+    puts '* possible_chains: '+possible_chains.length.to_s 
         
     # Check the initial chains incase they're complete
     complete_chains = []
@@ -56,26 +60,108 @@ class TheoryConnector
       complete_chains += possible_chains.select {|x| x.complete?}
       possible_chains.delete_if {|x| x.complete?}
     end       
+    puts '* complete_chains: '+complete_chains.length.to_s
     
-    # Continue to add theories to the chains until they are complete or the theories are exhausted
-    possible_chains.each do |x|
+    possible_chains.each do |chain|
       
       # Remove the head theory to avoid it being re-used
       head_free_theories = theories.copy
-      head_free_theories.delete_if {|theory| theory.theory_id == x.first.theory_id}
-
-      complete_chains += extend_chain(x,head_free_theories)
+      head_free_theories.delete_if {|theory| theory.theory_id == chain.first.theory_id}      
+      
+      #return complete_chain(chain,head_free_theories)
+      complete_chains += complete_chain(chain,head_free_theories)
     end
     return complete_chains
     
+    # # Continue to add theories to the chains until they are complete or the theories are exhausted
+    # possible_chains.each do |chain|
+#       
+      # # Remove the head theory to avoid it being re-used
+      # head_free_theories = theories.copy
+      # head_free_theories.delete_if {|theory| theory.theory_id == chain.first.theory_id}
+# 
+      # complete_chains += extend_chain(chain,head_free_theories)
+    # end
+    # return complete_chains
+    
   end
   
-  # TODO  Need to watch out here for infinite chain connections
-  def extend_chain(chain,theories)
-    complete_chains = []
+  def complete_chain(chain,theories)
     
+    # Find theories that meet dependents
+    puts 'chain.broken_link_count: '+chain.broken_link_count.to_s
+    puts chain.length.to_s
+    
+    # => pp chain.unmet_dependents_ids
+    # => TODO I would like to be able to highlight the dependent
+    
+    chains = converge_chain(chain,theories)
+
+    return chains
+    #puts 'chain.broken_link_count: '+chain.broken_link_count.to_s 
+    
+  end
+  
+  def converge_chain(chain,theories,step=0)
+    puts '--------------------------'+step.to_s+'---------------------'
+    puts chain.write
+    
+    complete_chains = []
+    extended_chains = []
+    theories.each do |theory|
+      #last_position = chain.length-1
+      last_position = 1
+      chains = chain.add_link_to(theory,last_position,[])
+      next if chains.empty?
+      puts step.to_s+' - '+chains.length.to_s
+      
+      extended_chains += chains
+    end    
+    
+    # Are any of the chains complete
+    if extended_chains.any? {|x| x.complete? }
+      return extended_chains.select {|x| x.complete?}      
+    else
+      puts '* Chain is not complete yet'
+    end
+    
+    closer_chains = []
+    extended_chains.each do |x|
+      if ((chain.unmet_dependents_ids-x.unmet_dependents_ids).length == chain.unmet_dependents_ids.length)
+        closer_chains << x
+      end    
+    end
+    
+    unless closer_chains.empty?
+      closer_chains.each do |x|
+        complete_chains += converge_chain(x,theories,step+1)
+      end
+    else
+      puts '* Non of the chains are closer'
+      gets
+      extended_chains.each do |x|
+        theories.each do |theory|
+          copied_chain = x.copy
+          #last_position = copied_chain.length-1
+          last_position = 1
+          chains = copied_chain.add_link_to(theory,last_position,[])
+          chains.each do |z|
+            if ((chain.unmet_dependents_ids-z.unmet_dependents_ids).length == chain.unmet_dependents_ids.length)
+              complete_chains += converge_chain(z.copy,theories,step+1)
+            end            
+          end
+        end
+      end
+    end
+    
+    return complete_chains
+  end
+  
+  def extend_chain(chain,theories)
+    
+    complete_chains = []
     theories.each do |x|
-      extended_chains = chain.copy.add_link(x)
+      extended_chains = chain.copy.extension_permutaions(x)
       next if extended_chains.empty?
       
       # Don't allow the same theory to be added twice - for now
@@ -85,11 +171,14 @@ class TheoryConnector
       complete_chains += extended_chains.select {|y| y.complete?}
       extended_chains.delete_if {|y| y.complete?}
       extended_chains.each do |y|
-        #complete_chains += extend_chain(y,theories)
         complete_chains += extend_chain(y,updated_theories)
       end
     end
     return complete_chains
+  end
+
+  def remove_irrelevant_theories(theories)
+    theories.delete_if {|theory| theory.irrelevant? }
   end
 
   def create_possible_chains(runtime_method,test_cases,finish,theories)

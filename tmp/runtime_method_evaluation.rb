@@ -1,13 +1,13 @@
-class RuntimeMethodEvaluation66
+class RuntimeMethodEvaluation245
 
 	#
-	#	This is the method that is being evaluated using 'RuntimeMethodEvaluation66.new.method_2
+	#	This is the method that is being evaluated using 'RuntimeMethodEvaluation245.new.method_25
 	#
-	def method_2(var_2)
-		if(var_2 == nil)
+	def method_25(var_64)
+		if(var_64 == 'fish')
 			return 'animal'
 		end
-		return 'animal'
+		return 'vegtable'
 	end
 
 end

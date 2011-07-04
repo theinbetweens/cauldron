@@ -29,7 +29,8 @@ class Chain
     real_method = Parser.run('runtime_method')
     
     # Add the tail to the nodes list
-    add_link(@tail_theory,{1=>real_method,2=>tc})
+    #add_link(@tail_theory,{1=>real_method,2=>tc})
+    extension_permutaions(@tail_theory,{1=>real_method,2=>tc})
     
   end
   
@@ -102,6 +103,14 @@ class Chain
     end
   end
   
+  def unmet_dependents_ids
+    collection = TheoryCollection.new(@nodes)
+    return collection.dependents.inject([]) do |total,dependent|
+      total << dependent.theory_component_id unless @chain_mapping.connected_component_ids.include?(dependent.theory_component_id)
+      total
+    end
+  end  
+  
   # Returns a new chain where they are all using the same respective theory
   # variables.
   #
@@ -161,10 +170,7 @@ class Chain
   # Attempts to add a new link to form a complete chain between the head and tail.  It starts
   # by linking to the tail and then head.
   #
-  # TODO  link_permutations mighht be a more appropriate name - this name is inapproriate for the 
-  # =>    the return type.
-  #
-  def add_link(theory,value_mapping=nil)
+  def extension_permutaions(theory,value_mapping=nil)
     
     # Give the theory an instance id
     theory = theory.copy
@@ -244,6 +250,80 @@ class Chain
     end
     return res
   end  
+  
+  # Returns any number of new chains after adding this link to the position
+  # specified.
+  # 
+  # TODO  SHould I raise an error if it doesn't connect to anything?
+  #
+  def add_link_to(theory,position,value_mapping)
+    # TODO  Down and up are quite similar I should consider refactoring
+    
+    # Do through each of the dependents and then find a result with the same structure
+    mappings = [@chain_mapping.copy]
+    upward_links = @nodes[0...position]
+
+    theory.copy.dependents.each do |dependent|
+      each_result(position,upward_links) do |index,link,result|
+        if result.same_structure?(dependent)
+          new_mappings = []
+          mappings.each do |x|
+            new_mappings << x.apply_mapping_update(theory,dependent.theory_component_id,link,result.theory_component_id)
+          end
+          mappings = new_mappings
+        end
+      end
+    end
+    
+    # Go down the rest of the chain looking for exisitng links with unmet dependents
+    downward_links = @nodes[position...@nodes.length]
+    theory.copy.results.each do |result|
+      each_unmet(:dependents,position,downward_links) do |index,link,dependent|
+        if dependent.same_structure?(result)
+          new_mappings = []
+          mappings.each do |x|
+            new_mappings << x.apply_mapping_update(link,dependent.theory_component_id,theory,result.theory_component_id)
+          end
+          mappings = new_mappings
+        end
+      end
+    end
+    
+    # Strip out any mappings that are identical to original they are 
+    # links that haven't been connected with anything 
+    # (don't include the head since it only has one thing to connect to)
+    # => TODO Do I like this? It means I'm including some forced connections
+    unless @nodes.length < 2
+      
+      # Identify the mappings that are the same
+      mappings = mappings.select {|x| !@chain_mapping.same?(x) }
+      # => TODO Should inlcude error/warning and exit when there are no new mappings
+    end
+    
+    # Identify any orphan variables in the action and give them uniq global ids
+    mappings.each do |mapping|
+      theory.orphan_action_variables.each do |x|
+        mapping.add_mapping(
+          mapping.next_free_global_id,
+          theory.theory_instance_id,
+          x.theory_variable_id
+        )
+      end
+    end
+        
+    # Create a new nodes array with the new theory in place
+    updated_nodes = @nodes.copy
+    updated_nodes.insert(position,theory)
+    
+    # Create a new chain for each of the possible mappings
+    extended_chains = []
+    mappings.each do |x|
+      c = self.copy
+      new_chain = c.create!(updated_nodes,x,@uniq_theory_instance_ids.copy,@values.copy)
+      extended_chains << new_chain 
+    end
+    return extended_chains
+  end    
   
   # Implements a new the chain where all the theories are implemented.  It can 
   # only be implemented if the chain is complete e.g. all the dependents and results
@@ -333,6 +413,20 @@ class Chain
   def theory_variables
     return TheoryCollection.new(@nodes).theory_variables
   end
+
+  # Returns an array of all the depdendents in the chain that haven't
+  # been met by the front of the chain.
+  #
+  def unmet_dependents
+    results = []
+    return results if self.empty?
+    duplicate_chain = self.copy
+    last_link = duplicate_chain.pop
+    last_link.dependents.each do |dependent|
+      results.push dependent unless dependent_met?(dependent,duplicate_chain.copy)
+    end
+    return results+duplicate_chain.unmet_dependents
+  end
   
   # TODO  Maybe just move this method to the UnfiedChain class
   # Returns a set containing the intrinsic statements that created the variables.  It should look
@@ -379,7 +473,6 @@ class Chain
         written_components = unified_components.collect {|x| x.write}
         written_components = written_components.select {|x| x.include?('var'+var.theory_variable_id.to_s)}
         
-        #puts 'written_components.length: '+written_components.length.to_s
         # => DEV
         temp_component = written_components.first
 
@@ -416,6 +509,27 @@ class Chain
     end
     return res
   end
+  
+  # Returns a hash of all the unmet dependents down the chain (excluding the head)
+  # and the link/theory that it belongs to.
+  #
+  def unmet_dependents_and_link
+    results = []
+    return results if self.empty?
+    duplicate_chain = self.copy
+    
+    # Remove the head link from the chain
+    duplicate_chain.shift
+    
+    duplicate_chain.length.times do
+      last_link = duplicate_chain.pop
+      last_link.dependents.each do |d|
+        next if dependent_met?(d,duplicate_chain.copy)
+        results.push({:dependent=>d.copy,:theory=>last_link.copy}) 
+      end      
+    end
+    return results    
+  end  
   
 protected  
   
@@ -481,80 +595,6 @@ protected
     @nodes = obj
   end
   
-  # Returns any number of new chains after adding this link to the position
-  # specified.
-  # 
-  # TODO  SHould I raise an error if it doesn't connect to anything?
-  #
-  def add_link_to(theory,position,value_mapping)
-    # TODO  Down and up are quite similar I should consider refactoring
-    
-    # Do through each of the dependents and then find a result with the same structure
-    mappings = [@chain_mapping.copy]
-    upward_links = @nodes[0...position]
-
-    theory.copy.dependents.each do |dependent|
-      each_result(position,upward_links) do |index,link,result|
-        if result.same_structure?(dependent)
-          new_mappings = []
-          mappings.each do |x|
-            new_mappings << x.apply_mapping_update(theory,dependent.theory_component_id,link,result.theory_component_id)
-          end
-          mappings = new_mappings
-        end
-      end
-    end
-    
-    # Go down the rest of the chain looking for exisitng links with unmet dependents
-    downward_links = @nodes[position...@nodes.length]
-    theory.copy.results.each do |result|
-      each_unmet(:dependents,position,downward_links) do |index,link,dependent|
-        if dependent.same_structure?(result)
-          new_mappings = []
-          mappings.each do |x|
-            new_mappings << x.apply_mapping_update(link,dependent.theory_component_id,theory,result.theory_component_id)
-          end
-          mappings = new_mappings
-        end
-      end
-    end
-    
-    # Strip out any mappings that are identical to original they are 
-    # links that haven't been connected with anything 
-    # (don't include the head since it only has one thing to connect to)
-    # => TODO Do I like this? It means I'm including some forced connections
-    unless @nodes.length < 2
-      
-      # Identify the mappings that are the same
-      mappings = mappings.select {|x| !@chain_mapping.same?(x) }
-      # => TODO Should inlcude error/warning and exit when there are no new mappings
-    end
-    
-    # Identify any orphan variables in the action and give them uniq global ids
-    mappings.each do |mapping|
-      theory.orphan_action_variables.each do |x|
-        mapping.add_mapping(
-          mapping.next_free_global_id,
-          theory.theory_instance_id,
-          x.theory_variable_id
-        )
-      end
-    end
-        
-    # Create a new nodes array with the new theory in place
-    updated_nodes = @nodes.copy
-    updated_nodes.insert(position,theory)
-    
-    # Create a new chain for each of the possible mappings
-    extended_chains = []
-    mappings.each do |x|
-      c = self.copy
-      new_chain = c.create!(updated_nodes,x,@uniq_theory_instance_ids.copy,@values.copy)
-      extended_chains << new_chain 
-    end
-    return extended_chains
-  end  
-  
   # TODO  This could probably be replaced by the normal add_link_to method
   def add_tail(theory,value_mapping={})
     @nodes.push(theory.copy)
@@ -583,10 +623,6 @@ protected
     end
     linking_result = linking_results.first
   end
-  
-#  def front_of_chain
-#    return [@nodes.first.copy]
-#  end
   
   # Returns a new theory mapping that replace the theories local ids with global 
   # ids.
@@ -627,23 +663,9 @@ protected
     end
     return false
   end
-  
-  # Returns an array of all the depdendents in the chain that haven't
-  # been met by the front of the chain.
-  #
-  def unmet_dependents
-    results = []
-    return results if self.empty?
-    duplicate_chain = self.copy
-    last_link = duplicate_chain.pop
-    last_link.dependents.each do |dependent|
-      results.push dependent unless dependent_met?(dependent,duplicate_chain.copy)
-    end
-    return results+duplicate_chain.unmet_dependents
-  end
 
   # Goes up through each theory in the chain from the position
-  # specifies and yeilds any unment depndents or results and the
+  # specifies and yeilds any unment dependents or results and the
   # theory it belongs to.
   #
   # @param    approach    Either :depndents or :results 
@@ -667,27 +689,6 @@ protected
       theory.results.each {|x| yield index, theory, x}
       index += 1
     end    
-  end
-  
-  # Returns a hash of all the unmet dependents down the chain (excluding the head)
-  # and the link/theory that it belongs to.
-  #
-  def unmet_dependents_and_link
-    results = []
-    return results if self.empty?
-    duplicate_chain = self.copy
-    
-    # Remove the head link from the chain
-    duplicate_chain.shift
-    
-    duplicate_chain.length.times do
-      last_link = duplicate_chain.pop
-      last_link.dependents.each do |d|
-        next if dependent_met?(d,duplicate_chain.copy)
-        results.push({:dependent=>d.copy,:theory=>last_link.copy}) 
-      end      
-    end
-    return results    
   end
   
   # Removes any results from the head that aren't needed to meet 

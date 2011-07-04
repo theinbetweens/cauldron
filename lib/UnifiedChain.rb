@@ -64,7 +64,6 @@ class UnifiedChain < Chain
 
       node.dependents.each do |dependent|
         if index == 0
-          #chain = runtime_method.copy
           chain = partial_chain(0)
         else
           chain = partial_chain(index-1) 
@@ -74,33 +73,24 @@ class UnifiedChain < Chain
           valid_mappings = extend_mapping(valid_mappings,dependent,runtime_method.copy,test_cases.copy,chain,available_values)
           limit += 1
         end  
-        if limit > itteration_limit
-          #raise StandardError.new('Unable to resolve '+dependent.write)
-        end
-        puts 'DEPENDENT: valid_mappings.length.to_s: '+valid_mappings.length.to_s
       end
       
       unless node.action.nil?
-        puts 'node.action: '
         if index == 0
-          #chain = runtime_method.copy
           chain = partial_chain(0)
         else
           chain = partial_chain(index-1) 
         end
         limit = 0            
         until has_all_variables_been_found?(node.action,valid_mappings) or limit > itteration_limit
-          puts node.action.write
           valid_mappings = extend_mapping(valid_mappings,node.action,runtime_method.copy,test_cases.copy,chain,available_values)
           limit += 1
         end
         if limit > itteration_limit  
           raise StandardError.new('Unable to resolve action: '+node.action.write)
-        end
-        puts 'ACTION: valid_mappings.length.to_s: '+valid_mappings.length.to_s        
+        end        
       end
       
-      puts 'node.results.length: '+node.results.length.to_s
       node.results.each do |result|
         chain = partial_chain(index)
         limit = 0            
@@ -108,12 +98,6 @@ class UnifiedChain < Chain
           valid_mappings = extend_mapping(valid_mappings,result,runtime_method.copy,test_cases.copy,chain,available_values)
           limit += 1
         end
-        if limit > itteration_limit
-          pp valid_mappings
-          puts self.describe
-          #raise StandardError.new('Unable to resolve '+result.write)
-        end
-        puts 'RESULT: valid_mappings.length.to_s: '+valid_mappings.length.to_s      
           
       end
       
@@ -140,15 +124,12 @@ class UnifiedChain < Chain
       valid_mappings.each do |mapping|
 
         #next if mapping.has_key?(var.theory_variable_id)
-        puts '* Looking for variable: '+var.describe
-        puts 'chain: '+chain.class.to_s
         implemented_chain = chain.implement(Mapping.new(mapping))
         implemented_runtime_method = TheoryChainValidator.new.build_method_from_chain(
                                         implemented_chain,runtime_method.copy,test_cases.copy
                                       )        
 
         possible_values = available_values-mapping.values   
-        puts '* possible_values: '+possible_values.length.to_s
         begin 
         values = intrinsic_values_for_variable(
           var.theory_variable_id,
@@ -163,11 +144,8 @@ class UnifiedChain < Chain
           puts e
           puts valid_mappings.length
           valid_mappings = valid_mappings-[mapping]
-          puts valid_mappings.length
           next
         end
-        puts '* values'
-        pp values
         values = values.uniq      
         values.each do |value|
           copied_mapping = mapping.copy
@@ -364,7 +342,6 @@ class UnifiedChain < Chain
       intrinsic_res = res.collect {|x| x.to_intrinsic}
       value_permutaions = intrinsic_res.permutation(theory_variable_ids.length).to_a
       uniq_value_permutations = value_permutaions.collect {|x| x.to_set}.uniq
-      puts 'uniq_value_permutations: '+uniq_value_permutations.length.to_s
       possible_mappings = []
       
       theory_variable_id_permutations = theory_variable_ids.permutation(theory_variable_ids.length).to_a

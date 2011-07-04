@@ -133,11 +133,7 @@ class OpenStatement < StatementGroup
   
   def subst_variable!(id,var)
     @statement.subst_variable!(id,var)
-    puts '-----subst_variable'
-    
-    #self.each {|statement| statement.subst_variable!(id,var) }
-    self.each do |statement|
-      puts statement.write(1) 
+    self.each do |statement| 
       statement.subst_variable!(id,var)
     end
   end

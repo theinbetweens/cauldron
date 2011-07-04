@@ -22,6 +22,10 @@ class Theory
     return Marshal.load(Marshal.dump(self))
   end
   
+  def irrelevant?
+    dependents.empty? and results.empty? and action.nil?
+  end
+  
   # Identify the dependents and actions that haven't changed between adding the action.
   # 
   def identify_unchanged

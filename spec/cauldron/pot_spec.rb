@@ -55,7 +55,6 @@ module Cauldron
         sexp      = parser.process(ruby)
         sexp2cauldron = Sexp2Cauldron.new
         pot.brew(cases).reset_ids!.basic_write.should == sexp2cauldron.process(sexp).basic_write                     
-        #pot.brew(cases).basic_write.should == sexp2cauldron.process(sexp).basic_write
       end
       
     end

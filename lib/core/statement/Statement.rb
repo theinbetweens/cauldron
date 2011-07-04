@@ -536,10 +536,7 @@ class Statement < Array
   #
   def subst_variable!(id,var)
     # => TODO Use replace_variable_if?
-    puts '----------------start: '
-    puts self.write
     self.each_with_index do |token,i|
-      puts token.class.to_s
       if token.kind_of?(Variable) && id == token.variable_id
         self[i] = var
         next
@@ -548,8 +545,7 @@ class Statement < Array
         self[i] = token.subst_variable!(id,var)
       end
     end
-    puts '-----------------END'
-    puts self.write
+    self
   end
   
   # Returns a declaration for this statement.  So it will look something

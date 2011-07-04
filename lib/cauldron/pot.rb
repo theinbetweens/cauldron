@@ -6,36 +6,12 @@ module Cauldron
     VERSION = '0-01'
     
     def initialize()
-      
+      #StandardLogger.instance.level = Logger::FATAL
     end
     
     def brew(test_cases)
       
-      puts '=====================================STARTING BREW============================================'
-      
-      # * Load each of the theories from the directory
-      saved_theory_file_paths = Dir.glob(File.join(theory_repository_path,'*','dump'))
-      theories = saved_theory_file_paths.collect {|x| Marshal.load(File.open(x,'r'))}    
-      
-      runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))    
-      tc = Parser.run('test_cases')
-      tc_index_0 = IntrinsicLiteral.new(0)
-      tc_index_1 = IntrinsicLiteral.new(1)
-      param_0 = IntrinsicLiteral.new(0)
-      real_method = Parser.run('runtime_method')     
-      
-      # TODO  Still need to include last_real_method
-      last_real_method = Parser.run('last_runtime_method')
-      
-      # Create the thoery connector and the values available 
-      # TODO  These values should actually be retreived progressively
-      #potential_values = MappingValues.new([tc,tc_index_0,tc_index_1,param_0,real_method])     
-      #potential_values = MappingValues.new([tc,tc_index_0,tc_index_1,param_0,tc_param_0,real_method])
-      potential_values = MappingValues.new([tc,tc_index_0,tc_index_1,param_0,real_method])
-      connector = TheoryConnector.new(potential_values)        
-      
-      # Attempt to generate a complete chain for the solution
-      chains = connector.generate_chains(runtime_method,test_cases,theories)
+      chains = complete_chains(test_cases)
       if chains.empty?
         raise StandardError.new('Failed to generate a chain for this problem')
       end       
@@ -49,13 +25,13 @@ module Cauldron
           unique_chains << x
         end
       end
+      chains = unique_chains
       
+      runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))
       chains.each do |chain|
 
         unified_chain = chain.unify_chain
         implementation_permutations = unified_chain.implementation_permuatations(runtime_method.copy,test_cases.copy,Mapping.new)
-        
-        puts 'implementation_permuatations.length: '+implementation_permutations.length.to_s
         
         # Go through each of the permutations and create the runtime method for the chain
         validator = TheoryChainValidator.new
@@ -65,13 +41,36 @@ module Cauldron
           StandardLogger.instance.warning e
           next 
         end
-        puts '------------------------------------------------RETURNING RESULT'
-        puts result.write
-        puts result.class.to_s
         return result      
       end
       return nil
       
+    end
+    
+    def complete_chains(test_cases)
+      
+      theories = saved_theories 
+      
+      runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))    
+      tc = Parser.run('test_cases')
+      tc_index_0 = IntrinsicLiteral.new(0)
+      tc_index_1 = IntrinsicLiteral.new(1)
+      param_0 = IntrinsicLiteral.new(0)
+      real_method = Parser.run('runtime_method')     
+      
+      # Create the thoery connector and the values available 
+      # TODO  These values should actually be retreived progressively
+      potential_values = MappingValues.new([tc,tc_index_0,tc_index_1,param_0,real_method])
+      connector = TheoryConnector.new(potential_values)        
+      
+      # Attempt to generate a complete chain for the solution
+      chains = connector.generate_chains(runtime_method,test_cases,theories)      
+      return chains
+    end
+    
+    def saved_theories
+      saved_theory_file_paths = Dir.glob(File.join(theory_repository_path,'*','dump'))
+      saved_theory_file_paths.collect {|x| Marshal.load(File.open(x,'r'))}        
     end
     
     def simmer(demo)

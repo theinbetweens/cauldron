@@ -17,14 +17,7 @@ class TheoryChainValidator
       raise StandardError.new('Failed to generate a valid runtime method') if validated_chains.length == 0
       
       # Select the first chain and return the runtime method it generates
-      puts '===================== VALIDATED CHAINS ======================='
-      puts validated_chains.length
-      puts validated_chains.first.describe
-      puts '============================================'
       results =  build_method_from_chain(validated_chains.first,runtime_method.copy,test_cases.copy)
-      puts '============================================= METHOD BUILT'
-      puts results.class.to_s
-      puts results.write
       return results
       
   end 
