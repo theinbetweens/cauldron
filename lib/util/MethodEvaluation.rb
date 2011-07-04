@@ -5,10 +5,8 @@ class MethodEvaluation
   
   def evaluate_method(runtime_method,params,additional_methods=[])
 
-    # Create file to include the runtime method
-    filepath = $LOC+File.join(['tmp','runtime_method_evaluation.rb'])    
-    #filepath = $LOC+File.join(['tmp','runtime_method_evaluation_'+@@COUNTER.to_s+'.rb'])        
-    file = File.open(filepath,'w+')    
+    # Create file to include the runtime method    
+    file = Tempfile.new("runtime_method_evaluation.rb")      
     
     # A new class name is created otherwise previously declared method names are peristent.
     # e.g. if a "RuntimeMethodEvaluation" was created with the method_a it would still 
@@ -39,11 +37,13 @@ class MethodEvaluation
     end
   
     # Load the generated class
-    load filepath
+    load file.path
 
     # Use the evaluated paramaters with the evaluated runtime method
     return eval("#{class_name}.new."+runtime_method.method_name+"(*evaluated_parameters)")
-    
+  ensure 
+      file.close
+      file.unlink          
   end
   
 end

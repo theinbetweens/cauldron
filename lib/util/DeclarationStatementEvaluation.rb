@@ -4,8 +4,7 @@ class DeclarationStatementEvaluation
   def evaluate(written_statement,runtime_methods=[])
     
     # Create file to include the test method
-    filepath = $LOC+File.join(['tmp','runtime_declaration_statement_evaluation.rb'])    
-    file = File.open(filepath,'w+')
+    file = Tempfile.new("runtime_declaration_statement_evaluation.rb")   
     
     # Include the sytax for the statement in the file
     file << 'class RuntimeDeclarationStatementEvaluation'+"\n"
@@ -25,7 +24,9 @@ class DeclarationStatementEvaluation
     load filepath
     return RuntimeDeclarationStatementEvaluation.new.check      
         
-    
+  ensure 
+      file.close
+      file.unlink          
   end
   
 end

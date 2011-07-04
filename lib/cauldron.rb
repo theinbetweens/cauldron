@@ -1,3 +1,6 @@
+require 'rubygems'
+require 'tempfile'
+
 require 'required'
 
 require 'cauldron/sexp2cauldron'

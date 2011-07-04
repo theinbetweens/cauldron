@@ -10,6 +10,7 @@ group :development do
   gem "bundler", "~> 1.0.15"
   gem "jeweler", "~> 1.6.2"
   gem "rcov", ">= 0"
-  gem "ruby2ruby", "~>1.2.5"
   gem "ruby_parser", "~>2.0.6"
 end
+
+gem "ruby2ruby", "~>1.2.5"

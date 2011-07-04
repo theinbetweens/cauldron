@@ -11,8 +11,7 @@ class StatementCheck
   def valid_syntax?(statement)
     
     # Create file to include the test method
-    filepath = $LOC+File.join(['tmp','runtime_statement_check.rb'])    
-    file = File.open(filepath,'w+')
+    file = Tempfile.new("runtime_statement_check.rb")   
     
     # Include the sytax for the statement in the file
     file << 'class RuntimeStatementCheck'+"\n"
@@ -24,7 +23,7 @@ class StatementCheck
     
     # Load the newly created class and check the statement
     begin    
-      load filepath
+      load file.path
       RuntimeStatementCheck.new.check
     rescue NameError => e
       return false
@@ -37,6 +36,9 @@ class StatementCheck
     end
     return true    
     
+  ensure 
+      file.close
+      file.unlink          
   end
 
 end

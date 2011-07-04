@@ -1,39 +1,17 @@
+
 # Used to make calls to a dynamically written class.
 #
 class ClassEvaluation
-  #include WriteParameters
   @@count = 0
   
-  def evaluate_class(runtime_class,runtime_call)
-    
-    # Create file to include the test method
-    #filepath = $LOC+File.join(['tmp','runtime_class_evaluation.rb'])    
-    filepath = $LOC+File.join(['tmp',runtime_class.class_name+'.rb'])        
-    file = File.open(filepath,'w+')
-    @@count += 1
-    
-    # Include the sytax for the statement in the file
-    file << runtime_class.write
-    file.close
-
-    # Load the newly created class and check the statement
-    load filepath
-    begin 
-      return eval("#{runtime_class.class_name}.new.#{runtime_call}")
-    rescue NameError => e
-      StandardLogger.instance.info(runtime_class.write)
-      raise e
-    end
-    
+  def evaluate_class(runtime_class,runtime_call)    
+    return evaluate_class_2(runtime_class,runtime_call)
   end
   
-  # TODO  This duplicates allot of the code above
   def evaluate_class_2(runtime_class,runtime_call,*params)
     
     # Create file to include the test method
-    #filepath = $LOC+File.join(['tmp','runtime_class_evaluation.rb'])    
-    filepath = $LOC+File.join(['tmp',runtime_class.class_name+'.rb'])        
-    file = File.open(filepath,'w+')
+    file = Tempfile.new(runtime_class.class_name+'.rb')
     @@count += 1
     
     # Include the sytax for the statement in the file
@@ -41,7 +19,7 @@ class ClassEvaluation
     file.close
     
     # Load the newly created class and check the statement
-    load filepath
+    load file.path
     begin 
       # TODO  Make this more generic
       case params.length 
@@ -55,7 +33,10 @@ class ClassEvaluation
     rescue NameError => e
       StandardLogger.instance.info(runtime_class.write)
       raise e
-    end    
+    ensure 
+      file.close
+      file.unlink
+    end  
     
   end
   
