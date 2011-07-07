@@ -2,7 +2,7 @@ $LOAD_PATH << File.expand_path('../../../../lib',__FILE__)
 
 require 'cauldron'
 
-#require 'required'
+
 require 'test/unit'
 
 class TestTheoryAction < Test::Unit::TestCase
@@ -97,16 +97,12 @@ class TestTheoryAction < Test::Unit::TestCase
   def test_map_to_case_1_theory_1_action
     action = TheoryAction.new(
       TheoryStatement.new(StringToTheory.run(
-          'IfStatement.new(var2[var3][:params][var6],Equivalent.new,var2[var3][:output])'
+          'Statement.new(If.new,Container.new(var2[var3][:params][var6],Equivalent.new,var2[var3][:output]))'
         )
       ),
       StringToTheory.run('var1.statement_id')
     )
     mapping = {2=>IntrinsicTestCases.new,3=>Literal.new(0),6=>0.to_literal}
-    # assert_equal(
-      # "<runtime_method>.add_statement_at(IfStatement.new(<test_cases>[0][:params][0], Equivalent.new, <test_cases>[0][:output]),#{TheoryVariable.variable_colour(1)}var1#{TheoryVariable::NORMAL}.statement_id)",
-      # action.map_to(mapping).describe
-    # )
   end    
   
 end

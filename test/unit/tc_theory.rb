@@ -78,7 +78,7 @@ class TestTheory < Test::Unit::TestCase
     )
     action = TheoryAction.new(
       TheoryStatement.new(StringToTheory.run(
-        'IfStatement.new(var2[var3][:params][var6],Equivalent.new,var2[var3][:output])'
+        'Statement.new(Container.new(var2[var3][:params][var6],Equivalent.new,var2[var3][:output]))'
       )),
       StringToTheory.run('var1.statement_id')
     )
@@ -106,7 +106,7 @@ class TestTheory < Test::Unit::TestCase
     )
     action = TheoryAction.new(
       TheoryStatement.new(StringToTheory.run(
-        'IfStatement.new(var2[var3][:params][var6],Equivalent.new,var2[var3][:output])'
+        'Statement.new(Container.new(var2[var3][:params][var6],Equivalent.new,var2[var3][:output]))'
       )),
       StringToTheory.run('var1.statement_id')
     )

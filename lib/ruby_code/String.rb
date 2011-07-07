@@ -13,7 +13,6 @@ class String
     return '\''+x+'\''
   end
   
-  # TODO  Write tests
   def instance_call_structures
     return [
       InstanceCallContainerStructure.new(StringVariable,Chop.new),
@@ -26,11 +25,6 @@ class String
   #
   def to_var(var_id=nil,unique_id=nil)
     return StringVariable.new(self,var_id){{:variable_id => var_id,:uniq_id=>unique_id}}
-  end
-  
-  # TODO  This might have been superceeded by "to_declaration"
-  def creation
-    return self.write
   end
   
   def to_declaration

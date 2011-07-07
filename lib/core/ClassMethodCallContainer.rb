@@ -28,7 +28,6 @@ class ClassMethodCallContainer < CallContainer
     return @class_name.write+'.'+@method_call.to_literal_string
   end  
   
-  # TODO  Write tests
   # Returns true if the supplied argument is the same class, has the equivalent subjects
   # and parameters. 
   #

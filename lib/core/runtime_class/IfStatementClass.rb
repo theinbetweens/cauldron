@@ -2,6 +2,7 @@
 class IfStatementClass < ClassName
   
   def initialize
+    raise StandardError.new('kasdjflksadfjkldsa')
     super
   end
   

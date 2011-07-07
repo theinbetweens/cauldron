@@ -1,4 +1,4 @@
-#require $LOC+File.join(['lib','core','variable','Variable'])
+
 # TODO  This is not strickly a Variable - it is a data type of it's own
 
 class Unknown < BaseVariable
@@ -7,14 +7,6 @@ class Unknown < BaseVariable
   # TODO  I think requirements here can be dropped
   def initialize(*requirements)
     super(*requirements)
-  end
-  
-  # Adds a new requirement to the unknown variable.  Unlike
-  # variables requirements can be added from outside the
-  # instance.
-  #
-  def push requirement
-    variable_push requirement
   end
   
   # Returns a typed version of the variable with the correct
@@ -36,7 +28,6 @@ class Unknown < BaseVariable
     end
   end
   
-  # TODO  Test this
   # TODO  Should 'Unknown' have a variable id
   def copy  
     result = self.class.new(*self) {{:variable_id => variable_id,:uniq_id=>@uniq_id,:uniq_id_history=>@uniq_id_history.copy}}
@@ -97,7 +88,6 @@ class Unknown < BaseVariable
   
   def to_var(id=nil,uniq_id=nil)
     StandardLogger.instance.warning('"Unknown" is NOT a variable - it is a data type')
-    #super(id)
     return UnknownVariable.new(self) {{:variable_id => id,:uniq_id=>uniq_id}}
   end
   

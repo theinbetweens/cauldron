@@ -246,11 +246,11 @@ class TestStringToTheory < Test::Unit::TestCase
       StringToTheory.run("if(var9 == (var5[:params][var6].length+1))\nend")
     }    
     assert_nothing_raised(){
-      StringToTheory.run("IfStatement.new(var2[var3][:params][var6],Equivalent.new,var2[var3][:output])")
+      StringToTheory.run("Statement.new(If.new,Container.new(var2[var3][:params][var6],Equivalent.new,var2[var3][:output]))")
     }
     assert_equal(
       5,
-      StringToTheory.run("IfStatement.new(var2[var3][:params][var6],Equivalent.new,var2[var3][:output])").select_all {|x| x.kind_of?(ArrayAccess)}.length
+      StringToTheory.run("Statement.new(If.new,Container.new(var2[var3][:params][var6],Equivalent.new,var2[var3][:output]))").select_all {|x| x.kind_of?(ArrayAccess)}.length
     )
     # <var1>.history(<var2>[<var3>][:params]).any? { |x| x.statement_id == <var8>.statement_id }
     assert_nothing_raised(){

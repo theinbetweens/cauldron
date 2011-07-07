@@ -46,7 +46,6 @@ class MethodUsage < Array
     return MethodUsageVariable.new(*self.collect {|x| x.copy}) {{:variable_id => id,:uniq_id=>uniq_id}}
   end
   
-  # TODO  Test this 
   def copy
     return MethodUsage.new(*self.collect {|x| x.copy})
   end
