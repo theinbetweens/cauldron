@@ -74,7 +74,6 @@ require 'test/unit/core/statement/tc_statement_dependencies'
 require 'test/unit/tc_statement_structure_2'
 require 'test/unit/tc_variable_declaration'
 
-require 'test/tc_contextual_variables'
 require 'test/tc_describe'
 require 'test/tc_method'
 require 'test/tc_requirement'
