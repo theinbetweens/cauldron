@@ -377,11 +377,6 @@ class TestTheory < Test::Unit::TestCase
   def test_map_to_case1_theory_1
     
     theory =Theory.load_theory(9)
-#    runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))
-#    test_cases = [
-#      {:params=>['something'], :output=>'exists'},
-#      {:params=>['my willpower'], :output=>'does not exist'}
-#    ]
     mapping = Mapping.new({
       1=>IntrinsicRuntimeMethod.new,
       2=>IntrinsicTestCases.new,
@@ -389,9 +384,6 @@ class TestTheory < Test::Unit::TestCase
       4=>1.to_literal,
       6=>1.to_literal
     })
-    puts theory.write
-    puts theory.all_theory_variables.length
-    puts theory.map_to(mapping).write
     assert_equal(
       0,
       theory.map_to(mapping).all_theory_variables.length

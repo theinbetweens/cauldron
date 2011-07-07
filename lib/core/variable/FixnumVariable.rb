@@ -4,15 +4,14 @@ class FixnumVariable < TypeVariable
     super(val,id)
   end
   
-  # TODO  Write test
   def to_declaration
     return VariableDeclaration.new('FixnumVariable',@value.to_declaration)
   end  
   
-  # TODO  I wan't to get rid of this call entirly
-  def copy_contextual_variable
-    return copy
-  end    
+  # # TODO  I wan't to get rid of this call entirly
+  # def copy_contextual_variable
+    # return copy
+  # end    
   
   # Returns true if the variable type is Fixnum,  this is used 
   # to determine whether a BlockVariable or VariableContainer 

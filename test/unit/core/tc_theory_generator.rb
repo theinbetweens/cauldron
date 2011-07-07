@@ -58,7 +58,7 @@ class TestTheoryGenerator < Test::Unit::TestCase
     # var1 = RuntimeMethod, var2 = test_cases, var3 = 0, var4 = 0
     action_one = TheoryAction.new(
       TheoryStatement.new(StringToTheory.run(
-          'IfStatement.new(var2[var3][:params][var4],Equivalent.new,var2[var3][:output])'
+          'Statement.new(If.new,Container.new(var2[var3][:params][var4],Equivalent.new,var2[var3][:output]))'
         )
       ),
       StringToTheory.run('var1.statement_id')
@@ -81,7 +81,7 @@ class TestTheoryGenerator < Test::Unit::TestCase
     # var1 = RuntimeMethod, var2 = test_cases, var3 = 0, var4 = 0
     action_one = TheoryAction.new(
       TheoryStatement.new(StringToTheory.run(
-          'IfStatement.new(var2[var3][:params][var4],Equivalent.new,var2[var3][:output])'
+          'Statement.new(If.new,Container.new(var2[var3][:params][var4],Equivalent.new,var2[var3][:output]))'
         )
       ),
       StringToTheory.run('var1.statement_id')

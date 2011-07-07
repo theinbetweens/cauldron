@@ -470,29 +470,12 @@ class Statement < Array
   # TODO  Write test to retrieve declarared variable in a statement with two variables
   #       e.g. varA = varB-varC
   # 
-  # TODO  Write tests for this  
-  #
   def find_variable(id)
-    
-    # Go through each element of code in the statement and find instance calls and variables
-    self.each do |code|
-      next unless code.kind_of? Variable or code.kind_of? InstanceCallContainer
-      
-      # Determine if the variable matches the id 
-      if code.variable_id == id
-                
-        # Does the statement declare a new variable?     
-        if decalares_variable?
-          return find_variable_in_declaration_statement(code)
-        else
-          return code.copy
-        end
-        
-      end
-      
+    results = variables.select() {|x| x.variable_id == id}
+    if results.empty?
+      raise FailedToFindVariableError.new('Couldn\'t find variable with id = '+id.to_s+' in "'+self.write+'"')
     end
-
-    raise FailedToFindVariableError.new('Couldn\'t find variable with id = '+id.to_s+' in "'+self.write+'"')
+    return results.first
   end        
   
   # Returns the variable in this statement with uniq_id specified.  In
@@ -900,121 +883,6 @@ class Statement < Array
   end    
         
 protected
-
-  # Presumes this is a declaration statement and attempts to return
-  # specified variable in the context of the method.
-  #
-  def find_variable_in_declaration_statement(var)
-
-    # Duplicate the variable
-    # TODo  I think I want to get rid of this "copy_contextual_variable"and just use copy
-    copied_variable = var.copy_contextual_variable
-
-    # Is the variable declared in this statement?
-    if(self[0].variable_id == copied_variable.variable_id)
-
-      # Create a requirement reflecting the declaration statement
-      # e.g varA = 'test'.chop becomes self = 'test'.chop          
-      # statement_requirement = declared_variable_requirement
-
-      # Add this requirement to the variable and return it
-      # copied_variable.push(statement_requirement)
-      
-      # TODO  I think determining the value of variables at this point should
-      #       be removed or re-thought.  I think the typify method is more useful.
-      #       The problem is that each statement is dependent on other statements
-      #       or method calls.        
-        
-#      # NOTE  I have included the untyped_variables call becuase it was continually throwing
-#      #       since so many statements include method calls.
-#      if self.untyped_variables.length == 0 && !contains_method_call?
-#        # Convert the variable to be typed (if possible)
-#        if copied_variable.kind_of?(Unknown)
-#          begin
-#            return copied_variable.classify(CodeEvaluation.new.evaluate_code(literalise))
-#            # TODO  I shouldn't use NameError - since I want to catch badly formed syntax - I 
-#            #       should have a custom error for bad syntax that will occu
-#          rescue NameError => e
-#            StandardLogger.log(' -- Statement: find_variable_in_declaration_statement'+e)          
-#          end
-#        end
-#      end
-      
-      return copied_variable
-        
-    else
-      
-      # The variable isn't declared in this statement
-      # So if varB is the declared variriable we might have
-      # varB = varA.chop
-      # 
-      # This would create the requirement self.chop = varB
-      #
-      # Declare the statement requirement to be created
-      statement_requirement = nil
-      
-      # Does the statement only have three elements
-      if(self.length == 3)
-        
-        # Create a requirement for the variable in the statement
-        if(self[2].kind_of?(InstanceCallContainer))
-          
-          # Create the matching requirement
-          statement_requirement = Requirement.new(InstanceCallContainer.new(This.new,self[2].method_call.class.new),Equal.new,self[0].copy)
-          
-        elsif(self[2].kind_of?(Variable))
-        
-          # Create the requirement reflecting the statement
-          statement_requirement = Requirement.new(This.new,Equal.new,self[0].copy)  
-        
-        else
-          raise StandardError.new('Unexpected class type '+self[2].class.to_s)          
-        end
-        
-      else
-        
-        raise StandardError.new('Unexpected statement length'+self.length.to_s+' for requirement re-write') unless self.length == 5
-        
-        # Handle the case were we have varA = varB-varC and we want varB's requirement
-        # e.g. we need varB = varA+varC
-        
-        # TODO  This can probably be re-written to be more abstract
-        # Case varA = varB-varC 
-        if( self[2].kind_of?(Variable) and self[3].kind_of?(Subtract) and self[4].kind_of?(Variable) )
-          
-          # where varB is the subject -> this = varA + varC
-          if(self[2].variable_id == var.variable_id)
-            statement_requirement = Requirement.new(This.new,Equal.new,self[0].copy,Addition.new,self[4].copy)
-          end
-          
-          # where varC is the subject -> this = varB-varA
-          if(self[4].variable_id == var.variable_id)
-            statement_requirement = Requirement.new(This.new,Equal.new,self[2].copy,Subtract.new,self[0].copy)
-          end
-          
-        elsif(self[2].kind_of?(Variable) and self[3].kind_of?(Addition) and self[4].kind_of?(Variable) )
-        
-          if(self[2].variable_id == var.variable_id)
-            statement_requirement = Requirement.new(This.new,Equal.new,self[0].copy,Subtract.new,self[4].copy)
-          end
-          
-          if(self[4].variable_id == var.variable_id)
-            statement_requirement = Requirement.new(This.new,Equal.new,self[2].copy,Addition.new,self[0].copy)
-          end                
-          
-        else
-          raise StandardError.new('Unknown statement structure "'+self.write+'"')
-       end
-     
-      end
-   
-        # Adding the new requirement to the variable
-      copied_variable.push(statement_requirement)
-      return copied_variable                
-  
-    end
-    
-  end  
   
   # @param  var       The subsitute variable 
   # @param  id        The id of the substitee

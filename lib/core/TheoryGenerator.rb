@@ -232,10 +232,6 @@ class TheoryGenerator
         )
       end
     end
-    # Add the 'if(var1 == var2)' statement
-    # TODO  Might only allow values in the action at this point
-    # 'IfStatement.new(var2[var3][:params][var6],Equivalent.new,var2[var3][:output])'
-    # TODO  Should the values be equal at this point??
     
     # Exclude the runtime method from being included as a value (.write method becomes messy)
     # also excludes the orginal test_cases.

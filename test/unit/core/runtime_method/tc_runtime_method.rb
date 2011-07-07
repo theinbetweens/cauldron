@@ -163,31 +163,6 @@ class TestRuntimeMethod < Test::Unit::TestCase
     
   end
   
-  # Tests that the literal value of each variable in the method can
-  # be evaluated.
-  # 
-  def test_literal_value_of_var
-   
-    # Check that each of the variables has the correct evaluated value
-    local_var_a = 'test'.to_var
-    local_var_b = 'LividKel'.to_var
-    assert_equal(
-      local_var_a.value,
-      @simple_method.literal_value_of_var(
-        @method_var_a.variable_id,
-        ParametersContainer.new(local_var_a,local_var_b)
-      )
-    )        
-    assert_equal(9,@simple_method.literal_value_of_var(@var_b.variable_id,ParametersContainer.new(local_var_a,local_var_b)))        
-    assert_equal(local_var_a.value.clone.chop,@simple_method.literal_value_of_var(@var_c.variable_id,ParametersContainer.new(local_var_a,local_var_b)))            
-    assert_equal(local_var_a.value.clone.chop.length,@simple_method.literal_value_of_var(@var_d.variable_id,ParametersContainer.new(local_var_a,local_var_b)))            
-    assert_equal(12,@simple_method.literal_value_of_var(@var_e.variable_id,ParametersContainer.new(local_var_a,local_var_b)))            
-
-    # Check that an exception is raised for not existant variables
-    assert_raises(FailedToFindVariableError){@simple_method.literal_value_of_var(Variable.variable_id+1,ParametersContainer.new(local_var_a,local_var_b))} 
-        
-  end
-  
   # Tests the RuntimeMethods abilitity to identify what comninations
   # of variables can be used to call this method.
   #

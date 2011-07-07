@@ -229,25 +229,6 @@ class TestStatement < Test::Unit::TestCase
     assert_raises(UnknownStatementType){Statement.new(RequirementsVariable.new,RequirementsVariable.new).statement_type}
   end
   
-  # Presumes the statement is a declaration statement and returns the
-  # specified variable in context.
-  #
-  def test_find_variable_in_declaration_statement
-    
-    # Attempt to retrieve both variables used in the statement (var_c = var_b.chop)
-    assert(@statement_b.send(:find_variable_in_declaration_statement,@var_c).kind_of?(Variable))
-    assert(@statement_b.send(:find_variable_in_declaration_statement,@var_b).kind_of?(Variable))    
-    
-    # Attempt to retrieve variable not used in statement
-    assert(@statement_b.send(:find_variable_in_declaration_statement,@var_b).kind_of?(Variable))        
-    
-    # Attempt to retrieve variable for statement with three variables
-    assert(@statement_c.send(:find_variable_in_declaration_statement,@var_e).kind_of?(Variable))                
-    assert(@statement_c.send(:find_variable_in_declaration_statement,@var_f).kind_of?(Variable))                
-    assert(@statement_c.send(:find_variable_in_declaration_statement,@var_g).kind_of?(Variable))            
-    
-  end
-  
   def test_required_variable_ids
     
     # Confirm that the simple statement var = 'daggerfall' has no dependencies
@@ -514,39 +495,6 @@ class TestStatement < Test::Unit::TestCase
     end
     assert_equal(statement_e.write,modified_statement_e.write)
       
-  end
-  
-  def test_to_var
-    
-    # Create a simple statement and check that it can be changed to a statement variable
-    assert_equal(StatementVariable,@simple_statement.to_var.class)
-    
-    # Check that the content of the statement is pre-served
-    assert_equal(@simple_statement.write,@simple_statement.to_var.value.write)
-    assert_equal(@chop_wally.write,@chop_wally.to_var.value.write)    
-    
-    # Check that variable ids are maintained and classes are maintained
-    chop_wally_var = @chop_wally.to_var
-    @chop_wally.each_variable do |x|
-      assert_equal(x.variable_id,chop_wally_var.value.find_variable(x.variable_id).variable_id)
-      assert_equal(x.class,chop_wally_var.value.find_variable(x.variable_id).class)
-    end
-    
-    # Check that the id of the generated statement variable can be set.
-    set_variable_id = 0
-    variable_with_set_id = @simple_statement.to_var(set_variable_id)
-    assert_equal(0,variable_with_set_id.variable_id)
-    
-    # Change the id's are retained when using blocks
-    assert_equal(89,@simple_statement.to_var(89,101).variable_id)
-    # TODO  I should check that ids are retained inside the value of the statement variable
-    #raise StandardError.new('jsadksadfjksd')
-    runtime_method_a = RuntimeMethod.new(MethodUsage.new)
-    runtime_method_a << @simple_statement
-    realised_runtime_method_a = runtime_method_a.realise2([])
-    assert_equal(@simple_statement.first.variable_id,realised_runtime_method_a.first.first.variable_id)
-    assert_equal(@simple_statement.first.uniq_id,realised_runtime_method_a.first.first.uniq_id)    
-    
   end
   
   def test_find_actual_variable
