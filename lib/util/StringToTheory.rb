@@ -61,7 +61,6 @@ class StringToTheory < Parser
   def self.parse_const(token)
     constants = {
       'Statement'=>'StatementClass',
-      'IfStatement'=>'IfStatementClass',
       'Return'=>'ReturnClass',
       'InstanceCallContainer'=>'InstanceCallContainerClass',
       'StringLength'=>'StringLengthClass',
