@@ -65,6 +65,47 @@ module Cauldron
         pot.brew(cases).reset_ids!.basic_write.should == sexp2cauldron.process(sexp).basic_write                     
       end
       
+      context 'it has both demo one and two loaded' do
+        before(:each) {
+          @pot = Cauldron::Pot.new
+          @pot.clear
+          @pot.simmer(demo_one)
+          @pot.simmer(demo_two)
+        }
+        it 'can generate a solution like demo 1' do
+          cases = []
+          cases << convert_to_example(separate_values("'pip','pip'"))
+          cases << convert_to_example(separate_values("'rowiage','rowiage'"))
+          ruby      =  "
+            def method_0(var_0)
+              \treturn var_0
+            end
+          "
+          parser    = RubyParser.new          
+          sexp      = parser.process(ruby)
+          sexp2cauldron = Sexp2Cauldron.new      
+          @pot.brew(cases).reset_ids!.basic_write.should == sexp2cauldron.process(sexp).basic_write                              
+        end
+        it 'can generate a solution like demo 2(it needs to discount the demo 1 solution)' do
+          #pending('I need to tidy the generation process')
+          cases = []
+          cases << convert_to_example(separate_values("'sparky','bro'"))
+          cases << convert_to_example(separate_values("'kel','sis'"))
+          ruby      =  "
+                          def method_0(var_0)
+                            \tif(var_0 == 'sparky')
+                            \t\treturn 'bro'
+                            \tend
+                            \treturn 'sis'
+                          end        
+                       "                    
+          parser    = RubyParser.new          
+          sexp      = parser.process(ruby)
+          sexp2cauldron = Sexp2Cauldron.new
+          @pot.brew(cases).reset_ids!.basic_write.should == sexp2cauldron.process(sexp).basic_write
+        end
+      end
+      
     end
     
   end

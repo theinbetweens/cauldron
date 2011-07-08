@@ -21,7 +21,7 @@ module ActsAsStatement
   #
   def classes_match?(*classes)
     return false unless classes.length == self.length
-    self.zip(classes) do |x,y|  
+    @nodes.zip(classes) do |x,y|  
       return false unless x.instance_of?(y)
     end
     return true

@@ -1,4 +1,4 @@
-class Statement < Array
+class Statement
   include PrintVariables
   include ActsAsStatement
   include ActsAsCode
@@ -7,7 +7,9 @@ class Statement < Array
   # TODO  scope and statement level are confusing - not sure of the difference (I think it's legacy)
   attr_writer :scope, :statement_level, :overrides, :statement_id
   
-  alias :array_push :push  
+  #alias :array_push :push
+  
+    
   
   @@statement_id = 0
   
@@ -27,9 +29,12 @@ class Statement < Array
     # Sets the flag that indicates the structure of the statement
     @structure = nil
     
+    @nodes = []
+    
     # Add the parameters to the array 
     parameters.each do |code|
-      self.push(code.copy)
+    #  self.push(code.copy)
+      @nodes.push(code.copy)
     end
     
     # TODO  I might change the statement_id to be determined by the structure
@@ -63,7 +68,7 @@ class Statement < Array
   # as not.
   #
   def identify_overriding_statements(already_declared=[])
-    [BaseVariable,Equal].zip(self) do |x,y|
+    [BaseVariable,Equal].zip(@nodes) do |x,y|
       return unless y.kind_of?(x)
     end
     already_declared.each do |x|
@@ -268,7 +273,8 @@ class Statement < Array
   def push(code)
     
     # Add the new piece of code to the statement
-    array_push(code)   
+    #array_push(code)
+    @nodes << code   
     
     # Update the requirements to reflect the change
     update
@@ -277,6 +283,48 @@ class Statement < Array
   
   def add(element)
     push(element)
+  end
+  
+  def select_all(results=[],&block)
+    return @nodes.select_all(results,&block)
+  end
+  
+  def each
+    @nodes.each {|x| yield x}
+  end
+  
+  def last
+    return @nodes.last
+  end
+  
+  def each_with_index
+    @nodes.each_with_index do |x,i|
+      yield x, i
+    end  
+  end
+  
+  def []=(index,value)
+    @nodes[index] = value
+  end
+  
+  def [](index)
+    return @nodes[index]
+  end  
+  
+  def length
+    return @nodes.length
+  end
+  
+  def select_all(results=[],&block)
+    return @nodes.select_all(results,&block)
+  end
+  
+  def first
+    @nodes.first
+  end
+  
+  def clear
+    @nodes.clear
   end
   
   # Indicates whether the statement is one that assigns
@@ -432,8 +480,8 @@ class Statement < Array
   # @param  var   The variable to replace any elements that match the block.
   #
   def replace_variable_if(var,&block)
-    container = self.copy.clear
-    self.each do |x|
+    container = []
+    @nodes.each do |x|
       if x.kind_of?(Variable)
         if block.call(x)
           container.push(var)
@@ -446,7 +494,10 @@ class Statement < Array
       end
       container.push(x.copy)
     end
-    return container
+    #return self.copy(*container)
+    copied = self.copy().clear
+    container.each {|x| copied.push(x) }
+    return copied
       
   end
   
@@ -599,7 +650,7 @@ class Statement < Array
   #       and come up with a solution then.
   #
   def to_literal_string
-    return self.inject('') do |complete,part|
+    return @nodes.inject('') do |complete,part|
       complete += part.to_literal_string
     end
   end  
@@ -719,7 +770,7 @@ class Statement < Array
   # statement.  In all likelyhood there will no more than one.
   #
   def find_all_required_runtime_methods
-    defcalls = self.find_all {|x| x.kind_of?(DefCall)} 
+    defcalls = @nodes.find_all {|x| x.kind_of?(DefCall)} 
     return defcalls.collect {|x| x.runtime_method}
   end  
   

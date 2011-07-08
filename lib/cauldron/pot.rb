@@ -3,70 +3,76 @@ module Cauldron
   class Pot
     include ContainsTheories  
     
-    VERSION = '0-01'
+    VERSION = '0-1-1'
     
     def initialize()
-      #StandardLogger.instance.level = Logger::FATAL
+      StandardLogger.instance.level = Logger::FATAL
     end
     
     def brew(test_cases)
       
-      chains = complete_chains(test_cases)
-      if chains.empty?
+      exclude = []
+      chain = next_chain(test_cases,exclude)  
+      if chain.nil?
         raise StandardError.new('Failed to generate a chain for this problem')
       end       
       
-      # => TODO This probably shouldn't be needed
-      written_chains = chains.collect {|x| x.write}
-      unique_written_chains = written_chains.uniq
-      unique_chains = []
-      chains.each do |x|
-        unless unique_chains.any? {|y| y.write == x.write}
-          unique_chains << x
-        end
-      end
-      chains = unique_chains
-      
       runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))
-      chains.each do |chain|
-
+      if chain_valid?(chain,test_cases.copy)
+        validator = TheoryChainValidator.new
         unified_chain = chain.unify_chain
         implementation_permutations = unified_chain.implementation_permuatations(runtime_method.copy,test_cases.copy,Mapping.new)
-        
-        # Go through each of the permutations and create the runtime method for the chain
-        validator = TheoryChainValidator.new
-        begin 
-          result = validator.build(runtime_method.copy,test_cases.copy,implementation_permutations)
-        rescue StandardError => e
-          StandardLogger.instance.warning e
-          next 
-        end
-        return result      
+        return validator.build(runtime_method.copy,test_cases.copy,implementation_permutations)
+      else
+        exclude << chain.theories_sequence
+        chain = next_chain(test_cases,exclude)
+        if chain_valid?(chain,test_cases.copy)
+          validator = TheoryChainValidator.new
+          unified_chain = chain.unify_chain
+          implementation_permutations = unified_chain.implementation_permuatations(runtime_method.copy,test_cases.copy,Mapping.new)
+          return validator.build(runtime_method.copy,test_cases.copy,implementation_permutations)
+        end        
       end
       return nil
       
     end
     
+    def chain_valid?(chain,test_cases)
+      runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))
+      unified_chain = chain.unify_chain
+      implementation_permutations = unified_chain.implementation_permuatations(runtime_method.copy,test_cases.copy,Mapping.new)
+      
+      # Go through each of the permutations and create the runtime method for the chain
+      validator = TheoryChainValidator.new
+      begin 
+        result = validator.build(runtime_method.copy,test_cases.copy,implementation_permutations)
+      rescue StandardError => e
+        StandardLogger.instance.warning e 
+        return false
+      end
+      return true      
+    end
+    
     def complete_chains(test_cases)
+      return [next_chain(test_cases)]
+    end
+    
+    def next_chain(test_cases,exclude=[])
       
       theories = saved_theories 
       
+      res = theories.collect {|x| x.theory_id }
+
       runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))    
-      tc = Parser.run('test_cases')
-      tc_index_0 = IntrinsicLiteral.new(0)
-      tc_index_1 = IntrinsicLiteral.new(1)
-      param_0 = IntrinsicLiteral.new(0)
-      real_method = Parser.run('runtime_method')     
-      
-      # Create the thoery connector and the values available 
-      # TODO  These values should actually be retreived progressively
-      potential_values = MappingValues.new([tc,tc_index_0,tc_index_1,param_0,real_method])
+
+      potential_values = MappingValues.new([])
       connector = TheoryConnector.new(potential_values)        
       
       # Attempt to generate a complete chain for the solution
-      chains = connector.generate_chains(runtime_method,test_cases,theories)      
-      return chains
-    end
+      chains = connector.generate_chains(runtime_method,test_cases,theories,exclude)      
+      return chains.first
+            
+    end    
     
     def saved_theories
       saved_theory_file_paths = Dir.glob(File.join(theory_repository_path,'*','dump'))
@@ -133,7 +139,11 @@ module Cauldron
       
       # Define the theory's directory
       theory_path = File.join(repository,theory.theory_id.to_s)
-      raise StandardError.new('Directory already exists - how as this happened?') if File.exists?(theory_path)
+      if File.exists?(theory_path)
+        puts theory_path+' already exists'
+        #raise StandardError.new('Directory already exists - how as this happened?') if File.exists?(theory_path)
+        return
+      end
       
       # Save a file containing the theory
       FileUtils.mkdir_p(theory_path)

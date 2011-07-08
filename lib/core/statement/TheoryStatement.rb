@@ -21,6 +21,7 @@ class TheoryStatement < Statement
       end
       self[i].replace_theory_variables!(mapping) if self[i].respond_to?(:replace_theory_variables!)
     end
+    self
   end
   
   # TODO  This method was just nicked from TheoryDependent 

@@ -3,6 +3,7 @@ class Chain
   # TODO  This access is proably temporary
   attr_reader :chain_mapping
 
+  @@default_tail_theory = nil
   # 
   # @param  nodes     An array of theories in order
   # 
@@ -13,13 +14,10 @@ class Chain
     @uniq_theory_instance_ids = ('A'...'Z').to_a 
     
     # Create a result version of 'finish'
-    finish = Parser.run("if(runtime_method.all_pass?(test_cases))\nreturn true\nend")
-    tail_theory = finish.write
-    tail_theory.gsub!('runtime_method','var1')
-    tail_theory.gsub!('test_cases','var2')
-    tail_dependent = TheoryDependent.new(StringToTheory.run(tail_theory))
+
     # TODO  Drop @tail_theory as a instance variable
-    @tail_theory = Theory.new([tail_dependent],nil,[])
+    #@tail_theory = Theory.new([tail_dependent],nil,[])
+    @tail_theory = Chain.default_tail_theory
     
     # NOTE: Now the head and tail are using the same ids for their variables
     @chain_mapping = ChainMapping.new()
@@ -32,6 +30,20 @@ class Chain
     #add_link(@tail_theory,{1=>real_method,2=>tc})
     extension_permutaions(@tail_theory,{1=>real_method,2=>tc})
     
+  end
+  
+  def self.default_tail_theory
+    if @@default_tail_theory.nil?
+      finish = Parser.run("if(runtime_method.all_pass?(test_cases))\nreturn true\nend")
+      tail_theory = finish.write
+      tail_theory.gsub!('runtime_method','var1')
+      tail_theory.gsub!('test_cases','var2')
+      tail_dependent = TheoryDependent.new(StringToTheory.run(tail_theory))
+      @@default_tail_theory = Theory.new([tail_dependent],nil,[])
+      @@default_tail_theory.copy
+    else
+      @@default_tail_theory.copy
+    end    
   end
   
   # TODO  I want to drop allot of these quick methods
@@ -110,6 +122,10 @@ class Chain
       total
     end
   end  
+  
+  def theories_sequence
+    @nodes.collect {|x| x.theory_id}
+  end
   
   # Returns a new chain where they are all using the same respective theory
   # variables.

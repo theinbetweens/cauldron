@@ -206,7 +206,7 @@ class RuntimeMethod < StatementGroup
     
     # Confirms that supplied statement is a statement
     unless statement.kind_of? Statement or statement.kind_of?(StatementGroup)
-      raise StandardError.new('Only statements can be included in a runtime method')
+      raise StandardError.new('Only statements can be included in a runtime method not '+statement.class.to_s)
     end
     
     # Check if the statement creates a new variable - and add it the available variables

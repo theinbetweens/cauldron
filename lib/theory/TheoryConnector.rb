@@ -36,7 +36,7 @@ class TheoryConnector
   # Returns an array of complete chains that conclude with a valid 
   # runtime method.
   #
-  def generate_chains(runtime_method,test_cases,theories)
+  def generate_chains(runtime_method,test_cases,theories,exclude=[])
     
     theories = remove_irrelevant_theories(theories)
 
@@ -58,10 +58,15 @@ class TheoryConnector
       complete_chains += possible_chains.select {|x| x.complete?}
       possible_chains.delete_if {|x| x.complete?}
     end       
-    return complete_chains unless complete_chains.empty?
+    complete_chains = complete_chains.delete_if do |x|
+      exclude.any? {|y| y == x.theories_sequence}
+    end
+    unless complete_chains.empty? 
+      return complete_chains 
+    end
     
     possible_chains.each do |chain|
-      
+        
       # Remove the head theory to avoid it being re-used
       head_free_theories = theories.copy
       head_free_theories.delete_if {|theory| theory.theory_id == chain.first.theory_id}      
@@ -73,54 +78,67 @@ class TheoryConnector
   end
   
   def complete_chain(chain,theories)
-    chains = converge_chain(chain,theories)
-    return chains 
+    res = catch(:complete) do
+      converge_chain(chain,theories)
+    end
+    
+    #return chains
+    return [res] 
     
   end
   
+  def remove_existing_theories(chain,theories)
+    theories.delete_if do |theory|
+      chain.theories_sequence.include?(theory.theory_id)
+    end    
+  end
+  
   def converge_chain(chain,theories,step=0)
+    theories = remove_existing_theories(chain.copy,theories)
+    
+    extended_chains = add_to_chain(chain.copy,theories,step)
+    
+    if extended_chains.any? {|x| x.complete? }
+      res2 = extended_chains.select {|x| x.complete?}
+      throw :complete, res2.first      
+    end
+    closer_chains = closer_chains(chain.copy,extended_chains)
 
     complete_chains = []
-    extended_chains = []
-    theories.each do |theory|
-      last_position = 1
-      chains = chain.add_link_to(theory,last_position,[])
-      next if chains.empty?      
-      extended_chains += chains
-    end    
-    
-    # Are any of the chains complete
-    if extended_chains.any? {|x| x.complete? }
-      return extended_chains.select {|x| x.complete?}      
-    end
-    
-    closer_chains = []
-    extended_chains.each do |x|
-      if ((chain.unmet_dependents_ids-x.unmet_dependents_ids).length == chain.unmet_dependents_ids.length)
-        closer_chains << x
-      end    
-    end
-    
     unless closer_chains.empty?
       closer_chains.each do |x|
         complete_chains += converge_chain(x,theories,step+1)
       end
-    else
+    else 
       extended_chains.each do |x|
-        theories.each do |theory|
-          copied_chain = x.copy
-          last_position = 1
-          chains = copied_chain.add_link_to(theory,last_position,[])
-          chains.each do |z|
-            if ((chain.unmet_dependents_ids-z.unmet_dependents_ids).length == chain.unmet_dependents_ids.length)
-              complete_chains += converge_chain(z.copy,theories,step+1)
-            end            
-          end
-        end
+        complete_chains += converge_chain(x,theories,(step+1))
       end
     end
     
     return complete_chains
+  end
+  
+  def closer_chains(chain,chains)
+    closer_chains = []
+    chains.each do |x|
+      if ((chain.unmet_dependents_ids-x.unmet_dependents_ids).length == chain.unmet_dependents_ids.length)
+        closer_chains << x
+      end    
+    end    
+    return closer_chains
+  end
+  
+  def add_to_chain(chain,theories,step)
+    extended_chains = []
+    theories.each do |theory|
+      last_position = 1
+      chains = chain.add_link_to(theory,last_position,[])
+      
+      #chains = chain.extension_permutaions(theory,[])
+      next if chains.empty?
+      extended_chains += chains
+    end
+    return extended_chains    
   end
   
   def extend_chain(chain,theories)
@@ -246,88 +264,6 @@ class TheoryConnector
   
   # Returns a new chain so that they all use consistent theory variables ids
   #
-  # @param  chain   An array of theories e.g.
-  #                 [<#Theory>,<#Theory>,<#Theory>,<#Theory>]
-  # 
-  #                 The last chain contains the finished theory.
-  #  
-  # It is difficult to generate all the arrangements for the chain as soon as
-  # there start to be a large number of dependents and results.  There is just too
-  # many permutations.  Once any connection is decided upon e.g. this dependent to 
-  # that result then the number of permutations is reduced.  As such they need to 
-  # be updated in parallet.
-  #
-  # 
-  #
-  def unify_chain2(chain)
-    
-    unified_chains = []
-    
-    # Reverse the chain so that the finish is the first theory
-    reversed_chain = chain.reverse
-    
-    # This method needs to map the theory variables used in one theory to the 
-    # rest.  This basically means there is a global theory that has a respective
-    # id in each of the other theories in the chain. e.g.
-    #
-    # +----------+--------+--------+--------+--------+
-    # |Global #ID| link#1 | link#2 | link#3 | link#4 |
-    # +----------+--------+--------+--------+--------+
-    # |    0     |   1    |   1    |   2    |   89   |
-    # +----------+--------+--------+--------+--------+
-    # |    1     |   2    |   4    |   6    |   1    |
-    # +----------+--------+--------+--------+--------+
-    #
-    
-    # {global#ID=> #{link#1=>1,#link#2=>5}
-    
-    # Take the first theory and set the global theory variables to the first link
-    global_theory_variables = {}
-    
-    # * Pop the first link in the chain and set ids of the theory variables
-    link = chain.pop
-    link.all_theory_variables.each do |theory_variable|
-      
-      # For the first link I'm just going to use the same id as the first link
-      global_theory_variables[theory_variable.theory_variable_id] = {link.theory_id=>theory_variable.theory_variable_id}
-      
-    end
-    
-    # 1.  Find all the dependent-> result permutations for the last chain 
-    # 2.  Exclude any that are mutually exclusive
-    
-    #possible_global_theory_variables = extend_global_mapping(global_theory_variables,link,chain)
-    
-    # NOTE: Previously I had normalised the theories by working out all the possible permutations 
-    #       of dependent to result.  Then work out the variable substitution.  This did work but
-    #       the number of permutations for larger theories meant it was completely impractical.  Instead
-    #       now it needs to form one connection "dependent to result" and then update the consequence of
-    #       that. Some of the decisions will be mutually exclusive. 
-    
-    return unified_chains
-    
-  end
-  
-  def extend_global_mapping(global_theory_variables,link,chain,results=[])
-    
-    next_link = chain.pop
-    
-    # Find all the variables in the next link thats global ids have not been determined
-    unidentified_theory_variables = next_link.all_theory_variables.inject([]) do |total,x|
-      total << x if global_theory_variables.any? {|key,value| !value[next_link.theory_id].nil? }
-    end
-    
-    # Link the previous dependents to the this link
-    link.dependents.each do |dependent|
-      
-      # Find the similar 
-      
-    end 
-    
-  end
-  
-  # Returns a new chain so that they all use consistent theory variables ids
-  #
   def unify_chain(chain)
     
     #return unify_chain2(chain.reverse)
@@ -337,6 +273,7 @@ class TheoryConnector
     # Find all the ways the theory and results can connected
     # - the same_structure? approach is quite loose
     arrangements = chain_arrangements(chain.copy.reverse)
+    
     # For each theory in the chain give each each variable a unique id
     starting_id = 1
     uniq_chain = chain.inject([]) do |total,x|
