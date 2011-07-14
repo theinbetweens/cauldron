@@ -16,7 +16,7 @@ module Cauldron
       @pot = Cauldron::Pot.new
       @pot.clear
       @output.puts '* Adding example case'      
-      #@pot.simmer(demo('1'))
+      @pot.simmer(demo_one)
       @pot.simmer(demo_two)
       
       @output.puts "Thanks for trying Cauldron - it's at really early stage right now"
@@ -40,7 +40,7 @@ module Cauldron
     
     def submit(input)
       if input =~ /^RUN$/
-         @output.puts @pot.brew(@cases).basic_write
+         @output.puts @pot.brew(@cases).reset_ids!.basic_write
       else
         @cases << convert_to_example(separate_values(input))
       end

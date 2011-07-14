@@ -27,7 +27,7 @@ module Variable
   def self.reset_global_id
     #http://www.zenspider.com/Languages/Ruby/QuickRef.html
     unless $".include?('test/unit.rb')
-      StandardLogger.log 'WARNING: Resetting variable id, this should only be done for tests'
+     StandardLogger.instance.log 'WARNING: Resetting variable id, this should only be done for tests'
     end
     @@variable_id = 0
     @@uniq_id = 0    

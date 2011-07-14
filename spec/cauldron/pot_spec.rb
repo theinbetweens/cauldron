@@ -87,7 +87,6 @@ module Cauldron
           @pot.brew(cases).reset_ids!.basic_write.should == sexp2cauldron.process(sexp).basic_write                              
         end
         it 'can generate a solution like demo 2(it needs to discount the demo 1 solution)' do
-          #pending('I need to tidy the generation process')
           cases = []
           cases << convert_to_example(separate_values("'sparky','bro'"))
           cases << convert_to_example(separate_values("'kel','sis'"))
