@@ -58,7 +58,7 @@ class UnifiedChain < Chain
     valid_mappings = [Mapping.new]
     
     #itteration_limit = 6
-    itteration_limit = 9
+    itteration_limit = 8
     
     @nodes.each_with_index do |node,index|
 
@@ -87,8 +87,7 @@ class UnifiedChain < Chain
           limit += 1
         end
         if limit > itteration_limit  
-          pp missing_variables(node.action,valid_mappings)
-          raise StandardError.new('Unable to resolve action: '+"\n"+node.action.write)
+          raise StandardError.new('Unable to resolve action: '+node.action.write)
         end        
       end
       
@@ -117,26 +116,12 @@ class UnifiedChain < Chain
     return true
   end
   
-  def missing_variables(component,mappings)
-    results = []
-    component.theory_variables.each do |var|
-      mappings.each do |mapping|
-        #return false unless mapping.has_key? var.theory_variable_id
-        results << var unless mapping.has_key? var.theory_variable_id
-      end
-    end
-    return results    
-  end
-  
   def extend_mapping(valid_mappings,component,runtime_method,test_cases,chain,available_values)
     
     new_mappings = [] 
     component.theory_variables.each do |var|
       next if valid_mappings.first.has_key?(var.theory_variable_id)
-      #next if valid_mappings.any? {|x| x.has_key?(var.theory_variable_id)}
       valid_mappings.each do |mapping|
-        
-        #next if mapping.has_key?(var.theory_variable_id)
 
         #next if mapping.has_key?(var.theory_variable_id)
         implemented_chain = chain.implement(Mapping.new(mapping))
