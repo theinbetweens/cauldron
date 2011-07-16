@@ -1,4 +1,3 @@
-require "set"
 # This class represents the code of a method generated at runitme
 # 
 # This a variation on code set that contains usage and a return 
