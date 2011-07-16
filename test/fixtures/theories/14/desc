@@ -1,20 +1,20 @@
 if: 
-	if([36mvar5[m.history2([33mvar2[m[[34mvar3[m][:params]).any?{ |x| x['statement_id'] == [32mvar1[m.last.statement_id} )
+	if(var5.history2(var2[var3][:params]).any?{ |x| x['statement_id'] == var1.last.statement_id} )
 		return true
 	end
-	if(([36mvar5[m.history2([33mvar2[m[[35mvar4[m][:params]).any?{ |x| x['statement_id'] == [32mvar1[m.last.statement_id} ) == false)
+	if((var5.history2(var2[var4][:params]).any?{ |x| x['statement_id'] == var1.last.statement_id} ) == false)
 		return true
 	end
 
 action: 
-	<runtime_method>.add_statement_at(Statement.new(Return.new, [33mvar2[m[[34mvar3[m][:output]),[32mvar1[m.last.statement_id)
+	<runtime_method>.add_statement_at(Statement.new(Return.new, var2[var3][:output]),var1.last.statement_id)
 result: 
-	if([32mvar1[m.pass?([33mvar2[m[[34mvar3[m]))
+	if(var1.pass?(var2[var3]))
 		return true
 	end
-	if([36mvar5[m.pass?([33mvar2[m[[35mvar4[m]) == false)
+	if(var5.pass?(var2[var4]) == false)
 		return true
 	end
-	if([36mvar5[m.pass?([33mvar2[m[[34mvar3[m]))
+	if(var5.pass?(var2[var3]))
 		return true
 	end

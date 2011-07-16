@@ -118,11 +118,9 @@ require $LOC+File.join(['core','structure','DeclareVariableAsLiteralStructure'])
 require $LOC+File.join(['core','structure','DeclareVariableAsVariableStructure'])
 require $LOC+File.join(['core','structure','ReturnStructure'])
 
-require $LOC+File.join(['ScopeDependencies'])
 require $LOC+File.join(['MappingValues'])
 require $LOC+File.join(['Mapping'])
 
-require $LOC+File.join(['core','statement','StatementDependencies'])
 require $LOC+File.join(['core','statement','BlockStatement'])
 require $LOC+File.join(['core','statement','SingleLineBlockStatement'])
 

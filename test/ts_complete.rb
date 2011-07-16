@@ -70,7 +70,6 @@ require 'test/unit/tc_instance_call_structure'
 require 'test/unit/tc_instance_call'
 require 'test/unit/tc_method_usage'
 require 'test/unit/tc_runtime_tracking_method'
-require 'test/unit/core/statement/tc_statement_dependencies'
 require 'test/unit/tc_statement_structure_2'
 require 'test/unit/tc_variable_declaration'
 

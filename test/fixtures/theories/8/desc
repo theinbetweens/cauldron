@@ -1,11 +1,11 @@
 if: 
-	if([32mvar1[m[[33mvar2[m][:params][[33mvar2[m] + [32mvar1[m[[33mvar2[m][:params][[34mvar3[m] == [32mvar1[m[[33mvar2[m][:output])
+	if(var1[var2][:params][var2] + var1[var2][:params][var3] == var1[var2][:output])
 		return true
 	end
 
 action: 
-	<runtime_method>.add_statement_at(Statement.new(Unknown.new, Equal.new, [35mvar4[m.params[[33mvar2[m], Addition.new, [35mvar4[m.params[[34mvar3[m]),[35mvar4[m.statement_id)
+	<runtime_method>.add_statement_at(Statement.new(Unknown.new, Equal.new, var4.params[var2], Addition.new, var4.params[var3]),var4.statement_id)
 result: 
-	if([35mvar4[m.all_pass?([32mvar1[m))
+	if(var4.all_pass?(var1))
 		return true
 	end

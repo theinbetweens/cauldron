@@ -1,11 +1,11 @@
 if: 
-	if([34mvar3[m[[35mvar4[m][:params][[36mvar5[m].length == [34mvar3[m[[35mvar4[m][:output])
+	if(var3[var4][:params][var5].length == var3[var4][:output])
 		return true
 	end
 
 action: 
-	<runtime_method>.add_statement_at(Statement.new(Return.new, InstanceCallContainer.new([32mvar1[m.params[[33mvar2[m], StringLength.new)),[32mvar1[m.statement_id)
+	<runtime_method>.add_statement_at(Statement.new(Return.new, InstanceCallContainer.new(var1.params[var2], StringLength.new)),var1.statement_id)
 result: 
-	if([32mvar1[m.all_pass?([34mvar3[m))
+	if(var1.all_pass?(var3))
 		return true
 	end

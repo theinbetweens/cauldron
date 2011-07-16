@@ -1,27 +1,27 @@
 # http://rake.rubyforge.org/
 # http://rake.rubyforge.org/files/doc/rakefile_rdoc.html
 
-# TODO  Need a test for the rake tasks as well
-
 namespace :cauldren do
   
   namespace :implementations do
     
-    desc "Re-build the theory implementations"
-    task :rebuild do 
-    
-      file_list = FileList.new('test/fixtures/theory_implementations/*')
-      file_list.each do |x|
-        implementation_id = x.match(/\d+$/)[0].to_i
-    
-        directory_path = $LOC+File.join('test','fixtures','theories',theory_id.to_s)
-        
-      end                
-    
-      # TODO  The current approach to saving the implementations - I'd like to be able
-      #       to right the declarations to file.
+    desc 'Rebuild the implementations'
+    task :rebuild do
+      Rake::Task["cauldren:theories:rebuild"].execute
       
-      puts 'Does not do anything'
+      file_list = FileList.new('test/fixtures/theory_implementations/*')
+      file_list.each do |folder_path|
+
+        implementation_id = folder_path.match(/\d+$/)[0].to_i
+        declaration = File.open(File.join(folder_path,'declaration.txt'),'r').read
+        theory_implementation = eval declaration
+        
+        dump_file = File.open(File.join(folder_path,'dump'),'w')
+        data = Marshal.dump(theory_implementation)
+        dump_file << data
+        dump_file.close          
+        
+      end
       
     end
     
@@ -242,10 +242,7 @@ namespace :cauldren do
       file_list = FileList.new('test/fixtures/theories/*')
       file_list.each do |x|
         theory_id = x.match(/\d+$/)[0].to_i
-        puts '* theory_id: '+theory_id.to_s    
-        puts File.join('test','fixtures','theories',theory_id.to_s)
         directory_path = File.join('test','fixtures','theories',theory_id.to_s)
-        puts directory_path
         declaration = File.open(File.join(directory_path,'declaration.txt'),'r').read
     
         # Save the declaration (incase the theory needs modified
@@ -256,9 +253,8 @@ namespace :cauldren do
         theory = eval declaration
         data = Marshal.dump(theory)
     
-        # TODO  Shouldn't include colours for this description
         desc_file = File.open(File.join(directory_path,'desc'),'w+')
-        desc_file << theory.describe
+        desc_file << theory.write
         desc_file.close
         
         dump_file = File.open(File.join(directory_path,'dump'),'w+')
