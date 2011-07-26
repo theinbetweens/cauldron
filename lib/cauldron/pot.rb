@@ -1,7 +1,10 @@
 module Cauldron
 
   class Pot
-    include ContainsTheories  
+    
+    include Cauldron::Util::Home
+    include ContainsTheories
+      
     
     VERSION = '0-1-1'
     
@@ -123,14 +126,14 @@ module Cauldron
     
   private 
   
-    # Check that the home directory exists  
-    def home
-      realHome = ["HOME", "HOMEPATH"].detect {|h| ENV[h] != nil}
-      if not realHome
-        StandardLogger.instance.warning "Couldn't detect a home directory"
-      end
-      return ENV[realHome]  
-    end
+    # # Check that the home directory exists  
+    # def home
+      # realHome = ["HOME", "HOMEPATH"].detect {|h| ENV[h] != nil}
+      # if not realHome
+        # StandardLogger.instance.warning "Couldn't detect a home directory"
+      # end
+      # return ENV[realHome]  
+    # end
     
     # Saves the generic theory to file.  This theory will have minimal 
     # dependents and results.

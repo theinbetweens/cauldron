@@ -2,9 +2,8 @@
 # chain there is no mapping, all the theories should have the correct ids if they are 
 # linked.  A unified chain is always complete.
 #
-class UnifiedChain < Chain
-  # TODO  I don't like that extending to Chain exposes the @nodes to public access
-  
+class UnifiedChain
+
   def initialize(nodes)
     @nodes = nodes
   end
@@ -16,6 +15,11 @@ class UnifiedChain < Chain
   def describe(tab=0)
     return @nodes.inject('') {|total,x| total += x.describe}
   end
+  
+  def copy
+    #return Chain.new(@nodes.copy)
+    return Marshal.load(Marshal.dump(self))
+  end  
   
   # Returns an array of all the theory variables in the chain.  All the 
   # theory variables should be global across the chain. 
@@ -57,8 +61,7 @@ class UnifiedChain < Chain
     
     valid_mappings = [Mapping.new]
     
-    #itteration_limit = 6
-    itteration_limit = 8
+    itteration_limit = 6
     
     @nodes.each_with_index do |node,index|
 
@@ -87,6 +90,7 @@ class UnifiedChain < Chain
           limit += 1
         end
         if limit > itteration_limit  
+          puts 'Chain saved '+Cauldron::Util::Saver.save(self)
           raise StandardError.new('Unable to resolve action: '+node.action.write)
         end        
       end
@@ -266,7 +270,13 @@ class UnifiedChain < Chain
   
   def partial_chain(limit)
     links = @nodes[1..limit].collect {|x| x.copy }
-    UnifiedChain.new(links)    
+    UnifiedChain.new(links)
+    #links.inject(Chain.new) {|chain,link| chain << link; chain}
+    # c = Chain.new
+    # links.each do |x|
+      # c << x
+    # end    
+    # return c
   end
   
   def mapping_permutations(keys,values)
