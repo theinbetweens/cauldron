@@ -70,19 +70,8 @@ class UnifiedChain
     itteration_limit = 6
     
     @nodes.each_with_index do |node,index|
-
-      node.dependents.each do |dependent|
-        if index == 0
-          chain = partial_chain(0..0)
-        else
-          chain = partial_chain(1..(index-1)) 
-        end
-        limit = 0
-        until has_all_variables_been_found?(dependent,valid_mappings) or limit > itteration_limit
-          valid_mappings = extend_mapping(valid_mappings,dependent,runtime_method.copy,test_cases.copy,chain,available_values)
-          limit += 1
-        end  
-      end
+      
+      valid_mappings = extend_value_mapping_wtih_dependents(valid_mappings,index,node,available_values,test_cases.copy,runtime_method.copy)
       
       unless node.action.nil?
         if index == 0
@@ -118,6 +107,23 @@ class UnifiedChain
         valid_mappings = extend_mapping(valid_mappings,result,runtime_method.copy,test_cases.copy,chain,available_values)
         limit += 1
       end
+    end    
+    return valid_mappings
+  end
+  
+  def extend_value_mapping_wtih_dependents(valid_mappings,index,node,available_values,test_cases,runtime_method)
+    itteration_limit = 6
+    node.dependents.each do |dependent|
+      if index == 0
+        chain = partial_chain(0..0)
+      else
+        chain = partial_chain(1..(index-1)) 
+      end
+      limit = 0
+      until has_all_variables_been_found?(dependent,valid_mappings) or limit > itteration_limit
+        valid_mappings = extend_mapping(valid_mappings,dependent,runtime_method.copy,test_cases.copy,chain,available_values)
+        limit += 1
+      end  
     end    
     return valid_mappings
   end

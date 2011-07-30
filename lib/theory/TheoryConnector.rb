@@ -64,13 +64,11 @@ class TheoryConnector
     unless complete_chains.empty? 
       return complete_chains 
     end
-    
     possible_chains.each do |chain|
         
       # Remove the head theory to avoid it being re-used
       head_free_theories = theories.copy
       head_free_theories.delete_if {|theory| theory.theory_id == chain.first.theory_id}      
-
       complete_chains += complete_chain(chain,head_free_theories)
     end
     return complete_chains
@@ -83,9 +81,6 @@ class TheoryConnector
       #raise StandardError.new('Failed to generate a chain')
       return []
     end
-    
-    #puts 'res: '+res.class.to_s
-    #return chains
     return [res] 
     
   end
@@ -97,19 +92,21 @@ class TheoryConnector
   end
   
   def converge_chain(chain,theories,step=0)
-    theories = remove_existing_theories(chain.copy,theories)
     
-    extended_chains = add_to_chain(chain.copy,theories,step)
+    theories = remove_existing_theories(chain.copy,theories.copy)
+    
+    extended_chains = add_to_chain(chain.copy,theories.copy,step)
     
     if extended_chains.any? {|x| x.complete? }
       res2 = extended_chains.select {|x| x.complete?}
+      raise StandardError.new('More than one complete chain found') if res2.length > 1
       throw :complete, res2.first      
     end
-    closer_chains = closer_chains(chain.copy,extended_chains)
+    closer = closer_chains(chain.copy,extended_chains)
 
     complete_chains = []
-    unless closer_chains.empty?
-      closer_chains.each do |x|
+    unless closer.empty?
+      closer.each do |x|
         complete_chains += converge_chain(x,theories,step+1)
       end
     else 

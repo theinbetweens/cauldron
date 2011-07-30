@@ -35,7 +35,7 @@ module Cauldron
 
       chains = next_chains(test_cases,exclude)  
       if chains.empty?
-        raise StandardError.new('Failed to generate a chain for this problem B')
+        raise StandardError.new('Failed to generate a chain for this problem')
       end        
       chains.each do |chain|
         if chain_valid?(chain,test_cases.copy)
@@ -51,9 +51,6 @@ module Cauldron
     
     def chain_valid?(chain,test_cases)
       if chain.kind_of?(Array)
-        puts chain.first.class.to_s
-        puts chain.class.to_s
-        puts chain.length.to_s
         raise StandardError.new('should be a chain '+chain.first.class.to_s) 
       end
       runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))
@@ -75,7 +72,6 @@ module Cauldron
       theories = saved_theories 
       
       res = theories.collect {|x| x.theory_id }
-
       runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))    
 
       potential_values = MappingValues.new([])
