@@ -402,7 +402,7 @@ class TestRuntimeMethod < Test::Unit::TestCase
     
     # a.  Create the method that returns a statement variable
     return_statement_method = RuntimeMethod.new(MethodUsage.new(),Statement.new.to_var)
-    return_statement_method.push(Statement.new(Return.new,Statement.new(Return.new,'sparky').to_declaration ))    
+    return_statement_method.push(Parser.run('return Statement.new(Return.new,"sparky")'))
     
     # b.  Create the method 
     runtime_method_2 = RuntimeMethod.new(MethodUsage.new)    

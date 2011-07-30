@@ -13,51 +13,51 @@ class TestMethodValidation < Test::Unit::TestCase
     RuntimeMethod.reset_global_id
   end  
 
-  def test_self_generate
-    
-    # Check that a simple method to check the class of a runtime method instance can be created
-    validation_test_1 = MethodValidation.generate_attribute_test('.class.to_s == "RuntimeMethod"' )
-    assert(validation_test_1.kind_of?(RuntimeMethod))   
-    assert_equal(
-      true,
-      MethodValidation.new.use_runtime_method(
-        validation_test_1,
-        ParametersContainer.new(RuntimeMethod.new(MethodUsage.new).to_declaration)
-      )
-    )
-    
-    # Create the method that should be evaluated correctly
-    test_2_method = RuntimeMethod.new(MethodUsage.new)
-    test_2_method.push Statement.new(Return.new,'Lilly'.to_literal)
-
-    # Test that a runtime method returns 'Lilly'
-    validation_test_2 = MethodValidation.generate_response_test(" == 'Lilly'",[])
-    assert(validation_test_2.kind_of?(RuntimeMethod))
-    assert_equal(
-      true,
-      MethodValidation.new.use_runtime_method_2(validation_test_2,test_2_method)
-    )
-    validation_test_3 = MethodValidation.generate_response_test(" != 'Lilly'",[])
-    assert_equal(
-      false,
-      MethodValidation.new.use_runtime_method_2(validation_test_3,test_2_method)
-    )    
-#    
-#    # Test that a runtime method returns the value it is passed
-#    test_3_param_1 = MethodParameter.new
-#    test_3_method = RuntimeMethod.new(MethodUsage.new(test_3_param_1))
-#    test_3_method.push(Statement.new(Return.new,test_3_param_1))
-#    test_3_validation = MethodValidation.generate(
-#      {:condition=>' == "Pip"',:target=>'response',:params=>['Pip'.to_literal],:runtime_method=>test_3_method})
-#    assert_equal(
-#      'Pip',
-#      MethodValidation.new.use_runtime_method(
-#        test_3_validation,ParametersContainer.new(test_3_method.to_declaration)        
-#      )
-#    )
-    
-    
-  end
+  # def test_self_generate
+#     
+    # # Check that a simple method to check the class of a runtime method instance can be created
+    # validation_test_1 = MethodValidation.generate_attribute_test('.class.to_s == "RuntimeMethod"' )
+    # assert(validation_test_1.kind_of?(RuntimeMethod))   
+    # assert_equal(
+      # true,
+      # MethodValidation.new.use_runtime_method(
+        # validation_test_1,
+        # ParametersContainer.new(RuntimeMethod.new(MethodUsage.new).to_declaration)
+      # )
+    # )
+#     
+    # # Create the method that should be evaluated correctly
+    # test_2_method = RuntimeMethod.new(MethodUsage.new)
+    # test_2_method.push Statement.new(Return.new,'Lilly'.to_literal)
+# 
+    # # Test that a runtime method returns 'Lilly'
+    # validation_test_2 = MethodValidation.generate_response_test(" == 'Lilly'",[])
+    # assert(validation_test_2.kind_of?(RuntimeMethod))
+    # assert_equal(
+      # true,
+      # MethodValidation.new.use_runtime_method_2(validation_test_2,test_2_method)
+    # )
+    # validation_test_3 = MethodValidation.generate_response_test(" != 'Lilly'",[])
+    # assert_equal(
+      # false,
+      # MethodValidation.new.use_runtime_method_2(validation_test_3,test_2_method)
+    # )    
+# #    
+# #    # Test that a runtime method returns the value it is passed
+# #    test_3_param_1 = MethodParameter.new
+# #    test_3_method = RuntimeMethod.new(MethodUsage.new(test_3_param_1))
+# #    test_3_method.push(Statement.new(Return.new,test_3_param_1))
+# #    test_3_validation = MethodValidation.generate(
+# #      {:condition=>' == "Pip"',:target=>'response',:params=>['Pip'.to_literal],:runtime_method=>test_3_method})
+# #    assert_equal(
+# #      'Pip',
+# #      MethodValidation.new.use_runtime_method(
+# #        test_3_validation,ParametersContainer.new(test_3_method.to_declaration)        
+# #      )
+# #    )
+#     
+#     
+  # end
   
   
   def test_use_runtime_method      

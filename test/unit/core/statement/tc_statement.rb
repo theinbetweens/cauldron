@@ -363,12 +363,8 @@ class TestStatement < Test::Unit::TestCase
     called_runtime_method_3 = RuntimeMethod.new(MethodUsage.new,blank_statement.to_var)
     
     #   b.  Create the statement that is returned as a variable. 
-    returned_statement_variable = Statement.new(Return.new,'sparky')
     declared_return_statement_var = Unknown.new
-    #declare_return_statement = Statement.new(declared_return_statement_var,Equal.new,returned_statement_variable.to_declaration)
-    return_return_statement = Statement.new(Return.new,returned_statement_variable.to_declaration)    
-    #return_return_statement.statement_type = StatementStructure::RETURN_STATEMENT
-    #declare_return_statement = StatementStructure::DECLARATION_STATEMENT
+    return_return_statement = Statement.new(Return.new,Parser.run("Statement.new(Return.new,'sparky')"))    
     called_runtime_method_3.push(return_return_statement)
     
     #   c.  Create the method that includes a call to "called_runtime_method_3"
@@ -409,57 +405,57 @@ class TestStatement < Test::Unit::TestCase
     
   end
   
-  def test_replace_variable_if
-    
-    # Create a simple statement will have it's variable replaced
-    # unknown = 7
-    statement_a_unknown = Unknown.new
-    statement_a = Statement.new(statement_a_unknown,Equal.new,7.to_literal)      
-    assert(statement_a.first.kind_of?(Unknown))
-    modified_statement_a = statement_a.replace_variable_if(FixnumVariable.new(7)) {|x| x.uniq_id == statement_a_unknown.uniq_id }
-    assert(modified_statement_a.first.kind_of?(FixnumVariable))
-    
-    # Create a statement with an instance call container 
-    # unknown = 'test'.chop
-    statement_b_unknown = Unknown.new
-    statement_b = Statement.new(Unknown.new,Equal.new,InstanceCallContainer.new(statement_b_unknown,Chop.new))    
-    modified_statement_b = statement_b.replace_variable_if('test'.to_var) do |x|
-      x.uniq_id  == statement_b_unknown.uniq_id
-    end
-    assert(modified_statement_b.kind_of?(Statement))
-    assert_equal(3,modified_statement_b.length)    
-    assert_not_equal(modified_statement_b[2].subject.variable_id,statement_b_unknown.variable_id)
-    
-    # Create a statement with parameters in the statement
-    # ['goo'].push('jon')
-    statement_c_unknown = Unknown.new
-    statement_c = Statement.new(InstanceCallContainer.new(['goo'].to_var,Push.new,statement_c_unknown))
-    modified_statement_c = statement_c.replace_variable_if('jon'.to_var) do |x|
-      x.uniq_id == statement_c_unknown.uniq_id
-    end
-    assert(modified_statement_c.kind_of?(Statement))  
-    assert_not_equal(modified_statement_c[0][0].uniq_id,statement_c_unknown.uniq_id)
-
-    # Create a statement with no matches
-    # unknown = 5 + 6
-    statement_d = Statement.new(Unknown.new,Equal.new,5.to_var,Addition.new,6.to_var)
-    modified_statement_d = statement_d.replace_variable_if('jon'.to_var) do |x|
-      x.uniq_id == 21312
-    end    
-    assert_equal(statement_d.write,modified_statement_d.write)
-    
-    # Create an instance call statement with no matches
-    # unknown = var_a.length
-    statement_e = Statement.new(Unknown.new,Equal.new,InstanceCallContainer.new('richardson'.to_var,StringLength.new))
-    modified_statement_e = statement_e.replace_variable_if('jon'.to_var) do |x|
-      if x.uniq_id == 3242
-        next true
-      end
-      false
-    end
-    assert_equal(statement_e.write,modified_statement_e.write)
-      
-  end
+  # def test_replace_variable_if
+#     
+    # # Create a simple statement will have it's variable replaced
+    # # unknown = 7
+    # statement_a_unknown = Unknown.new
+    # statement_a = Statement.new(statement_a_unknown,Equal.new,7.to_literal)      
+    # assert(statement_a.first.kind_of?(Unknown))
+    # modified_statement_a = statement_a.replace_variable_if(FixnumVariable.new(7)) {|x| x.uniq_id == statement_a_unknown.uniq_id }
+    # assert(modified_statement_a.first.kind_of?(FixnumVariable))
+#     
+    # # Create a statement with an instance call container 
+    # # unknown = 'test'.chop
+    # statement_b_unknown = Unknown.new
+    # statement_b = Statement.new(Unknown.new,Equal.new,InstanceCallContainer.new(statement_b_unknown,Chop.new))    
+    # modified_statement_b = statement_b.replace_variable_if('test'.to_var) do |x|
+      # x.uniq_id  == statement_b_unknown.uniq_id
+    # end
+    # assert(modified_statement_b.kind_of?(Statement))
+    # assert_equal(3,modified_statement_b.length)    
+    # assert_not_equal(modified_statement_b[2].subject.variable_id,statement_b_unknown.variable_id)
+#     
+    # # Create a statement with parameters in the statement
+    # # ['goo'].push('jon')
+    # statement_c_unknown = Unknown.new
+    # statement_c = Statement.new(InstanceCallContainer.new(['goo'].to_var,Push.new,statement_c_unknown))
+    # modified_statement_c = statement_c.replace_variable_if('jon'.to_var) do |x|
+      # x.uniq_id == statement_c_unknown.uniq_id
+    # end
+    # assert(modified_statement_c.kind_of?(Statement))  
+    # assert_not_equal(modified_statement_c[0][0].uniq_id,statement_c_unknown.uniq_id)
+# 
+    # # Create a statement with no matches
+    # # unknown = 5 + 6
+    # statement_d = Statement.new(Unknown.new,Equal.new,5.to_var,Addition.new,6.to_var)
+    # modified_statement_d = statement_d.replace_variable_if('jon'.to_var) do |x|
+      # x.uniq_id == 21312
+    # end    
+    # assert_equal(statement_d.write,modified_statement_d.write)
+#     
+    # # Create an instance call statement with no matches
+    # # unknown = var_a.length
+    # statement_e = Statement.new(Unknown.new,Equal.new,InstanceCallContainer.new('richardson'.to_var,StringLength.new))
+    # modified_statement_e = statement_e.replace_variable_if('jon'.to_var) do |x|
+      # if x.uniq_id == 3242
+        # next true
+      # end
+      # false
+    # end
+    # assert_equal(statement_e.write,modified_statement_e.write)
+#       
+  # end
   
   def test_find_actual_variable
     

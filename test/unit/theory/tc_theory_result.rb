@@ -44,7 +44,7 @@ class TestTheoryResult < Test::Unit::TestCase
     ]    
     evaluation_code = ''
     evaluation_code += "test_cases = #{test_cases.write}"+"\n"
-    evaluation_code += "runtime_method = #{runtime_method.to_declaration.write}"+"\n"
+    evaluation_code += "runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))"+"\n"
     evaluation_code += 'runtime_method.add_statement_at(Statement.new(Return.new, runtime_method.params[0]),runtime_method.statement_id)'+"\n"
     
     evaluation_code += 'return runtime_method'+"\n"        

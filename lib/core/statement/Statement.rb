@@ -473,31 +473,32 @@ class Statement
   end
   
   # TODO  I should have a realised statement class
-  # Finds each element that satisfy the 
-  # 
-  # @param  var   The variable to replace any elements that match the block.
-  #
-  def replace_variable_if(var,&block)
-    container = []
-    @nodes.each do |x|
-      if x.kind_of?(Variable)
-        if block.call(x)
-          container.push(var)
-          next          
-        end
-      end
-      if x.kind_of?(InstanceCallContainer)
-        container.push(x.replace_variable_if(var,&block))
-        next
-      end
-      container.push(x.copy)
-    end
-    #return self.copy(*container)
-    copied = self.copy().clear
-    container.each {|x| copied.push(x) }
-    return copied
-      
-  end
+  
+  # # Finds each element that satisfy the 
+  # # 
+  # # @param  var   The variable to replace any elements that match the block.
+  # #
+  # def replace_variable_if(var,&block)
+    # container = []
+    # @nodes.each do |x|
+      # if x.kind_of?(Variable)
+        # if block.call(x)
+          # container.push(var)
+          # next          
+        # end
+      # end
+      # if x.kind_of?(InstanceCallContainer)
+        # container.push(x.replace_variable_if(var,&block))
+        # next
+      # end
+      # container.push(x.copy)
+    # end
+    # #return self.copy(*container)
+    # copied = self.copy().clear
+    # container.each {|x| copied.push(x) }
+    # return copied
+#       
+  # end
   
   # Returns a variable instance with the contextual requirements for the statement.
   # TODO  Don't really need these contextual_variable calls 
@@ -727,7 +728,7 @@ class Statement
       catch(:variable_substituted) do
         realised_variables.each do |z|
           if z.uniq_id == var.uniq_id
-            result = result.replace_variable_if(z) {|a| a.uniq_id == var.uniq_id}
+            result.replace_variable!(var.variable_id,z)
             throw :variable_substituted
           end
         end
