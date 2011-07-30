@@ -6,9 +6,7 @@ class Statement
   attr_reader :statement_id, :scope, :statement_level, :statement_id
   # TODO  scope and statement level are confusing - not sure of the difference (I think it's legacy)
   attr_writer :scope, :statement_level, :overrides, :statement_id
-  
-  #alias :array_push :push
-    
+
   @@statement_id = 0
   
   #
@@ -31,7 +29,6 @@ class Statement
     
     # Add the parameters to the array 
     parameters.each do |code|
-    #  self.push(code.copy)
       @nodes.push(code.copy)
     end
     

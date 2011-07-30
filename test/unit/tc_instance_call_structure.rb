@@ -14,7 +14,7 @@ class TestInstanceCallStructure < Test::Unit::TestCase
   end
   
   def teardown
-System.reset
+    System.reset
     RuntimeMethod.reset_global_id
   end  
 
