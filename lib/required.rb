@@ -107,17 +107,6 @@ require $LOC+File.join(['core','statement','HashAccess'])
 require $LOC+File.join(['core','statement','TopologicalStatements'])
 require $LOC+File.join(['core','statement','TheoryStatement'])
 
-#require $LOC+File.join(['core','structure','StatementStructure'])
-#require $LOC+File.join(['core','structure','FixnumAdditionStructure'])
-#require $LOC+File.join(['core','statement','StatementStructure2'])
-#require $LOC+File.join(['core','structure','InstanceCallStructure'])
-#require $LOC+File.join(['core','structure','InstanceCallContainerStructure'])
-#require $LOC+File.join(['core','structure','DeclareRuntimeMethodStructure'])
-#require $LOC+File.join(['core','structure','DeclareNewInstanceStructure'])
-#require $LOC+File.join(['core','structure','DeclareVariableAsLiteralStructure'])
-#require $LOC+File.join(['core','structure','DeclareVariableAsVariableStructure'])
-#require $LOC+File.join(['core','structure','ReturnStructure'])
-
 require $LOC+File.join(['MappingValues'])
 require $LOC+File.join(['Mapping'])
 
