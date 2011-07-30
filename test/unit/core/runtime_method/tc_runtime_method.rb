@@ -1,6 +1,6 @@
 $LOAD_PATH << File.expand_path('../../../../../lib',__FILE__)
 
-require 'required'
+require 'cauldron'
 require 'test/unit'
 
 class TestRuntimeMethod < Test::Unit::TestCase
@@ -256,7 +256,9 @@ class TestRuntimeMethod < Test::Unit::TestCase
     tracking_method = RuntimeTrackingMethod.new(instance_tracking_variable)    
 
     # Trackify it and check nothing is raised
-    assert_nothing_raised(){string_runtime_method.trackify(ParametersContainer.new('Manny'.to_var),tracking_method)}
+    assert_nothing_raised(){
+      string_runtime_method.trackify(ParametersContainer.new('Manny'.to_var),tracking_method)
+    }
 
     # Check that the method is unchanged after trackify
     assert_equal(original_written,string_runtime_method.write)    
@@ -509,31 +511,6 @@ class TestRuntimeMethod < Test::Unit::TestCase
     assert_equal(8,@simple_method.to_var(8,9).variable_id)
     assert_equal(9,@simple_method.to_var(8,9).uniq_id)    
     
-  end
-  
-  def test_to_declaration
-    
-    # Test the simplest possible runtime method - accepts nothing and returns nothing
-    simple_runtime_method = RuntimeMethod.new(MethodUsage.new,nil.to_var)
-    assert_nothing_raised() {simple_runtime_method.to_declaration}
-
-    # Test a simple runtime method expected to return a literal
-    literal_return_runtime_method = RuntimeMethod.new(MethodUsage.new,56) 
-    assert_nothing_raised() {literal_return_runtime_method.to_declaration}
-
-    # Test a simple runtime method that accepts a parameter
-    single_parameter_runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new()),nil)        
-    assert_nothing_raised() {single_parameter_runtime_method.to_declaration}
-    
-    # Test that a runtime method that contains one statement is duplicated correctly
-    test_3_runtime_method = RuntimeMethod.new(MethodUsage.new)
-    test_3_runtime_method.push Statement.new(Return.new,'Tony')
-    assert_equal('Tony',MethodValidation.new.use_runtime_method(test_3_runtime_method))
-    
-    # Create a duplicate of the simple runtime method
-    duplicate_test_3_runtime_method = test_3_runtime_method.to_declaration.evaluate
-    assert_equal('Tony',MethodValidation.new.use_runtime_method(duplicate_test_3_runtime_method))
-
   end
 
   def test_abstract_variables_for_tracking_with_some_simple_statement

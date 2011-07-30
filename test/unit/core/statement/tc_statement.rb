@@ -1,6 +1,6 @@
 $LOAD_PATH << File.expand_path('../../../../../lib',__FILE__)
 
-require 'required'
+require 'cauldron'
 require 'test/unit'
 
 class TestStatement < Test::Unit::TestCase
@@ -314,42 +314,6 @@ class TestStatement < Test::Unit::TestCase
   def test_write
     
   end
- 
-  def test_to_declaration
-    
-    # Check that statement returns a declaration statement
-    assert_equal(true,@simple_statement.to_declaration.kind_of?(VariableDeclaration))
-    
-    # Check to_declaration command when excluding a variable
-    assert_equal(
-      "Statement.new(var_#{@var_c.variable_id}, Equal.new(), InstanceCallContainer.new(StringVariable.new('Arena'), Chop.new()))",
-      @statement_b.to_declaration([@var_c.variable_id]).write
-    )
-    
-  end
-  
-  def test_find_all_required_runtime_methods
-    
-    # Check that any empty array is returned if there are no runtime methods used
-    assert_equal(0,@simple_statement.find_all_required_runtime_methods.length)        
-    
-    # 1.  Create a statement that calls a runtime method
-    static_statement = Statement.new
-    #static_statement.statement_type = StatementStructure::MISC_STATEMENT
-    return_statement_method = RuntimeMethod.new(MethodUsage.new(),static_statement.to_var)
-    return_statement = Statement.new(Return.new,'sparky')
-    #return_statement.statement_type = StatementStructure::RETURN_STATEMENT
-    return_declaration_statement = Statement.new(Return.new,return_statement.to_declaration )
-    #return_declaration_statement.statement_type = StatementStructure::RETURN_STATEMENT
-    return_statement_method.push(return_declaration_statement)    
-    
-    # 1a.   Create the statement that contains the method call
-    statement_with_method_call = Statement.new(Unknown.new,Equal.new,DefCall.new(static_statement.to_var,return_statement_method))
-    #statement_with_method_call.statement_type = StatementStructure::DECLARATION_STATEMENT
-    assert_equal(1,statement_with_method_call.find_all_required_runtime_methods.length)
-    assert(statement_with_method_call.find_all_required_runtime_methods.kind_of?(Array))    
-        
-  end
   
   def test_realise2
             
@@ -533,29 +497,6 @@ class TestStatement < Test::Unit::TestCase
     statement_2 = Statement.new(Unknown.new,Equal.new,ClassMethodCallContainer.new(MethodUsageClass.new,New.new))
     assert_equal(true,statement_1.equivalent?(statement_2))
     
-  end
-  
-  def test_exchange_variables
-    
-    # Create a statement that includes a method variable and is replaced by a different variable
-    method_variable_1 = MethodParameter.new
-    unknown_variable_1 = Unknown.new
-    statement_1 = Statement.new(unknown_variable_1,Equal.new,InstanceCallContainer.new(method_variable_1,Chop.new))      
-    pip = 'pip'.to_var
-    conversions = Hash.new()
-    conversions[method_variable_1.variable_id.to_s.to_sym] = pip.copy
-    assert(statement_1.exchange_variables(conversions).kind_of?(Statement))    
-    assert_nothing_raised(){statement_1.exchange_variables(conversions).to_literal_string}
-    assert_equal(
-      'var_'+unknown_variable_1.variable_id.to_s+' = var_'+pip.variable_id.to_s+'.chop',
-      statement_1.exchange_variables(conversions).write
-    )
-    
-    # Create a statement that modifies an existing variable.
-    
-    
-    # TODO  Test with the same variable used twice in a statement e.g. var_a = var_b+var_b
-      
   end
   
   def test_creates_variable?

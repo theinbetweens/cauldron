@@ -8,9 +8,7 @@ class Statement
   attr_writer :scope, :statement_level, :overrides, :statement_id
   
   #alias :array_push :push
-  
     
-  
   @@statement_id = 0
   
   #
@@ -582,32 +580,6 @@ class Statement
     self
   end
   
-  # Returns a declaration for this statement.  So it will look something
-  # like - 
-  # Statement.new(StringVariable.new('test'),Equal.new,'test')
-  # 
-  # @param except   An array of variable ids indicating what variables not to convert to 
-  #                 new declarations.  This is useful when you don't want to redclare an
-  #                 exisitng variable.
-  #             
-  #                 e.g.
-  #                 Statement.new(Unknown.new,Equal.new,var_12,Addition.new,Literal.new(9))
-  #
-  def to_declaration(except=[])
-    if except.empty? then return VariableDeclaration.new('Statement',*self.collect {|x| x.to_declaration}) end
-    results = []
-    self.each do |x|
-      if x.kind_of?(Variable)
-        if except.any? {|y| x.variable_id == y}
-          results.push Declaration.new(x.write)
-          next
-        end
-      end
-      results.push x.to_declaration
-    end
-    return VariableDeclaration.new('Statement',*results)
-  end    
-  
   # Returns the id of the variable declared in this statement
   #
   def declared_variable_id
@@ -740,26 +712,26 @@ class Statement
     result = self.copy
     
     # Find value(s) for each unrealised variable.  
-    y = []
+    realised_variables = []
     each_unrealised_variable do |x|
       if x.kind_of?(BlockVariable)
-        y.push(method_map.find_realised_variable(x.variable_id,x.uniq_id,'BlockVariable'))
+        realised_variables.push(method_map.find_realised_variable(x.variable_id,x.uniq_id,'BlockVariable'))
       else
-        y.push(method_map.find_realised_variable(x.variable_id,x.uniq_id))
+        realised_variables.push(method_map.find_realised_variable(x.variable_id,x.uniq_id))
       end
       # TODO  Change to elsif x.kind_of?(Variable)
     end
 
     # Substitue the realised variables for the unrealised ones
-    self.each_unrealised_variable do |x|
+    self.each_unrealised_variable do |var|
       catch(:variable_substituted) do
-        y.each do |z|
-          if z.uniq_id == x.uniq_id
-            result = result.replace_variable_if(z) {|a| a.uniq_id == x.uniq_id}
+        realised_variables.each do |z|
+          if z.uniq_id == var.uniq_id
+            result = result.replace_variable_if(z) {|a| a.uniq_id == var.uniq_id}
             throw :variable_substituted
           end
         end
-        raise StandardError.new('Couldn\'t find realised value for variable with id '+x.variable_id.to_s+' in "'+self.write+'"')
+        raise StandardError.new('Couldn\'t find realised value for variable with id '+var.variable_id.to_s+' in "'+self.write+'"')
       end
     end
     return result
@@ -887,28 +859,6 @@ class Statement
     end
     return false
   end    
-  
-  # Returns the statement with the any variables in the conversions 
-  # table replaced with the supplied variables. This is used when 
-  # a runtime method with parameters needs evaluated.
-  #
-  # @param  conversions   A hash that identifies the uniq id's of the variables 
-  #                       that should be replaced.
-  #                       e.g. {:6 => <#Variable>,:8 => <#Variable>} where variables with id 6 would
-  #                       changed to indicated variable.
-  #                   
-  def exchange_variables(conversions)
-    copied_statement = self.copy
-    conversions.each do |x,y|
-      begin 
-        #copied_statement = copied_statement.subst(x.to_s.to_i,y.copy)
-        copied_statement = copied_statement.replace_variable_if(y) {|a| a.uniq_id == x.to_s.to_i}
-      rescue FailedToFindVariableError
-        next
-      end
-    end
-    return copied_statement
-  end
   
   def cauldron_method_calls
     return ['.statement_id']

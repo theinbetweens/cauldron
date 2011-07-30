@@ -67,21 +67,6 @@ class RuntimeMethod < StatementGroup
     @method_id = id
   end
   
-  # Returns a declaration instance for this particular runtime
-  # method.  The declaration doesn't contain any of the internally
-  # generated statements.
-  #
-  # TODO  Write tests on this with more variables and statements
-  #
-  def to_declaration
-    return VariableDeclaration.new(
-      self.class.to_s,
-      @usage.to_declaration,
-      @method_return.to_declaration,
-      *self.collect {|x| x.to_declaration}
-    )  
-  end
-  
   def reset_ids!
     copied_method = copy
     copied_method.method_id = '0'
@@ -660,7 +645,8 @@ class RuntimeMethod < StatementGroup
       if x.kind_of?(Statement)
         
         # Update the ids of the variables used in the statement to use the ids of the method usage
-        duplicated_statement = x.exchange_variables(id_conversion)
+        #duplicated_statement = x.exchange_variables(id_conversion)
+        duplicated_statement = x.copy
         variable_values = abstract_variables_for_tracking(duplicated_statement)
         copied.push(duplicated_statement)
         copied.push(
