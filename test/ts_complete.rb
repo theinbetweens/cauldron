@@ -36,7 +36,6 @@ require 'test/unit/core/statement/tc_theory_statement'
 require 'test/unit/core/structure/tc_return_structure'
 require 'test/unit/core/structure/tc_instance_call_container_structure'
 require 'test/unit/core/structure/tc_declare_new_instance_structure'
-require 'test/unit/core/structure/tc_declare_variable_as_literal_structure'
 require 'test/unit/core/structure/tc_declare_variable_as_variable_structure'
 
 require 'test/unit/core/tracking/tc_history'

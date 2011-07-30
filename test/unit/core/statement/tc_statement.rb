@@ -212,21 +212,6 @@ class TestStatement < Test::Unit::TestCase
       assert_not_equal(statement.object_id,copied_statement[i].object_id)
     end
     
-    # Check that the statement_type is maintained for copied statements.
-    statement_1 = Statement.new(@var_a,Equal.new,Literal.new('Daggerfall')) 
-    #statement_1.statement_type = StatementStructure::DECLARATION_STATEMENT
-    assert_equal(statement_1.copy.statement_type,statement_1.statement_type)
-    
-  end
-  
-  # Tests it can identifiy the structure of the statement.
-  #
-  def test_statement_type
-    assert_equal(StatementStructure::DECLARATION_STATEMENT,@statement_b.statement_type)  
-    assert_equal(StatementStructure::RETURN_STATEMENT,@return_statement_a.statement_type)
-    
-    # Test some poorly structured statements
-    assert_raises(UnknownStatementType){Statement.new(RequirementsVariable.new,RequirementsVariable.new).statement_type}
   end
   
   def test_required_variable_ids
@@ -389,73 +374,6 @@ class TestStatement < Test::Unit::TestCase
     assert_equal(false,return_statement.classes_match?(Return,Literal,Unknown))    
     
   end
-  
-  def test_statement_type
-    
-    # Test that statement type is saved correctly - even after copying
-    return_statement = Statement.new(Return.new,6.to_literal)
-    #return_statement.statement_type = StatementStructure::RETURN_STATEMENT
-    assert_equal(return_statement.statement_type,StatementStructure::RETURN_STATEMENT)
-    assert_equal(return_statement.copy.statement_type,StatementStructure::RETURN_STATEMENT)
-    
-    # Test that return statements can be dynamically identified
-    return_statement_without_statement_type = Statement.new(Return.new,8.to_literal)
-    assert_nothing_raised(){return_statement_without_statement_type.statement_type}
-    assert_equal(return_statement_without_statement_type.statement_type,StatementStructure::RETURN_STATEMENT)
-    
-  end
-  
-  # def test_replace_variable_if
-#     
-    # # Create a simple statement will have it's variable replaced
-    # # unknown = 7
-    # statement_a_unknown = Unknown.new
-    # statement_a = Statement.new(statement_a_unknown,Equal.new,7.to_literal)      
-    # assert(statement_a.first.kind_of?(Unknown))
-    # modified_statement_a = statement_a.replace_variable_if(FixnumVariable.new(7)) {|x| x.uniq_id == statement_a_unknown.uniq_id }
-    # assert(modified_statement_a.first.kind_of?(FixnumVariable))
-#     
-    # # Create a statement with an instance call container 
-    # # unknown = 'test'.chop
-    # statement_b_unknown = Unknown.new
-    # statement_b = Statement.new(Unknown.new,Equal.new,InstanceCallContainer.new(statement_b_unknown,Chop.new))    
-    # modified_statement_b = statement_b.replace_variable_if('test'.to_var) do |x|
-      # x.uniq_id  == statement_b_unknown.uniq_id
-    # end
-    # assert(modified_statement_b.kind_of?(Statement))
-    # assert_equal(3,modified_statement_b.length)    
-    # assert_not_equal(modified_statement_b[2].subject.variable_id,statement_b_unknown.variable_id)
-#     
-    # # Create a statement with parameters in the statement
-    # # ['goo'].push('jon')
-    # statement_c_unknown = Unknown.new
-    # statement_c = Statement.new(InstanceCallContainer.new(['goo'].to_var,Push.new,statement_c_unknown))
-    # modified_statement_c = statement_c.replace_variable_if('jon'.to_var) do |x|
-      # x.uniq_id == statement_c_unknown.uniq_id
-    # end
-    # assert(modified_statement_c.kind_of?(Statement))  
-    # assert_not_equal(modified_statement_c[0][0].uniq_id,statement_c_unknown.uniq_id)
-# 
-    # # Create a statement with no matches
-    # # unknown = 5 + 6
-    # statement_d = Statement.new(Unknown.new,Equal.new,5.to_var,Addition.new,6.to_var)
-    # modified_statement_d = statement_d.replace_variable_if('jon'.to_var) do |x|
-      # x.uniq_id == 21312
-    # end    
-    # assert_equal(statement_d.write,modified_statement_d.write)
-#     
-    # # Create an instance call statement with no matches
-    # # unknown = var_a.length
-    # statement_e = Statement.new(Unknown.new,Equal.new,InstanceCallContainer.new('richardson'.to_var,StringLength.new))
-    # modified_statement_e = statement_e.replace_variable_if('jon'.to_var) do |x|
-      # if x.uniq_id == 3242
-        # next true
-      # end
-      # false
-    # end
-    # assert_equal(statement_e.write,modified_statement_e.write)
-#       
-  # end
   
   def test_find_actual_variable
     

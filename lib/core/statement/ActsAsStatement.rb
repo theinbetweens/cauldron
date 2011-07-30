@@ -3,16 +3,6 @@
 #
 module ActsAsStatement
   
-  # TODO  I think I should start to fade out statement_type - I should start by finding calls where it
-  #       is needed.
-  def statement_type
-    if @statement_type.nil?
-      @statement_type = identify_statement_type
-    end
-    raise UnknownStatementType.new('No statement type has been defined for this statement "'+self.write+'" ['+self.class.to_s+']') if @statement_type.nil?
-    return @statement_type
-  end
-  
   # Returns true if the statement (treated as an array) has all the
   # same classes as the array supplied.
   # 
