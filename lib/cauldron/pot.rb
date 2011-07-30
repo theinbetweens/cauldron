@@ -15,32 +15,47 @@ module Cauldron
     def brew(test_cases)
       
       exclude = []
-      chain = next_chain(test_cases,exclude)  
-      if chain.nil?
-        raise StandardError.new('Failed to generate a chain for this problem')
+      chains = next_chains(test_cases,exclude)  
+      if chains.empty?
+        raise StandardError.new('Failed to generate a chain for this problem A')
       end       
       
       runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))
-      if chain_valid?(chain,test_cases.copy)
-        validator = TheoryChainValidator.new
-        unified_chain = chain.unify_chain
-        implementation_permutations = unified_chain.implementation_permuatations(runtime_method.copy,test_cases.copy,Mapping.new)
-        return validator.build(runtime_method.copy,test_cases.copy,implementation_permutations)
-      else
-        exclude << chain.theories_sequence
-        chain = next_chain(test_cases,exclude)
+      chains.each do |chain|
         if chain_valid?(chain,test_cases.copy)
           validator = TheoryChainValidator.new
           unified_chain = chain.unify_chain
           implementation_permutations = unified_chain.implementation_permuatations(runtime_method.copy,test_cases.copy,Mapping.new)
           return validator.build(runtime_method.copy,test_cases.copy,implementation_permutations)
-        end        
+        end
+      end    
+      chains.each do |chain|
+        exclude << chain.theories_sequence
       end
-      return nil
+
+      chains = next_chains(test_cases,exclude)  
+      if chains.empty?
+        raise StandardError.new('Failed to generate a chain for this problem B')
+      end        
+      chains.each do |chain|
+        if chain_valid?(chain,test_cases.copy)
+          validator = TheoryChainValidator.new
+          unified_chain = chain.unify_chain
+          implementation_permutations = unified_chain.implementation_permuatations(runtime_method.copy,test_cases.copy,Mapping.new)
+          return validator.build(runtime_method.copy,test_cases.copy,implementation_permutations)
+        end
+      end        
+      raise StandardError.new('Failed to generate a valid runtime method C '+chains.length.to_s)
       
     end
     
     def chain_valid?(chain,test_cases)
+      if chain.kind_of?(Array)
+        puts chain.first.class.to_s
+        puts chain.class.to_s
+        puts chain.length.to_s
+        raise StandardError.new('should be a chain '+chain.first.class.to_s) 
+      end
       runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))
       unified_chain = chain.unify_chain
       implementation_permutations = unified_chain.implementation_permuatations(runtime_method.copy,test_cases.copy,Mapping.new)
@@ -56,12 +71,7 @@ module Cauldron
       return true      
     end
     
-    def complete_chains(test_cases)
-      return [next_chain(test_cases)]
-    end
-    
-    def next_chain(test_cases,exclude=[])
-      
+    def next_chains(test_cases,exclude=[])
       theories = saved_theories 
       
       res = theories.collect {|x| x.theory_id }
@@ -73,13 +83,16 @@ module Cauldron
       
       # Attempt to generate a complete chain for the solution
       chains = connector.generate_chains(runtime_method,test_cases,theories,exclude)      
-      return chains.first
-            
-    end    
+      return chains
+    end
     
     def saved_theories
-      saved_theory_file_paths = Dir.glob(File.join(theory_repository_path,'*','dump'))
-      saved_theory_file_paths.collect {|x| Marshal.load(File.open(x,'r'))}        
+      # => TODO This needs to cached to prevent error
+      if @cached_saved_theories.nil? 
+        saved_theory_file_paths = Dir.glob(File.join(theory_repository_path,'*','dump'))
+        @cached_saved_theories = saved_theory_file_paths.collect {|x| Marshal.load(File.open(x,'r'))}
+      end
+      @cached_saved_theories
     end
     
     def simmer(demo)
@@ -125,15 +138,6 @@ module Cauldron
     end
     
   private 
-  
-    # # Check that the home directory exists  
-    # def home
-      # realHome = ["HOME", "HOMEPATH"].detect {|h| ENV[h] != nil}
-      # if not realHome
-        # StandardLogger.instance.warning "Couldn't detect a home directory"
-      # end
-      # return ENV[realHome]  
-    # end
     
     # Saves the generic theory to file.  This theory will have minimal 
     # dependents and results.

@@ -64,8 +64,7 @@ class UnifiedChain
     total_variables = self.theory_variables.length
     
     available_values = [IntrinsicRuntimeMethod.new,IntrinsicTestCases.new]    
-    
-    #valid_mappings = [Mapping.new]
+  
     valid_mappings = [{}]
     
     itteration_limit = 6
@@ -77,7 +76,6 @@ class UnifiedChain
           chain = partial_chain(0..0)
         else
           chain = partial_chain(1..(index-1)) 
-          #chain = partial_chain(0..(index-1))
         end
         limit = 0
         until has_all_variables_been_found?(dependent,valid_mappings) or limit > itteration_limit
@@ -112,7 +110,7 @@ class UnifiedChain
   end
   
   def extend_value_mapping_with_result(valid_mappings,index,node,available_values,test_cases,runtime_method)
-    itteration_limit = 6
+    itteration_limit = 3
     node.results.each do |result|
       chain = partial_chain(0..index)
       limit = 0            

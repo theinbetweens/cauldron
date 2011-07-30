@@ -80,8 +80,11 @@ class TheoryConnector
   def complete_chain(chain,theories)
     res = catch(:complete) do
       converge_chain(chain,theories)
+      #raise StandardError.new('Failed to generate a chain')
+      return []
     end
     
+    #puts 'res: '+res.class.to_s
     #return chains
     return [res] 
     
