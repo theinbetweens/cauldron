@@ -12,7 +12,7 @@ require 'test/unit/core/tc_instance_call_container'
 # require 'test/unit/core/syntax/tc_block_container'
 # require 'test/unit/core/syntax/tc_if_container'
 # require 'test/unit/core/declaration/tc_literal_declaration'
-# 
+
 require 'test/unit/ruby_code/tc_string'
 require 'test/unit/ruby_code/tc_fixnum'
 require 'test/unit/ruby_code/tc_hash'
@@ -32,11 +32,6 @@ require 'test/unit/core/statement/tc_statement'
 require 'test/unit/core/statement/tc_statement_group'
 require 'test/unit/core/statement/tc_array_access'
 require 'test/unit/core/statement/tc_theory_statement'
-
-#require 'test/unit/core/structure/tc_return_structure'
-#require 'test/unit/core/structure/tc_instance_call_container_structure'
-#require 'test/unit/core/structure/tc_declare_new_instance_structure'
-#require 'test/unit/core/structure/tc_declare_variable_as_variable_structure'
 
 require 'test/unit/core/tracking/tc_history'
 require 'test/unit/core/tracking/tc_step'
@@ -65,11 +60,9 @@ require 'test/unit/theory/tc_theory_implementation'
 # require 'test/unit/theory/tc_theory_chain_validator'
 require 'test/unit/theory/tc_theory_action_implementation'
 
-#require 'test/unit/tc_instance_call_structure'
 require 'test/unit/tc_instance_call'
 require 'test/unit/tc_method_usage'
 require 'test/unit/tc_runtime_tracking_method'
-#require 'test/unit/tc_statement_structure_2'
 require 'test/unit/tc_variable_declaration'
 
 require 'test/tc_describe'
