@@ -31,7 +31,7 @@ module Cauldron
       
       # Create demo #1 chain
       #   Create the head for the chain
-      head = Theory.new([],nil,[])    
+      head = Theory.new([],nil,[])   
       
       link_one_action = TheoryAction.new(
         TheoryStatement.new(StringToTheory.run('Statement.new(Return.new,var1.params[var3])')),

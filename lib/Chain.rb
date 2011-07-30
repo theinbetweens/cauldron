@@ -592,7 +592,6 @@ protected
     
     if potentential_values.length > 1 
       unless potentential_values.collect {|y| y.write}.uniq.length == 1
-        pp potentential_values
         raise StandardError.new('There is more than one possible value for this('+global_id.to_s+') - it is ok if there the same')
       end
     end

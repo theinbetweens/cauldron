@@ -6,21 +6,47 @@ class Theory
   
   attr_accessor :theory_instance_id
     
-  @@theory_id = 0     
+  @@theory_id = nil
   #
   # @param  example_runtime_method      A runtime method instance with this theories action applied to it and
   #                                     which meets the theories dependents with a certain set of test cases.
   #
   def initialize(dependents,action,results,example_runtime_method=nil)
     @dependents, @action, @results, @example_runtime_method = dependents, action, results, example_runtime_method
-    @theory_id = @@theory_id
-    @@theory_id += 1
+    #@theory_id = @@theory_id
+    #@@theory_id += 1
+    @theory_id = Theory.next_theory_id
   end
   
   def copy
     #return Theory.new(@dependents.copy,@action.copy,@results.copy)
     return Marshal.load(Marshal.dump(self))
   end
+  
+  def self.next_theory_id
+    if @@theory_id.nil?
+      FileUtils.mkdir(theories_directory) unless File.exists?(theories_directory)
+      highest_integer = 0
+      Dir.glob(File.join(theories_directory,'*')).each do |filename|
+        if filename.match(/(\d+)/)
+          highest_integer = $1.to_i if $1.to_i > highest_integer     
+        end
+      end      
+      @@theory_id = highest_integer
+    end
+    @@theory_id += 1
+    return @@theory_id
+  end
+  
+  def self.theories_directory
+    # the home directory code is duplicated
+    realHome = ["HOME", "HOMEPATH"].detect {|h| ENV[h] != nil}
+    if not realHome
+      StandardLogger.instance.warning "Couldn't detect a home directory"
+    end
+    # => TODO Should use proper version
+    return File.join(ENV[realHome],'cauldron','0-1-1','theories')    
+  end    
   
   def irrelevant?
     dependents.empty? and results.empty? and action.nil?

@@ -143,8 +143,8 @@ module Cauldron
       # Define the theory's directory
       theory_path = File.join(repository,theory.theory_id.to_s)
       if File.exists?(theory_path)
-        puts theory_path+' already exists'
-        #raise StandardError.new('Directory already exists - how as this happened?') if File.exists?(theory_path)
+        StandardLogger.instance.warning theory_path+' already exists'
+        #raise StandardError.new('Directory already exists - how as this happened? '+theory.theory_id.to_s) if File.exists?(theory_path)
         return
       end
       
