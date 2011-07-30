@@ -141,7 +141,8 @@ class Chain
       mapped_theory = theory.map_to(mapping)
       total.push(mapped_theory)
     end
-    return UnifiedChain.new(unified_theories)
+    # => TODO This contians information about the chain before it has been unified  - this should not be included  
+    return UnifiedChain.new(unified_theories,@chain_mapping.copy)
   end
   
   # DEVELOPMENT

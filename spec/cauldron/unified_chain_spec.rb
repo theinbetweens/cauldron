@@ -95,6 +95,19 @@ module Cauldron
         end
       end
       
+      describe '#partial_chain' do
+        before(:each) {
+          temp = Object.new
+          temp.extend(Cauldron::Demos)
+          demo = temp.demo_one
+          @unified_chain = demo[:chain].unify_chain          
+        }        
+        it 'should return a chain of length 1 when passed the range 0..0' do
+          @unified_chain.partial_chain(0..0).length.should == 1
+        end
+        
+      end
+      
     end
     
   end

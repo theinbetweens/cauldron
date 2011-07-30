@@ -223,6 +223,7 @@ require $LOC+File.join(['core','ClassMethodCallContainer'])
 require $LOC+File.join(['CodeHandler'])
 require $LOC+File.join('Chain')
 require $LOC+File.join('UnifiedChain')
+require $LOC+File.join('PartialChain')
 require $LOC+File.join('implemented_chain')
 require $LOC+File.join('ChainMapping')
 

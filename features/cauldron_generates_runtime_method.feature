@@ -10,5 +10,5 @@ Feature: Cauldron generates a runtime method
 
 		Scenarios: example with only one parameter
 			| case_1_param | case_1_output | case_2_param | case_2_output |     							runtime_method   																																		|
-			| "sparky"		 | "sparky"			 |  "kel"       |  "kel"      	| "def method_0(var_0)\n\treturn var_0\nend\n"  																												| 
+			| "sparky"		 | "sparky"			 |  "kel"       |  "kel"      	| "def method_0(var_0)\n\treturn var_0\nend\n"  																											| 
 			|	"fish"       | "animal"      |  "carrot"    |  "vegetable"  |	"def method_0(var_0)\n\tif(var_0 == 'fish')\n\t\treturn 'animal'\n\tend\n\treturn 'vegetable'\nend\n" |	

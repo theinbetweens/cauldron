@@ -5,6 +5,7 @@ class Mapping
   
   def initialize(hash={})
     super()
+    raise StandardError.new('This should be a hash not a '+hash.class.to_s) unless hash.kind_of?(Hash)
     @hash = hash
   end
   

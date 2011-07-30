@@ -1,17 +1,9 @@
-# A unified chain is no longer editable - all the links have been added.  Unlike a normal 
-# chain there is no mapping, all the theories should have the correct ids if they are 
-# linked.  A unified chain is always complete.
-#
-class UnifiedChain
+# => TODO This is a duplicate of of UnifiedChain - it needs stripped down allot - probably shouldn't exist
 
-  def initialize(nodes,connections)
+class PartialChain
+  
+  def initialize(nodes)
     @nodes = nodes
-    #pp connections
-    
-    @variable_keys = connections.mapping.keys
-    #pp @variable_keys
-    
-    #raise StandardError.new('chain is not complete ') unless self.complete?
   end
   
   def write(tab=0)
@@ -38,6 +30,10 @@ class UnifiedChain
     return results.uniq
   end
   
+  def length
+    return @nodes.length
+  end
+  
   # Return an implemented version of the chain where all the theory variables have
   # been replaced with read values.
   #
@@ -56,134 +52,13 @@ class UnifiedChain
     
   end
   
-  def valid_mapping_permutations(runtime_method,test_cases)
-    
-    # Get the initially available intrinsic values
-    intrinsic_values = [IntrinsicRuntimeMethod.new,IntrinsicTestCases.new]
-    
-    total_variables = self.theory_variables.length
-    
-    available_values = [IntrinsicRuntimeMethod.new,IntrinsicTestCases.new]    
-    
-    #valid_mappings = [Mapping.new]
-    valid_mappings = [{}]
-    
-    itteration_limit = 6
-    
-    @nodes.each_with_index do |node,index|
-
-      node.dependents.each do |dependent|
-        if index == 0
-          chain = partial_chain(0..0)
-        else
-          chain = partial_chain(1..(index-1)) 
-          #chain = partial_chain(0..(index-1))
-        end
-        limit = 0
-        until has_all_variables_been_found?(dependent,valid_mappings) or limit > itteration_limit
-          valid_mappings = extend_mapping(valid_mappings,dependent,runtime_method.copy,test_cases.copy,chain,available_values)
-          limit += 1
-        end  
-      end
-      
-      unless node.action.nil?
-        if index == 0
-          chain = partial_chain(1..0)
-        else
-          chain = partial_chain(1..(index-1))  
-        end
-        limit = 0            
-        until has_all_variables_been_found?(node.action,valid_mappings) or limit > itteration_limit
-          valid_mappings = extend_mapping(valid_mappings,node.action,runtime_method.copy,test_cases.copy,chain,available_values)
-          limit += 1
-        end
-        if limit > itteration_limit  
-          puts 'Chain saved '+Cauldron::Util::Saver.save(self)
-          raise StandardError.new('Unable to resolve action: '+node.action.write)
-        end        
-      end
-      
-      valid_mappings = extend_value_mapping_with_result(valid_mappings,index,node,available_values,test_cases.copy,runtime_method.copy)
-      
-    end
-      
-    return valid_mappings.collect {|x| Mapping.new(x)} 
-    
-  end
-  
-  def extend_value_mapping_with_result(valid_mappings,index,node,available_values,test_cases,runtime_method)
-    itteration_limit = 6
-    node.results.each do |result|
-      chain = partial_chain(0..index)
-      limit = 0            
-      until has_all_variables_been_found?(result,valid_mappings) or limit > itteration_limit
-        valid_mappings = extend_mapping(valid_mappings,result,runtime_method.copy,test_cases.copy,chain,available_values)
-        limit += 1
-      end
-    end    
-    return valid_mappings
-  end
-  
   def has_all_variables_been_found?(component,mappings)
     component.theory_variables.each do |var|
-      mappings.each do |m|
-        return false unless m.has_key?(var.theory_variable_id)
+      mappings.each do |mapping|
+        return false unless mapping.has_key? var.theory_variable_id
       end
     end
     return true
-  end
-  
-  def extend_mapping(valid_mappings,component,runtime_method,test_cases,chain,available_values)
-    
-    new_mappings = [] 
-    component.theory_variables.each do |var|
-    
-      valid_mappings.each do |mapping|
-
-        implemented_chain = chain.implement(Mapping.new(mapping))
-        implemented_runtime_method = TheoryChainValidator.new.build_method_from_chain(
-                                        implemented_chain,runtime_method.copy,test_cases.copy
-                                      )        
-
-        possible_values = available_values-mapping.values   
-        begin 
-          values = intrinsic_values_for_variable(
-            var.theory_variable_id,
-            component,
-            mapping,
-            implemented_runtime_method,
-            test_cases.copy,
-            possible_values    
-          )
-        rescue NoMethodError => e
-          valid_mappings = valid_mappings-[mapping]
-          next
-        end
-        values = values.uniq      
-        values.each do |value|
-          copied_mapping = mapping.copy
-          copied_mapping[var.theory_variable_id] = value
-          new_mappings << copied_mapping 
-        end
-      end
-      
-    end
-    # => QUICK Hack
-    new_mappings = identify_uniq_mappings(new_mappings)
-    longest_mapping = new_mappings.inject(0) do |highest,m| 
-      if(m.length > highest) 
-        highest = m.length
-      end
-      highest
-    end
-    res = new_mappings.select {|x| x.length == longest_mapping}
-    new_mappings = res
-    
-    unless new_mappings.empty?
-      valid_mappings = new_mappings
-    end
-    return valid_mappings    
-    
   end
   
   def identify_uniq_mappings(mappings)
@@ -255,6 +130,13 @@ class UnifiedChain
       end      
       values += index_values
       
+      #variable_values = []
+      #result.statements_with_variable(var.theory_variable_id).each do |statement|
+      #variable_values += values_for_variable_as_argument(var,statement,mapping,intrinsic_values,implemented_runtime_method.copy,test_cases.copy)
+      #end
+      #values += variable_values
+      
+      #intrinsic_statement = statement.map_to(mapping)
       variable_values = []
       intrinsic_values.each do |value|
         literal = intrinsic_statement.write.gsub(/var(\d)+/,value.write)
@@ -265,15 +147,12 @@ class UnifiedChain
           next
         end
       end
+      #return results
       values += variable_values      
+      
       
     end
     return values
-  end
-  
-  def partial_chain(range)
-    links = @nodes[range].collect {|x| x.copy }
-    PartialChain.new(links)
   end
   
   def mapping_permutations(keys,values)
@@ -311,6 +190,64 @@ class UnifiedChain
     
     return implementation_permuatations2(runtime_method,test_cases,mapping)
     
-  end    
+    # Determine the number of variables without intrinsic values
+    theory_variable_ids = theory_variables.collect {|x| x.theory_variable_id}
+    
+    # Collect the theory variables without intrinsic values
+    missing_intrinsic_values = theory_variable_ids-mapping.keys
+    
+    # Take the first theory and identify all the accessors
+    # (need to work out what is the runtime method and what the test cases)
+    
+    # TEMP: Why are these implemented theories
+    # @nodes.first.all_theory_variables
+    
+    # Create the theory generator
+    generator = TheoryGenerator.new()
+    
+    #accessors, temp_mapping = generator.generate_accessors_and_mapping(test_cases,runtime_method,1)
+    accessors, temp_mapping = generator.generate_accessors_and_mapping(test_cases,runtime_method,3)
+
+    if temp_mapping.length > missing_intrinsic_values.length
+
+      # Now to assign real values to the chain
+      
+      # Apply the values in the various permutaions 
+      # (this is very crude and means that odd calls )
+      #theory_variable_ids = @nodes.first.all_theory_variables.collect {|x| x.theory_variable_id }
+      
+      theory_variable_ids = self.theory_variables.collect {|x| x.theory_variable_id }
+      
+      # Get the posible sets for values in an array so that non of the arrays contain all the same values
+      res = temp_mapping.values.collect {|x| x}
+      
+      # TODO  This is a complete hack but I think I should be using intrinsic values rather than real
+      intrinsic_res = res.collect {|x| x.to_intrinsic}
+      value_permutaions = intrinsic_res.permutation(theory_variable_ids.length).to_a
+      uniq_value_permutations = value_permutaions.collect {|x| x.to_set}.uniq
+      possible_mappings = []
+      
+      theory_variable_id_permutations = theory_variable_ids.permutation(theory_variable_ids.length).to_a
+      
+      possible_mappings = []
+      theory_variable_id_permutations.each do |theory_variable_id_permutation|
+        uniq_value_permutations.each do |value_permutation|
+          m = Mapping.new
+          theory_variable_id_permutation.zip(value_permutation.to_a) do |key,value|
+            m[key] = value
+          end
+          possible_mappings << m
+        end
+        
+      end
+      
+      # Implemented changes
+      return possible_mappings.inject([]) { |total,mapping| total << self.copy.implement(mapping) }
+      
+    else
+      raise StandardError.new('Could not generate enough real vlaues to test theory - try increasing the itterations')
+    end
+    
+  end      
   
 end
