@@ -1,5 +1,6 @@
 $LOAD_PATH << File.expand_path('../../../../../lib',__FILE__)
 
+require 'cauldron'
 require 'required'
 require 'test/unit'
 

@@ -12,6 +12,7 @@ module Cauldron
       StandardLogger.instance.level = Logger::FATAL
     end
     
+    # Returns a runtime method that meets the requirements of the test cases.
     def brew(test_cases)
       
       exclude = []
@@ -69,7 +70,7 @@ module Cauldron
     end
     
     def next_chains(test_cases,exclude=[])
-      theories = saved_theories 
+      theories = saved_theories
       
       res = theories.collect {|x| x.theory_id }
       runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))    

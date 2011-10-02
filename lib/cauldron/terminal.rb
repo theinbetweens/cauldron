@@ -9,6 +9,14 @@ module Cauldron
     
     def initialize(output,auto=true)
       @output, @cases, @auto = output, [], auto
+      
+      # Create a logger for the user inputs
+      #file = File.open('user-input.log', File::WRONLY | File::APPEND)
+      file = File.open('user-input.log', 'w+')
+      # To create new (and to remove old) logfile, add File::CREAT like;
+      #   file = open('foo.log', File::WRONLY | File::APPEND | File::CREAT)
+      @user_logger = Logger.new(file)      
+      
     end
     
     def start
@@ -39,8 +47,16 @@ module Cauldron
     end
     
     def submit(input)
+      
+      @user_logger.info input
+      
       if input =~ /^RUN$/
-         @output.puts @pot.brew(@cases).reset_ids!.basic_write
+        @output.puts @pot.brew(@cases).reset_ids!.basic_write
+      elsif input =~ /^QUIT$/
+        # => TODO Include 'bye' output too
+        #Process.exit!(true)
+        at_exit {0}
+        exit
       else
         @cases << convert_to_example(separate_values(input))
       end

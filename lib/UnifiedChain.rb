@@ -4,10 +4,13 @@
 #
 class UnifiedChain
 
+  attr_reader :connections
+
   def initialize(nodes,connections)
     @nodes = nodes
     #pp connections
     
+    @connections = connections
     @variable_keys = connections.mapping.keys
     #pp @variable_keys
     
@@ -280,6 +283,7 @@ class UnifiedChain
     PartialChain.new(links)
   end
   
+  # => TODO This might not be need - use cucumber to check
   def mapping_permutations(keys,values)
     values.permutation(keys.length).to_a.inject([]) do |total,value_permutation|
       total << Hash[*keys.zip(value_permutation).flatten]
@@ -312,9 +316,7 @@ class UnifiedChain
   # @param  test_cases        The test cases instance containing real values.
   #
   def implementation_permuatations(runtime_method,test_cases,mapping)
-    
     return implementation_permuatations2(runtime_method,test_cases,mapping)
-    
   end    
   
 end

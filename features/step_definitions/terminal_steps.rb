@@ -6,11 +6,38 @@ Given /^that the terminal has been created$/ do
   @terminal.start
 end
 
+Given /^I've started Cauldron$/ do
+  When "I start cauldron"
+end
 
 When /^I start cauldron$/ do
   @terminal = Cauldron::Terminal.new(output)
   @terminal.start
 end
+
+# When /^I type "([^"]*)"$/ do |command|
+  # @terminal.submit command
+# end
+
+# When /^I type "([^"]*)","([^"]*)"$/ do |param, output|
+  # #type "'"+param+"','"+output+"'"
+  # type 'test'
+# end
+
+When /^I add the case "([^"]*)","([^"]*)"$/ do |param, output|
+  #pending # express the regexp above with the code you wish you had
+  type "'"+param+"','"+output+"'"
+end
+
+
+# Then /^cauldron should say 'bye'$/ do
+  # output.messages.should include('bye')
+# end
+# 
+# Then /^the exit status should be (\d+)$/ do |exit_status|
+  # @terminal.submit 'QUIT'
+  # @last_exit_status.should == exit_status.to_i
+# end
 
 Then /^I should see "([^"]*)"$/ do |message|
    output.messages.should include(message)

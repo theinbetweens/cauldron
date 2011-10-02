@@ -204,9 +204,6 @@ class Statement
       if code.kind_of?(Variable)
 
         line += code.write+'('+code.value.write+')'
-        # unless code == self.last
-          # line += ' '
-        # end
         next
       end
 
@@ -534,11 +531,11 @@ class Statement
     return target[0] unless target.empty?
     raise FailedToFindVariableError.new('Couldn\'t find a variable with the id '+uniq_id.to_s+' in "'+self.write+'"')    
   end
-
-  def replace_variable!(id,var)
+  
+  def replace_variable!(uniq_id,var)
 
     # Find the variable to be replaced
-    target = self.find_actual_variable(id)  
+    target = self.find_actual_variable(uniq_id)  
  
     #raise StandardError.new('Both target and variable should be the same class('+target.class.to_s+' != '+var.class.to_s+')') unless(target.kind_of?(var.class))
     # TODO  Should check for two variable kinds to two instance call kinds
@@ -725,7 +722,7 @@ class Statement
       catch(:variable_substituted) do
         realised_variables.each do |z|
           if z.uniq_id == var.uniq_id
-            result.replace_variable!(var.variable_id,z)
+            result.replace_variable!(var.uniq_id,z)
             throw :variable_substituted
           end
         end

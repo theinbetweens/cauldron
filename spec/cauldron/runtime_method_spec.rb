@@ -43,7 +43,7 @@ module Cauldron
         end
       end
       context 'using runtime method with if statement' do
-        it 'it should reset all the ids to 0 and count up' do
+        it 'should reset all the ids to 0 and count up' do
           parser    = RubyParser.new
           ruby      =  "
             def method_3(var_8)
@@ -71,6 +71,21 @@ module Cauldron
           reset_runtime_method.basic_write.should == strip_whitespace(ruby_reset)+"\n"
         end
       end
+    end
+    
+    describe '#realise2' do
+      it 'should be able to realise a very simple runtime method' do
+        parser    = RubyParser.new
+        ruby      =   "
+                      def method_3
+                        var_13 = 8
+                      end
+                      " 
+        sexp      = parser.process(ruby)   
+        sexp2cauldron = Sexp2Cauldron.new
+        runtime_method = sexp2cauldron.process(sexp)
+        runtime_method.realise2(ParametersContainer.new).class.should == RealisedRuntimeMethod           
+      end  
     end
      
    end

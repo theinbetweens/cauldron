@@ -723,13 +723,12 @@ class RuntimeMethod < StatementGroup
   #       array of literal values.
   # 
   def realise2(params,additional_methods=[])
-    
+
     # TEMP
     if(params.any? {|x| x.kind_of?(Variable)})
       raise StandardError.new('Currently only literal values can be realised')
     end
     
-    # TODO  Is KnownVariable a better name than LiteralVariable
     # Convert the passed paramters into literal variables with the appropriate ids
     unless usage.length == params.length  
       raise StandardError.new('This method expects '+usage.length.to_s+' param(s) but '+params.length.to_s+' were passed')
@@ -757,13 +756,14 @@ class RuntimeMethod < StatementGroup
     # Go through each statement and substitue any of the variables
     # for those in the history object
     self.each do |x|
+
       if x.realised?
         realised_runtime_method.push(x)
         next
       end
 
       # Handle nested and single statements differently      
-      if(x.kind_of?(Statement))        
+      if(x.kind_of?(Statement))
         realised_statement = x.realise2(past)
         realised_runtime_method.push(realised_statement)
       elsif(x.kind_of?(BlockStatement))
@@ -796,7 +796,7 @@ class RuntimeMethod < StatementGroup
     
     realised_runtime_method.close
     return realised_runtime_method
-    
+
   end
   
   def cauldron_method_calls

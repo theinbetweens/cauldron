@@ -2,6 +2,8 @@ $LOAD_PATH << File.expand_path('../../../lib',__FILE__)
 
 require 'cauldron'
 
+require 'aruba/cucumber'
+
 class Output
   
   def messages

@@ -100,7 +100,7 @@ class TheoryConnector
     if extended_chains.any? {|x| x.complete? }
       res2 = extended_chains.select {|x| x.complete?}
       raise StandardError.new('More than one complete chain found') if res2.length > 1
-      throw :complete, res2.first      
+      throw :complete, res2.first.freeze      
     end
     closer = closer_chains(chain.copy,extended_chains)
 
@@ -265,9 +265,7 @@ class TheoryConnector
   # Returns a new chain so that they all use consistent theory variables ids
   #
   def unify_chain(chain)
-    
-    #return unify_chain2(chain.reverse)
-    
+
     # TODO  Break up this method and write tests for the individual parts
 
     # Find all the ways the theory and results can connected
@@ -398,7 +396,6 @@ class TheoryConnector
   # they should be considered equal.
   #
   def matching_variables(arrangements,uniq_chain)
-    #chains = []
     mappings = []
     arrangements.each do |arrangement|
       map = {}
