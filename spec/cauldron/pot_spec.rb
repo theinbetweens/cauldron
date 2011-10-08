@@ -5,21 +5,19 @@ module Cauldron
   describe 'Pot' do 
     
     describe '#simmer' do
+      before(:each) {
+        @pot = Cauldron::Pot.new
+        @pot.clear
+      }
       it 'can simmer with demo one' do 
-        pot = Cauldron::Pot.new
-        pot.clear
-        lambda {pot.simmer(demo_one)}.should_not raise_error
+        lambda {@pot.simmer(demo_one)}.should_not raise_error
       end
       it 'can simmer with demo two' do 
-        pot = Cauldron::Pot.new
-        pot.clear
-        lambda {pot.simmer(demo_two)}.should_not raise_error        
+        lambda {@pot.simmer(demo_two)}.should_not raise_error        
       end
       it 'can simmer with both demo one and two' do
-        pot = Cauldron::Pot.new
-        pot.clear
-        lambda {pot.simmer(demo_one)}.should_not raise_error
-        lambda {pot.simmer(demo_two)}.should_not raise_error        
+        lambda {@pot.simmer(demo_one)}.should_not raise_error
+        lambda {@pot.simmer(demo_two)}.should_not raise_error        
       end
     end
     
@@ -86,6 +84,24 @@ module Cauldron
           sexp2cauldron = Sexp2Cauldron.new      
           @pot.brew(cases).reset_ids!.basic_write.should == sexp2cauldron.process(sexp).basic_write                              
         end
+        it 'can repeatedly generate a demo 1 solution' do
+          case_set_one = []
+          case_set_one << convert_to_example(separate_values("'pip','pip'"))
+          case_set_one << convert_to_example(separate_values("'rowiage','rowiage'"))
+          
+          case_set_two = []
+          case_set_two << convert_to_example(separate_values("'andy','andy'"))
+          case_set_two << convert_to_example(separate_values("'kel','kel'"))
+          
+          ruby      =  "
+            def method_0(var_0)
+              \treturn var_0
+            end
+          "          
+          sexp2cauldron = Sexp2Cauldron.new      
+          @pot.brew(case_set_one).reset_ids!.basic_write.should == sexp2cauldron.process(RubyParser.new.process(ruby)).basic_write                              
+          @pot.brew(case_set_two).reset_ids!.basic_write.should == sexp2cauldron.process(RubyParser.new.process(ruby)).basic_write
+        end
         it 'can generate a solution like demo 2(it needs to discount the demo 1 solution)' do
           cases = []
           cases << convert_to_example(separate_values("'sparky','bro'"))
@@ -102,6 +118,42 @@ module Cauldron
           sexp      = parser.process(ruby)
           sexp2cauldron = Sexp2Cauldron.new
           @pot.brew(cases).reset_ids!.basic_write.should == sexp2cauldron.process(sexp).basic_write
+        end
+        it 'can repeatedly generate a demo 2 solution' do
+          case_set_one = []
+          case_set_one << convert_to_example(separate_values("'sparky','bro'"))
+          case_set_one << convert_to_example(separate_values("'kel','sis'"))
+          
+          ruby      =  "
+                          def method_0(var_0)
+                            \tif(var_0 == 'sparky')
+                            \t\treturn 'bro'
+                            \tend
+                            \treturn 'sis'
+                          end        
+                       "                    
+          parser    = RubyParser.new          
+          sexp      = parser.process(ruby)
+          sexp2cauldron = Sexp2Cauldron.new
+          @pot.brew(case_set_one).reset_ids!.basic_write.should == sexp2cauldron.process(sexp).basic_write          
+          
+          case_set_two = []
+          case_set_two << convert_to_example(separate_values("'carrot','vegtable'"))
+          case_set_two << convert_to_example(separate_values("'apple','fruit'"))
+          
+          ruby      =  "
+                          def method_0(var_0)
+                            \tif(var_0 == 'carrot')
+                            \t\treturn 'vegtable'
+                            \tend
+                            \treturn 'fruit'
+                          end        
+                       "                    
+          parser    = RubyParser.new          
+          sexp      = parser.process(ruby)
+          sexp2cauldron = Sexp2Cauldron.new
+          @pot.brew(case_set_two).reset_ids!.basic_write.should == sexp2cauldron.process(sexp).basic_write
+                                        
         end
       end
       

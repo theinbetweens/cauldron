@@ -9,7 +9,6 @@ module ContainsTheories
   def setup
     @theory_1 = Theory.load_theory(1)
     @theory_2 = Theory.load_theory(2)
-    #@theory_3 = Theory.load_theory(3)
     @theory_3 = theory_3    
   end
   

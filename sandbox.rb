@@ -10,6 +10,14 @@ require 'cauldron'
 # puts 'Working'
 
 
-object = Cauldron::Util::Saver.load(2)
-puts object.describe
-object.realise2(ParametersContainer.new)
+unified_chain = Cauldron::Util::Saver.load(33)
+runtime_method = Cauldron::Util::Saver.load(31)
+test_cases  = Cauldron::Util::Saver.load(32)
+
+puts unified_chain.describe
+
+
+#unified_chain.valid_mapping_permutations(runtime_method,test_cases)
+
+  
+

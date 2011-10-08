@@ -108,6 +108,31 @@ module Cauldron
         
       end
       
+      describe '#complete?' do
+        context 'when using demo 1' do
+          before(:each) {
+            temp = Object.new
+            temp.extend(Cauldron::Demos)
+            demo = temp.demo_one
+            @unified_chain = demo[:chain].unify_chain   
+          }
+          it 'should be a complete chain' do
+            @unified_chain.complete?.should == true
+          end
+        end
+        context 'when using demo 2' do
+          before(:each){
+            temp = Object.new
+            temp.extend(Cauldron::Demos)
+            demo = temp.demo_two
+            @unified_chain = demo[:chain].unify_chain            
+          }
+          it 'should be a complete chain' do
+            @unified_chain.complete?.should == true
+          end
+        end
+      end
+      
     end
     
   end

@@ -152,7 +152,7 @@ class Statement
     raise StandardError.new('Unexpexted class "'+tab.class.to_s+'" for Fixnum (number of tabs)') unless tab.kind_of? Fixnum
 
     line = ''
-    tab.times {line += "\t" }
+    tab.times {line += "  " }
     self.each do |code|
       line += code.write
       break if code.object_id == self.last.object_id

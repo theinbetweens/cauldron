@@ -21,7 +21,7 @@ class OpenStatement < StatementGroup
   def write(tab=0)
     line = @statement.write(tab)+"\n"
     line += super(tab+1)
-    tab.times {line += "\t" }
+    tab.times {line += "  " }
     line += "end"
     return line
   end

@@ -14,7 +14,7 @@ class UnifiedChain
     @variable_keys = connections.mapping.keys
     #pp @variable_keys
     
-    #raise StandardError.new('chain is not complete ') unless self.complete?
+    raise StandardError.new('chain is not complete ') unless self.complete?
   end
   
   def write(tab=0)
@@ -61,6 +61,10 @@ class UnifiedChain
   
   def valid_mapping_permutations(runtime_method,test_cases)
     
+    # puts '-------------------------------'
+    # puts Cauldron::Util::Saver.save(runtime_method)
+    # puts Cauldron::Util::Saver.save(test_cases)
+    # puts '-------------------------------'
     # Get the initially available intrinsic values
     intrinsic_values = [IntrinsicRuntimeMethod.new,IntrinsicTestCases.new]
     
@@ -70,11 +74,18 @@ class UnifiedChain
   
     valid_mappings = [{}]
     
-    itteration_limit = 6
+    itteration_limit = 9
     
     @nodes.each_with_index do |node,index|
       
-      valid_mappings = extend_value_mapping_wtih_dependents(valid_mappings,index,node,available_values,test_cases.copy,runtime_method.copy)
+      valid_mappings = extend_value_mapping_wtih_dependents(
+                          valid_mappings,
+                          index,
+                          node,
+                          available_values,
+                          test_cases.copy,
+                          runtime_method.copy
+                        )
       
       unless node.action.nil?
         if index == 0
@@ -89,7 +100,8 @@ class UnifiedChain
         end
         if limit > itteration_limit  
           puts 'Chain saved '+Cauldron::Util::Saver.save(self)
-          raise StandardError.new('Unable to resolve action: '+node.action.write)
+          puts 'Is chain complete: '+complete?.to_s
+          raise StandardError.new('Unable to resolve action: '+"\n"+node.action.write)
         end        
       end
       
@@ -318,5 +330,22 @@ class UnifiedChain
   def implementation_permuatations(runtime_method,test_cases,mapping)
     return implementation_permuatations2(runtime_method,test_cases,mapping)
   end    
+  
+  # TODO  This is a temporary method while I work out how incomplete? chains are being created
+  def complete?
+    @nodes.each do |node|
+
+      # Exclude the current node being considered
+      filtered_nodes = TheoryCollection.new(@nodes.copy - [node])
+      
+      node.dependents.each do |dependent|
+        unless filtered_nodes.results.any? {|result| result.write == dependent.write}
+          return false
+        end        
+      end
+      
+    end
+    return true
+  end
   
 end

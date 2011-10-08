@@ -30,7 +30,16 @@ module Cauldron
         end
         its([0]) { should eq({:output=>"sparky", :params=>["sparky"]}) }
         its([1]) { should eq({:output=>"kel", :params=>["kel"]}) }
-      end     
+      end   
+      context 'with example case "sparky", "sparky"' do
+        subject do
+          terminal.submit '"sparky","sparky"'
+          terminal.submit '"kel","kel"'
+          terminal.cases
+        end
+        its([0]) { should eq({:output=>"sparky", :params=>["sparky"]}) }
+        its([1]) { should eq({:output=>"kel", :params=>["kel"]}) }
+      end           
     end
       
   end

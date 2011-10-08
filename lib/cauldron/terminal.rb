@@ -37,13 +37,14 @@ module Cauldron
       @output.puts "'cat','animal'"
       @output.puts "'carrot','vegtable'"
       @output.puts "and when you're done just type RUN"
-      
+
       # Wait for the user's inputs
       unless @auto
         loop do 
           submit gets
         end      
       end
+      
     end
     
     def submit(input)

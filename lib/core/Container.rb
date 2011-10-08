@@ -30,7 +30,7 @@ class Container
 
   def write(tab=0)
     line = '('
-    tab.times {line += "\t" }
+    tab.times {line += "  " }
     @tokens.each do |code|
       line += code.write
       break if code.object_id == @tokens.last.object_id

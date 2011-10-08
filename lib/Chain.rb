@@ -11,7 +11,7 @@ class Chain
     @values, @nodes = {}, [] 
     
     # Create an array of possible ids for any theories added
-    @uniq_theory_instance_ids = ('A'...'Z').to_a 
+    @uniq_theory_instance_ids = ('AA'...'ZZ').to_a 
     
     # Create a result version of 'finish'
 
@@ -142,7 +142,7 @@ class Chain
       total.push(mapped_theory)
     end
     # => TODO This contians information about the chain before it has been unified  - this should not be included  
-    return UnifiedChain.new(unified_theories,@chain_mapping.copy)
+    return UnifiedChain.new(unified_theories,@chain_mapping.copy).freeze
   end
   
   # DEVELOPMENT

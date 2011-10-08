@@ -91,7 +91,7 @@ module ActsAsRuntimeMethod
     raise StandardError.new('Incorrect use of write ') if params.kind_of?(Fixnum)
       
     line = "\n"    
-    tab.times {|x| line += "\t" }
+    tab.times {|x| line += "  " }
     line += "#\n"
 
     if params.nil?
@@ -109,7 +109,7 @@ module ActsAsRuntimeMethod
           
           # Assides the first line pre-fix a "#      " to the start
           (tab-1).times {|x| line += "\t" }
-          line_prefix = "#\t\t\t"
+          line_prefix = "#      "
           
         end
         

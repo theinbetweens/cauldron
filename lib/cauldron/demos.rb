@@ -58,7 +58,7 @@ module Cauldron
       # TODO  It should generate the values too.(TheoryGenerator)
       return {
         :initial_method=>RuntimeMethod.new(MethodUsage.new(MethodParameter.new)),
-        :test_cases=>@demo_1_test_cases,
+        :test_cases=>@demo_1_test_cases.copy,
         :chain=>chain,
         :values=>{}
       }            
@@ -73,7 +73,7 @@ module Cauldron
           [['carrot'],'vegtable'],
         ]
       )
-      head = Theory.new([],nil,[])
+      # => head = Theory.new([],nil,[])
       
       # Statementents
       # => TODO Need a clear way to format theories
@@ -268,7 +268,7 @@ module Cauldron
       
       return {
         :initial_method=>RuntimeMethod.new(MethodUsage.new(MethodParameter.new)),
-        :test_cases=>@demo_2_test_cases,
+        :test_cases=>@demo_2_test_cases.copy,
         :chain=>chain,
         :values=>{}
       }            

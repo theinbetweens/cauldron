@@ -54,6 +54,7 @@ class TheoryImplementation < Theory
     return true    
 
   end
+  
   # TODO  If I remove the code from this method then tc_theory_implementation.rb still
   #       passes all the tests!
   def evaluate_dependent(dependent,runtime_method,test_cases)
@@ -61,14 +62,14 @@ class TheoryImplementation < Theory
     last_runtime_method = runtime_method.copy
     eval dependent.statement.write 
     return false
-  end    
+  end
 
-  # # Returns all the theory vairables in this theory
-  # # dependent. 
-  # #
-  # # TODO  What is the point in this - why only the actions?
-  # def theory_variables
-    # return @action.select_all {|x| x.kind_of?(TheoryVariable)}
-  # end
-
+  def hash
+    @theory_id
+  end
+  
+  def eql?(value)
+    @theory_id == value.theory_id
+  end
+  
 end
