@@ -48,8 +48,7 @@ result:
           3=>IntrinsicLiteral.new(0),
           4=>IntrinsicLiteral.new(0),
           5=>IntrinsicLiteral.new(0)
-        })        
-        puts theory.map_to(mapping).describe        
+        })
         
       end
     end

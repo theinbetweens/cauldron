@@ -166,6 +166,7 @@ class Theory
         @action ? @action.map_to(mapping) : nil,
         @results.collect {|y| y.map_to(mapping)},
         mapping,
+        @theory_id,
         values
       )       
   end

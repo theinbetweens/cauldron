@@ -14,10 +14,8 @@ module Cauldron
     end
     
     def next_chain
-      if @chains.empty?
-        puts 'saved_theories: '+saved_theories.length.to_s  
-        @chains = @connector.generate_chains(@runtime_method,@test_cases,saved_theories,@exclude)
-        puts 'Total number of chains: '+@chains.length.to_s        
+      if @chains.empty?  
+        @chains = @connector.generate_chains(@runtime_method,@test_cases,saved_theories,@exclude)        
         if @chains.empty?
           raise StandardError.new('No more chains available')
         end
@@ -36,7 +34,6 @@ module Cauldron
     def saved_theories
       # => TODO This needs to cached to prevent error
       if @@cached_saved_theories.nil?
-        puts theory_repository_path
         saved_theory_file_paths = Dir.glob(File.join(theory_repository_path,'*','dump'))
         @@cached_saved_theories = saved_theory_file_paths.collect {|x| Marshal.load(File.open(x,'r'))}
         @@cached_saved_theories.freeze

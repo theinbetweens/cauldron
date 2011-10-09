@@ -9,10 +9,10 @@ class TheoryImplementation < Theory
   #                     to what literal value. {1=><#IntrinsicRuntimeMethod,2=><#IntrinsicLiteral val=9>,...}
   # @param  values      
   #
-  def initialize(dependents,action,results,mapping,accessor_values={})
+  def initialize(dependents,action,results,mapping,theory_id,accessor_values={})
     @dependents, @action, @results = dependents, action, results
     @mapping, @accessor_values = mapping, accessor_values
-    @theory_id = Theory.next_theory_id
+    @theory_id = theory_id
   end
   
   def copy
