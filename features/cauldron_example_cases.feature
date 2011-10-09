@@ -7,7 +7,7 @@ Feature: User enters example cases
 		Then the case "<case>" should be saved 
 		
 		Scenarios: single paramerter cases
-			| 					case 						|
-			| 'sparky', 'spark'					|
-			| 'kel', 'kel'					 		|
+		 | case              |
+		 | 'sparky', 'spark' |
+		 | 'kel', 'kel'      |
 			
