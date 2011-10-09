@@ -34,7 +34,6 @@ module Cauldron
       @output.puts "input,input,output"
       @output.puts "For example "
       @output.puts "'fish','animal'"
-      @output.puts "'cat','animal'"
       @output.puts "'carrot','vegtable'"
       @output.puts "and when you're done just type RUN"
 
