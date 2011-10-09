@@ -1,17 +1,17 @@
 if: 
-	if(var1.history(var2[var3][:params]).any?{ |x| x.statement_id == var1.last.statement_id} )
-		return true
-	end
-	if((var1.history(var2[var4][:params]).any?{ |x| x.statement_id == var1.last.statement_id} ) == false)
-		return true
-	end
+  if(var1.history(var2[var3][:params]).any?{ |x| x.statement_id == var1.last.statement_id} )
+    return true
+  end
+  if((var1.history(var2[var4][:params]).any?{ |x| x.statement_id == var1.last.statement_id} ) == false)
+    return true
+  end
 
 action: 
-	<runtime_method>.add_statement_at(Statement.new(Return.new, var2[var3][:output]),var1.last.statement_id)
+  <runtime_method>.add_statement_at(Statement.new(Return.new, var2[var3][:output]),var1.last.statement_id)
 result: 
-	if(var1.pass?(var2[var3]))
-		return true
-	end
-	if(var1.pass?(var2[var4]) == false)
-		return true
-	end
+  if(var1.pass?(var2[var3]))
+    return true
+  end
+  if(var1.pass?(var2[var4]) == false)
+    return true
+  end

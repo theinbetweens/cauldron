@@ -23,7 +23,7 @@ module Cauldron
         method_param = MethodParameter.new
         temporary_runtime_method = RuntimeMethod.new(MethodUsage.new(method_param))
         temporary_runtime_method << Statement.new(Return.new,method_param)
-        temporary_runtime_method.reset_ids!.basic_write.should == "def method_0(var_0)\n\treturn var_0\nend\n"
+        temporary_runtime_method.reset_ids!.basic_write.should == "def method_0(var_0)\n  return var_0\nend\n"
       end
     end
     
@@ -45,14 +45,14 @@ module Cauldron
       context 'using runtime method with if statement' do
         it 'should reset all the ids to 0 and count up' do
           parser    = RubyParser.new
-          ruby      =  "
+          ruby      =  %q{
             def method_3(var_8)
-              \tif(var_8 == 'apple')
-              \t\treturn 'fruit'
-              \tend
-              \treturn 'vegetable'
+              if(var_8 == 'apple')
+                return 'fruit'
+              end
+              return 'vegetable'
             end
-          "        
+          }  
           sexp      = parser.process(ruby)
           sexp2cauldron = Sexp2Cauldron.new                  
           unprocessed_runtime_method = sexp2cauldron.process(sexp)  
@@ -60,15 +60,14 @@ module Cauldron
           reset_runtime_method.method_id.should == '0'
           reset_runtime_method.variables.length.should == 1
           
-          ruby_reset      =  "
-            def method_0(var_0)
-              \tif(var_0 == 'apple')
-              \t\treturn 'fruit'
-              \tend
-              \treturn 'vegetable'
-            end
-          "          
-          reset_runtime_method.basic_write.should == strip_whitespace(ruby_reset)+"\n"
+          ruby_reset      =  
+%q{def method_0(var_0)
+  if(var_0 == 'apple')
+    return 'fruit'
+  end
+  return 'vegetable'
+end}
+          reset_runtime_method.basic_write.should == ruby_reset+"\n"
         end
       end
     end

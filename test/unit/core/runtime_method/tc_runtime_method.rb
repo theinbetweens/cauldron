@@ -320,8 +320,8 @@ class TestRuntimeMethod < Test::Unit::TestCase
     }
     realised_instance_1 = simple_method.realise2(['Grim','fandango','Threepwood'])
     assert_equal(
-      "\n#\n#\t@param\t[StringVariable] 'Grim'\n#\t@param\t[StringVariable] 'fandango'\n" \
-      "#\t@param\t[StringVariable] 'Threepwood'\n#\n#\n" \
+      "\n#\n#  @param  [StringVariable] 'Grim'\n#  @param  [StringVariable] 'fandango'\n" \
+      "#  @param  [StringVariable] 'Threepwood'\n#\n#\n" \
       "def method_0(var_#{simple_method.usage[0].variable_id}, var_#{simple_method.usage[1].variable_id}, var_#{simple_method.usage[2].variable_id})\n\nend\n",
       realised_instance_1.write
     )
@@ -344,9 +344,9 @@ class TestRuntimeMethod < Test::Unit::TestCase
     simple_method.push(Statement.new(var_c,Equal.new,InstanceCallContainer.new(var_a,StringLength.new)))
     realised_instance_2 = simple_method.realise2(['Grim','fandango','Threepwood'])
     assert_equal(
-      "\n#\n#\t@param\t[StringVariable] 'Grim'\n#\t@param\t[StringVariable] 'fandango'\n#\t@param\t[StringVariable] 'Threepwood'\n#\n#\n"\
+      "\n#\n#  @param  [StringVariable] 'Grim'\n#  @param  [StringVariable] 'fandango'\n#  @param  [StringVariable] 'Threepwood'\n#\n#\n"\
       "def method_0(var_#{simple_method.usage[0].variable_id}, var_#{simple_method.usage[1].variable_id}, var_#{simple_method.usage[2].variable_id})"\
-      "\n\tvar_64 = var_35.length\nend\n",
+      "\n  var_64 = var_35.length\nend\n",
       realised_instance_2.write
     )
     
@@ -356,11 +356,11 @@ class TestRuntimeMethod < Test::Unit::TestCase
     simple_method_written_3 = simple_method.write
     realised_simple_method_3 = simple_method.realise2(['Grim','fandango','Threepwood'])
     assert_equal(
-      "\n#\n#\t@param\t[StringVariable] 'Grim'\n"\
-      "#\t@param\t[StringVariable] 'fandango'\n"\
-      "#\t@param\t[StringVariable] 'Threepwood'\n"\
+      "\n#\n#  @param  [StringVariable] 'Grim'\n"\
+      "#  @param  [StringVariable] 'fandango'\n"\
+      "#  @param  [StringVariable] 'Threepwood'\n"\
       "#\n#\ndef method_0(var_#{simple_method.usage[0].variable_id}, var_#{simple_method.usage[1].variable_id}, var_#{simple_method.usage[2].variable_id})\n"\
-      "\tvar_64 = var_#{simple_method.usage[0].variable_id}.length\n\tvar_76 = var_#{simple_method.usage[0].variable_id}.chop\nend\n",
+      "  var_64 = var_#{simple_method.usage[0].variable_id}.length\n  var_76 = var_#{simple_method.usage[0].variable_id}.chop\nend\n",
       realised_simple_method_3.write
     )
     
@@ -379,7 +379,7 @@ class TestRuntimeMethod < Test::Unit::TestCase
     simple_method_written_4 = simple_method.write
     realised_simple_method_4 = simple_method.realise2(['Grim','fandango','Threepwood'])
     assert_equal(
-      "\n#\n#\t@param\t[StringVariable] 'Grim'\n#\t@param\t[StringVariable] 'fandango'\n#\t@param\t[StringVariable] 'Threepwood'\n#\n#\ndef method_0(var_35, var_36, var_37)\n\tvar_64 = var_35.length\n\tvar_76 = var_35.chop\n\tvar_89 = var_36.length\n\tvar_90 = var_89 + var_64\nend\n",
+      "\n#\n#  @param  [StringVariable] 'Grim'\n#  @param  [StringVariable] 'fandango'\n#  @param  [StringVariable] 'Threepwood'\n#\n#\ndef method_0(var_35, var_36, var_37)\n  var_64 = var_35.length\n  var_76 = var_35.chop\n  var_89 = var_36.length\n  var_90 = var_89 + var_64\nend\n",
       realised_simple_method_4.write
     )
     
@@ -439,10 +439,10 @@ class TestRuntimeMethod < Test::Unit::TestCase
     assert_not_equal("#\n#\ndef method_"+method_example_b.method_id.to_s+"\n\nend\n",method_example_b.write)    
       
     # Test that neested methods are writen properly      
-    assert_equal("\n#\n#\ndef method_6\n\tvar_28 = ''\n\tvar_29 = 'x'\n\t3.times do |var_30|\n\t\tvar_28 = var_28 + var_29\n\tend\n\nend\n",@build_xxx_method.write)  
+    assert_equal("\n#\n#\ndef method_6\n  var_28 = ''\n  var_29 = 'x'\n  3.times do |var_30|\n    var_28 = var_28 + var_29\n  end\n\nend\n",@build_xxx_method.write)  
     
     # Test how the method is written with tabs
-    assert_equal("\n\t#\n\t#\n\tdef method_6\n\t\tvar_28 = ''\n\t\tvar_29 = 'x'\n\t\t3.times do |var_30|\n\t\t\tvar_28 = var_28 + var_29\n\t\tend\n\n\tend\n",@build_xxx_method.write(nil,1))      
+    assert_equal("\n  #\n  #\n  def method_6\n    var_28 = ''\n    var_29 = 'x'\n    3.times do |var_30|\n      var_28 = var_28 + var_29\n    end\n\n  end\n",@build_xxx_method.write(nil,1))      
          
   end
   

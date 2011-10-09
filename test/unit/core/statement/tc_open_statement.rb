@@ -37,7 +37,7 @@ class TestOpenStatement < Test::Unit::TestCase
     
     # Test that internal statements are properly tabs
     @simple_open_if_statement << Statement.new(Return.new,True.new)
-    assert_equal("if(#{@simple_if_statement_var.write} == 'Stobart')\n\treturn true\nend" ,@simple_open_if_statement.write)
+    assert_equal("if(#{@simple_if_statement_var.write} == 'Stobart')\n  return true\nend" ,@simple_open_if_statement.write)
     
   end
   
@@ -71,9 +71,9 @@ class TestOpenStatement < Test::Unit::TestCase
   
   def test_write_structure_with_simple_examples
     assert_equal("if(a == b)\nend",Parser.run("if(var1 == var2)\nend").write_structure)
-    assert_equal("if(a == b)\n\treturn c\nend",Parser.run("if(var1 == var2)\nreturn 8\nend").write_structure)
-    assert_equal("if(a.chop == b)\n\treturn c\nend",Parser.run("if(var1.chop == var2)\nreturn 8\nend").write_structure)
-    assert_equal("if(a.chop == b)\n\treturn a.chop\nend", Parser.run("if(var1.chop == var2)\nreturn var1.chop\nend").write_structure)
+    assert_equal("if(a == b)\n  return c\nend",Parser.run("if(var1 == var2)\nreturn 8\nend").write_structure)
+    assert_equal("if(a.chop == b)\n  return c\nend",Parser.run("if(var1.chop == var2)\nreturn 8\nend").write_structure)
+    assert_equal("if(a.chop == b)\n  return a.chop\nend", Parser.run("if(var1.chop == var2)\nreturn var1.chop\nend").write_structure)
   end    
       
 end

@@ -43,7 +43,7 @@ class TestTheoryStatement < Test::Unit::TestCase
     mapping[3] = IntrinsicLiteral.new(0)
     
     assert_equal(
-      "if((runtime_method.params[0].length == runtime_method) == false)\n\treturn true\nend",
+      "if((runtime_method.params[0].length == runtime_method) == false)\n  return true\nend",
       theory.replace_theory_variables!(mapping).write
     )
     

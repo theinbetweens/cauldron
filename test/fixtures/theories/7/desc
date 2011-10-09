@@ -1,11 +1,11 @@
 if: 
-	if(var1.realise2(var2[var3][:params]).params[var4].value.length == var2[var3][:output])
-		return true
-	end
+  if(var1.realise2(var2[var3][:params]).params[var4].value.length == var2[var3][:output])
+    return true
+  end
 
 action: 
-	<runtime_method>.add_statement_at(Statement.new(Return.new, InstanceCallContainer.new(var1.params[var4], StringLength.new)),var1.statement_id)
+  <runtime_method>.add_statement_at(Statement.new(Return.new, InstanceCallContainer.new(var1.params[var4], StringLength.new)),var1.statement_id)
 result: 
-	if(var1.pass?(var2[var3]))
-		return true
-	end
+  if(var1.pass?(var2[var3]))
+    return true
+  end

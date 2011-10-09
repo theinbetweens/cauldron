@@ -64,7 +64,7 @@ class MethodParameter < BaseVariable
     copied_var.each do |x|  
       desc = x.describe(context)
       desc.each_line do |l|
-        line += "\t"+l
+        line += "  "+l
       end      
       line += "\n" unless x == copied_var.last      
     end

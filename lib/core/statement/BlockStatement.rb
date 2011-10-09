@@ -80,7 +80,7 @@ class BlockStatement < OpenStatement
     self.each do |x|
       l += x.write(tab+1)+"\n"
     end
-    tab.times {l += "\t" }    
+    tab.times {l += "  " }    
     l += 'end'+"\n"
     return l
   end

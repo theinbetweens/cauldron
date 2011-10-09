@@ -24,11 +24,11 @@ module Cauldron
 if: 
 
 action: 
-\truntime_method.add_statement_at(Statement.new(Return.new, test_cases.params[0]),runtime_method.statement_id)
+  runtime_method.add_statement_at(Statement.new(Return.new, test_cases.params[0]),runtime_method.statement_id)
 result: 
-\tif(runtime_method.all_pass?(test_cases))
-\t\treturn true
-\tend
+  if(runtime_method.all_pass?(test_cases))
+    return true
+  end
 "
         theory.map_to(mapping).write.strip.should == result.strip
         

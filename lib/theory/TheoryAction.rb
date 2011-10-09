@@ -27,11 +27,11 @@ class TheoryAction
   #    
   def describe(tab=0)
     # TODO  That is nicer way to do tabs - I should make the other methods consistent with it
-    return ("\t"*tab)+"<runtime_method>.add_statement_at(#{@action.describe},#{@target_id.describe})"
+    return ("  "*tab)+"<runtime_method>.add_statement_at(#{@action.describe},#{@target_id.describe})"
   end
   
   def write(tab=0)
-    return ("\t"*tab)+"<runtime_method>.add_statement_at(#{@action.write},#{@target_id.write})"
+    return ('  '*tab)+"<runtime_method>.add_statement_at(#{@action.write},#{@target_id.write})"
   end
   
   # Returns all the theory vairables in this theory action 

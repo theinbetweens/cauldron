@@ -1,11 +1,11 @@
 if: 
-	if(var1[var2][:params][var2] + var1[var2][:params][var3] == var1[var2][:output])
-		return true
-	end
+  if(var1[var2][:params][var2] + var1[var2][:params][var3] == var1[var2][:output])
+    return true
+  end
 
 action: 
-	<runtime_method>.add_statement_at(Statement.new(Unknown.new, Equal.new, var4.params[var2], Addition.new, var4.params[var3]),var4.statement_id)
+  <runtime_method>.add_statement_at(Statement.new(Unknown.new, Equal.new, var4.params[var2], Addition.new, var4.params[var3]),var4.statement_id)
 result: 
-	if(var4.all_pass?(var1))
-		return true
-	end
+  if(var4.all_pass?(var1))
+    return true
+  end

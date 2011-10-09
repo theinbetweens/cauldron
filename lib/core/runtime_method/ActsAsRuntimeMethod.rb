@@ -98,8 +98,8 @@ module ActsAsRuntimeMethod
 
       @usage.each_with_index do |var,i|
       
-        tab.times {|x| line += "\t" }
-        line += "#\t@param\t"
+        tab.times {|x| line += "  " }
+        line += "#  @param  "
         
         # Get a description of the requirements (this can multiple lines)
         line_prefix = ''  
@@ -108,7 +108,7 @@ module ActsAsRuntimeMethod
           line += line_prefix+l
           
           # Assides the first line pre-fix a "#      " to the start
-          (tab-1).times {|x| line += "\t" }
+          (tab-1).times {|x| line += "  " }
           line_prefix = "#      "
           
         end
@@ -118,8 +118,8 @@ module ActsAsRuntimeMethod
     else
       
       params.each_with_index do |var,i|       
-        tab.times {|x| line += "\t" }
-        line += "#\t@param\t"
+        tab.times {|x| line += "  " }
+        line += "#  @param  "
 
         # Get a description of the requirements (this can multiple lines)
         line_prefix = ''
@@ -129,8 +129,8 @@ module ActsAsRuntimeMethod
           line += line_prefix+l
           
           # Assides the first line pre-fix a "#      " to the start
-          (tab-1).times {|x| line += "\t" }
-          line_prefix = "#\t\t\t"
+          (tab-1).times {|x| line += "  " }
+          line_prefix = "#      "
           
         end
         
@@ -140,16 +140,16 @@ module ActsAsRuntimeMethod
     
     # Add some some additional comment if supplied
     unless additional_comments.nil?
-      tab.times {|x| line += "\t" }
+      tab.times {|x| line += "  " }
       line += "#"
-      tab.times {|x| line += "\t" }
+      tab.times {|x| line += "  " }
       line += additional_comments+"\n"
     end    
     
-    tab.times {|x| line += "\t" }
+    tab.times {|x| line += "  " }
     line += "#\n"               
     
-    tab.times {|x| line += "\t"}
+    tab.times {|x| line += "  "}
     line += basic_write(tab)
 
   end
@@ -168,7 +168,7 @@ module ActsAsRuntimeMethod
     end
     
     # Close the method
-    tab.times {|x| line += "\t" }
+    tab.times {|x| line += "  " }
     line += "end"+"\n"
     
     return line    
@@ -185,15 +185,15 @@ module ActsAsRuntimeMethod
     raise StandardError.new('Incorrect use of write ') if params.kind_of?(Fixnum)
       
     line = "\n"    
-    tab.times {|x| line += "\t" }
+    tab.times {|x| line += "  " }
     line += "#\n"
 
     if params.nil?
 
       @usage.each_with_index do |var,i|
       
-        tab.times {|x| line += "\t" }
-        line += "#\t@param\t"
+        tab.times {|x| line += "  " }
+        line += "#  @param  "
         
         # Get a description of the requirements (this can multiple lines)
         line_prefix = ''  
@@ -202,8 +202,8 @@ module ActsAsRuntimeMethod
           line += line_prefix+l
           
           # Assides the first line pre-fix a "#      " to the start
-          (tab-1).times {|x| line += "\t" }
-          line_prefix = "#\t\t\t"
+          (tab-1).times {|x| line += "  " }
+          line_prefix = "#      "
           
         end
         
@@ -212,8 +212,8 @@ module ActsAsRuntimeMethod
     else
       
       params.each_with_index do |var,i|       
-        tab.times {|x| line += "\t" }
-        line += "#\t@param\t"
+        tab.times {|x| line += "  " }
+        line += "#  @param  "
 
         # Get a description of the requirements (this can multiple lines)
         line_prefix = ''
@@ -223,8 +223,8 @@ module ActsAsRuntimeMethod
           line += line_prefix+l
           
           # Assides the first line pre-fix a "#      " to the start
-          (tab-1).times {|x| line += "\t" }
-          line_prefix = "#\t\t\t"
+          (tab-1).times {|x| line += "  " }
+          line_prefix = "#      "
           
         end
         
@@ -234,16 +234,16 @@ module ActsAsRuntimeMethod
     
     # Add some some additional comment if supplied
     unless additional_comments.nil?
-      tab.times {|x| line += "\t" }
+      tab.times {|x| line += "  " }
       line += "#"
-      tab.times {|x| line += "\t" }
+      tab.times {|x| line += "  " }
       line += additional_comments+"\n"
     end    
     
-    tab.times {|x| line += "\t" }
+    tab.times {|x| line += "  " }
     line += "#\n"               
     
-    tab.times {|x| line += "\t"}
+    tab.times {|x| line += "  "}
     line += 'def '+method_name 
     
     #line += write_params(@parameters)
@@ -257,7 +257,7 @@ module ActsAsRuntimeMethod
     line += "\n" if self.empty?
     
     # Close the method
-    tab.times {|x| line += "\t" }
+    tab.times {|x| line += "  " }
     line += "end"+"\n"
     
     return line    

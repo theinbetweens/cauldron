@@ -24,9 +24,9 @@ class TestTheoryResult < Test::Unit::TestCase
   
   def test_intialize_3
      assert_equal(
-      "if(#{TheoryVariable.variable_colour(1)}var1#{TheoryVariable::NORMAL}.length == #{TheoryVariable.variable_colour(2)}var2#{TheoryVariable::NORMAL})\n\treturn true\nend\n",
+      "if(#{TheoryVariable.variable_colour(1)}var1#{TheoryVariable::NORMAL}.length == #{TheoryVariable.variable_colour(2)}var2#{TheoryVariable::NORMAL})\n  return true\nend\n",
       TheoryResult.new(
-        StringToTheory.run("if(var1.length == var2)\n\treturn true\nend")
+        StringToTheory.run("if(var1.length == var2)\n  return true\nend")
       ).describe
      )
   end
@@ -90,7 +90,7 @@ class TestTheoryResult < Test::Unit::TestCase
       6=>0.to_literal
     }
     assert_equal(
-      "if(<runtime_method>.history(<test_cases>[0][:params]).any?{ |x| x.statement_id == <runtime_method>.last.statement_id} )\n\treturn true\nend\n",
+      "if(<runtime_method>.history(<test_cases>[0][:params]).any?{ |x| x.statement_id == <runtime_method>.last.statement_id} )\n  return true\nend\n",
       result_one.map_to(mapping).describe
     )
   end
@@ -104,7 +104,7 @@ class TestTheoryResult < Test::Unit::TestCase
       3=>IntrinsicLiteral.new(0)
     }
     assert_equal(
-      "if((runtime_method.params[0].length == runtime_method) == false)\n\treturn true\nend",
+      "if((runtime_method.params[0].length == runtime_method) == false)\n  return true\nend",
       result.map_to(mapping).write    
     )
   end

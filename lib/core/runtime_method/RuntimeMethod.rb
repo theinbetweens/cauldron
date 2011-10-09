@@ -375,8 +375,6 @@ class RuntimeMethod < StatementGroup
   # Returns a describtion of the method and the variables
   # within it.
   # 
-  # TODO  Write test for this method
-  #   
   def describe
     line = write+"\n"
     available_variables.each do |var|

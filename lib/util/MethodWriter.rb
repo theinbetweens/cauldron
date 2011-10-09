@@ -10,12 +10,12 @@ class MethodWriter
   def write(params,statements,tab=0,method_id=0,additional_comments='')
 
     line = "\n"    
-    tab.times {|x| line += "\t" }
+    tab.times {|x| line += "  " }
     line += "#\n"
 
     params.each_with_index do |var,i|       
-      tab.times {|x| line += "\t" }
-      line += "#\t@param\t"
+      tab.times {|x| line += "  " }
+      line += "#  @param  "
     
       # Get a description of the requirements (this can multiple lines)
       line_prefix = ''
@@ -25,8 +25,8 @@ class MethodWriter
         line += line_prefix+l
         
         # Assides the first line pre-fix a "#      " to the start
-        (tab-1).times {|x| line += "\t" }
-        line_prefix = "#\t\t\t"
+        (tab-1).times {|x| line += "  " }
+        line_prefix = "#      "
         
       end
       
@@ -34,16 +34,16 @@ class MethodWriter
     
     # Add some some additional comment if supplied
     unless additional_comments.nil?
-      tab.times {|x| line += "\t" }
+      tab.times {|x| line += "  " }
       line += "#"
-      tab.times {|x| line += "\t" }
+      tab.times {|x| line += "  " }
       line += additional_comments+"\n"
     end    
     
-    tab.times {|x| line += "\t" }
+    tab.times {|x| line += "  " }
     line += "#\n"               
     
-    tab.times {|x| line += "\t"}
+    tab.times {|x| line += "  "}
     line += 'def method_'+method_id.to_s 
     
     #line += write_params(@parameters)
@@ -57,7 +57,7 @@ class MethodWriter
     line += "\n" if statements.empty?
     
     # Close the method
-    tab.times {|x| line += "\t" }
+    tab.times {|x| line += "  " }
     line += "end"+"\n"
     
     return line    

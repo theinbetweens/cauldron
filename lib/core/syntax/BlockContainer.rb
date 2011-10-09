@@ -63,34 +63,6 @@ class BlockContainer < Array
       
   end
   
-  # Returns a block container where all the block variables
-  # have been realised.
-  #
-  # I had previously intended to just work out the values for the block
-  # but this would create problems when I have blocks within blocks.
-  # 
-  # NOTE  I have copied code here from the history call in RuntimeMethod
-  # 
-  def realise(statement,containing_method)
-    
-    # Create the method to track the change in values of the block variable
-    # TODO  I shouldn't need to redeclare this runtime method each time
-    #tracking_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new)) 
-    # Create the method that block values are logged to
-    instance_tracking_variable = ArrayVariable.new
-    instance_tracking_variable.instance_variable = true
-    tracking_method = RuntimeTrackingMethod.new(instance_tracking_variable)
-    
-    raise StandardError.new('This should not be used')
-    # Create a method to call the method and return the results
-    #process_method = RuntimeMethod.new(MethodUsage.new)
-    #process_method << Statement.new( DefCall.new(NilVariable.new) )
-    #process_method << Statement.new( Return.new,instance_tracking_variable )    
-    
-    # CONTINUE Look up the tracking method
-    #exit
-  end
-  
   # Returns an updated block container where all the values for the block
   # have been realised through the method map.
   #

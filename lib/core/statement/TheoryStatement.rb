@@ -57,7 +57,7 @@ class TheoryStatement < Statement
   # TODO  Maybe use a opject to handle the output of the statement.
   def describe(tab=0)
     line = ''
-    tab.times {line += "\t" }
+    tab.times {line += "  " }
     self.each do |code|
       line += code.describe
       break if code.object_id == self.last.object_id

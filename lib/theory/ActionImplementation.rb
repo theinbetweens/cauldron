@@ -11,7 +11,7 @@ class ActionImplementation < TheoryAction
   end
   
   def write(tab=0)
-    return ("\t"*tab)+"runtime_method.add_statement_at(#{@action.write},#{@target_id.write})"
+    return ("  "*tab)+"runtime_method.add_statement_at(#{@action.write},#{@target_id.write})"
   end    
   
 end

@@ -35,13 +35,13 @@ class TestBlockStatement < Test::Unit::TestCase
   
   def test_write
     assert_equal("var_0.each do |var_"+@block_variable.variable_id.to_s+"|\nend\n",@each_game.write(0))    
-    assert_equal("\tvar_0.each do |var_1|\n\tend\n",@each_game.write(1))    
+    assert_equal("  var_0.each do |var_1|\n  end\n",@each_game.write(1))    
     assert_equal(
-      "var_0.each do |var_"+@populated_loop_block_var.variable_id.to_s+"|\n\tvar_"+@declared_unknown.variable_id.to_s+" = 6\nend\n",
+      "var_0.each do |var_"+@populated_loop_block_var.variable_id.to_s+"|\n  var_"+@declared_unknown.variable_id.to_s+" = 6\nend\n",
       @populated_loop.write(0)
     )    
     assert_equal(
-      "\tvar_0.each do |var_"+@populated_loop_block_var.variable_id.to_s+"|\n\t\tvar_"+@declare_six.declared_variable_id.to_s+" = 6\n\tend\n",
+      "  var_0.each do |var_"+@populated_loop_block_var.variable_id.to_s+"|\n    var_"+@declare_six.declared_variable_id.to_s+" = 6\n  end\n",
       @populated_loop.write(1)
     )        
   end

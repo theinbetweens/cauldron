@@ -1,10 +1,10 @@
 if: 
-	if(var1.realise2(var2).params[0].value.length == var3.length)
-	end
+  if(var1.realise2(var2).params[0].value.length == var3.length)
+  end
 
 action: 
-	<runtime_method>.add_statement_at(Statement.new(Return.new, var4.params[0]),var1.statement_id)
+  <runtime_method>.add_statement_at(Statement.new(Return.new, var4.params[0]),var1.statement_id)
 result: 
-	if(var1.all_pass?(var5))
-		return true
-	end
+  if(var1.all_pass?(var5))
+    return true
+  end

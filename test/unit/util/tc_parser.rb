@@ -95,7 +95,7 @@ class TestParser < Test::Unit::TestCase
       Parser.run("if(runtime_method.all_pass?(test_cases))\nend").write
     ) 
     assert_equal(
-      "if(runtime_method.all_pass?(test_cases))\n\treturn true\nend",
+      "if(runtime_method.all_pass?(test_cases))\n  return true\nend",
       Parser.run("if(runtime_method.all_pass?(test_cases))\nreturn true\nend").write
     )
   end    

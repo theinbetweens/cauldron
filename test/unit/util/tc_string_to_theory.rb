@@ -224,7 +224,7 @@ class TestStringToTheory < Test::Unit::TestCase
   
   def test_double_negative
     assert_equal(
-      "if((var2 == var3) == false)\n\treturn true\nend",
+      "if((var2 == var3) == false)\n  return true\nend",
       StringToTheory.run("if((var2 == var3)== false)\nreturn true\nend").write
     ) 
     assert_equal(
@@ -292,7 +292,7 @@ class TestStringToTheory < Test::Unit::TestCase
       StringToTheory.run("if(!var1.pass?(var2[var4]))\nend").write
     )    
     assert_equal(
-        "if((var2[var3] == var2[var4]) == false)\n\treturn true\nend",
+        "if((var2[var3] == var2[var4]) == false)\n  return true\nend",
         StringToTheory.run("if((var2[var3] == var2[var4])== false)\nreturn true\nend").write
     )
   end

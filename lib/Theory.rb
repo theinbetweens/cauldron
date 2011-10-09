@@ -13,8 +13,6 @@ class Theory
   #
   def initialize(dependents,action,results,example_runtime_method=nil)
     @dependents, @action, @results, @example_runtime_method = dependents, action, results, example_runtime_method
-    #@theory_id = @@theory_id
-    #@@theory_id += 1
     @theory_id = Theory.next_theory_id
   end
   
@@ -265,7 +263,7 @@ class Theory
   end
   
   def highlight(component_ids=[])
-    # @log.error("\033[0;31m\ "+msg+"\033[00m\ ")
+    
     # Describe the despendencies
     description = 'if: '+"\n"
     @dependents.inject(description) do |description, x|
