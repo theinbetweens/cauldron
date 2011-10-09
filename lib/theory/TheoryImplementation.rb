@@ -10,8 +10,9 @@ class TheoryImplementation < Theory
   # @param  values      
   #
   def initialize(dependents,action,results,mapping,accessor_values={})
-    super(dependents,action,results)
+    @dependents, @action, @results = dependents, action, results
     @mapping, @accessor_values = mapping, accessor_values
+    @theory_id = Theory.next_theory_id
   end
   
   def copy

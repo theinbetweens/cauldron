@@ -348,4 +348,8 @@ class UnifiedChain
     return true
   end
   
+  def theories_sequence
+    @nodes.collect {|x| x.theory_id}
+  end  
+  
 end

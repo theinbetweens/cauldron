@@ -38,7 +38,7 @@ class TheoryConnector
   #
   def generate_chains(runtime_method,test_cases,theories,exclude=[])
     
-    theories = remove_irrelevant_theories(theories)
+    theories = remove_irrelevant_theories(theories.copy)
 
     # Create the inital chain (with the head and tail)
     intial_chain = Chain.new
