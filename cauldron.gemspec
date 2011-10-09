@@ -17,18 +17,20 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README",
-    "README.rdoc",
-    "History.md"
+    "README.rdoc"
   ]
   s.files = [
     ".document",
     "Gemfile",
+    "Gemfile.lock",
+    "History.md",
     "LICENSE.txt",
     "README",
     "README.rdoc",
     "Rakefile",
     "VERSION",
     "bin/cauldron",
+    "cauldron.gemspec",
     "cauldron/.autotest",
     "cauldron/History.txt",
     "cauldron/Manifest.txt",
@@ -421,7 +423,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/theinbetweens/cauldron}
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.required_ruby_version = Gem::Requirement.new(">= 1.8.7")
+  s.required_ruby_version = Gem::Requirement.new(">= 1.6.8")
   s.rubygems_version = %q{1.4.0}
   s.summary = %q{Generate simple ruby methods from the input(s) and expected output}
 
