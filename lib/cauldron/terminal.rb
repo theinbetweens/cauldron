@@ -52,6 +52,7 @@ module Cauldron
       
       if input =~ /^RUN$/
         @output.puts @pot.brew(@cases).reset_ids!.basic_write
+        @cases.clear
       elsif input =~ /^QUIT$/
         # => TODO Include 'bye' output too
         #Process.exit!(true)

@@ -39,7 +39,15 @@ module Cauldron
         end
         its([0]) { should eq({:output=>"sparky", :params=>["sparky"]}) }
         its([1]) { should eq({:output=>"kel", :params=>["kel"]}) }
-      end           
+      end
+      it 'should clear the existing test cases after RUN command' do
+        terminal.cases.should_receive(:clear)
+        terminal.cases.length.should == 0
+        terminal.start 
+        terminal.submit '"sparky","sparky"'
+        terminal.submit '"kel","kel"'
+        terminal.submit 'RUN'
+      end            
     end
       
   end
