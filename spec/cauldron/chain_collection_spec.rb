@@ -31,6 +31,13 @@ module Cauldron
           second_collection.exclude(first_sequence)
           second_collection.next_chain.theories_sequence.should_not == first_sequence                    
         end
+        it 'should raise an error when all the chains have been removed' do
+          cases = []
+          cases << convert_to_example(separate_values("'sparky','bro'"))
+          cases << convert_to_example(separate_values("'kel','sis'"))   
+          collection = ChainCollection.new(cases)
+          lambda {3.times {collection.next_chain} }.should raise_error
+        end
       end
     end
     

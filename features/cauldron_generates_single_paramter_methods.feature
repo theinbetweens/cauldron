@@ -22,4 +22,26 @@ Feature: Cauldron generates single parameter methods
       """
       return var_0
       """
-		
+  
+  @announce @slow_process
+  Scenario: Generates solution to demo 2
+    Given a file named "launch.rb" with:
+      """
+      $LOAD_PATH.unshift File.expand_path( File.join('lib') )
+      require 'cauldron'
+      cauldron = Cauldron::Terminal.new(STDOUT,false)
+      cauldron.start
+      """   
+    And I run `ruby launch.rb` interactively
+    And I add the case "carrot","vegtable"
+    And I add the case "apple","fruit"
+    And I type "RUN"
+    When I type "QUIT"
+    Then the output should contain:
+      """
+      return var_0
+      """    
+    And the output should contain:
+      """
+      if var_0
+      """    		

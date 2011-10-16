@@ -8,12 +8,8 @@ class UnifiedChain
 
   def initialize(nodes,connections)
     @nodes = nodes
-    #pp connections
-    
     @connections = connections
     @variable_keys = connections.mapping.keys
-    #pp @variable_keys
-    
     raise StandardError.new('chain is not complete ') unless self.complete?
   end
   
@@ -52,19 +48,12 @@ class UnifiedChain
   end
 
   def implementation_permuatations2(runtime_method,test_cases,mapping)
-
     more_mapping = valid_mapping_permutations(runtime_method.copy,test_cases.copy)
-
     return more_mapping.inject([]) { |total,mapping| total << self.copy.implement(mapping) }
-    
   end
   
   def valid_mapping_permutations(runtime_method,test_cases)
     
-    # puts '-------------------------------'
-    # puts Cauldron::Util::Saver.save(runtime_method)
-    # puts Cauldron::Util::Saver.save(test_cases)
-    # puts '-------------------------------'
     # Get the initially available intrinsic values
     intrinsic_values = [IntrinsicRuntimeMethod.new,IntrinsicTestCases.new]
     
@@ -127,7 +116,7 @@ class UnifiedChain
   end
   
   def extend_value_mapping_wtih_dependents(valid_mappings,index,node,available_values,test_cases,runtime_method)
-    itteration_limit = 6
+    itteration_limit = 10
     node.dependents.each do |dependent|
       if index == 0
         chain = partial_chain(0..0)

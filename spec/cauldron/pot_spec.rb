@@ -65,10 +65,10 @@ module Cauldron
       
       context 'it has both demo one and two loaded' do
         before(:each) {
-          @pot = Cauldron::Pot.new
-          @pot.clear
-          @pot.simmer(demo_one)
-          @pot.simmer(demo_two)
+          @pot2 = Cauldron::Pot.new
+          @pot2.clear
+          @pot2.simmer(demo_one)
+          @pot2.simmer(demo_two)
         }
         it 'can generate a solution like demo 1' do
           cases = []
@@ -82,7 +82,7 @@ module Cauldron
           parser    = RubyParser.new          
           sexp      = parser.process(ruby)
           sexp2cauldron = Sexp2Cauldron.new      
-          @pot.brew(cases).reset_ids!.basic_write.should == sexp2cauldron.process(sexp).basic_write                              
+          @pot2.brew(cases).reset_ids!.basic_write.should == sexp2cauldron.process(sexp).basic_write                              
         end
         it 'can repeatedly generate a demo 1 solution' do
           case_set_one = []
@@ -99,8 +99,8 @@ module Cauldron
             end
           "          
           sexp2cauldron = Sexp2Cauldron.new      
-          @pot.brew(case_set_one).reset_ids!.basic_write.should == sexp2cauldron.process(RubyParser.new.process(ruby)).basic_write                              
-          @pot.brew(case_set_two).reset_ids!.basic_write.should == sexp2cauldron.process(RubyParser.new.process(ruby)).basic_write
+          @pot2.brew(case_set_one).reset_ids!.basic_write.should == sexp2cauldron.process(RubyParser.new.process(ruby)).basic_write                              
+          @pot2.brew(case_set_two).reset_ids!.basic_write.should == sexp2cauldron.process(RubyParser.new.process(ruby)).basic_write
         end
         it 'can generate a solution like demo 2(it needs to discount the demo 1 solution)' do
           cases = []
@@ -117,7 +117,7 @@ module Cauldron
           parser    = RubyParser.new          
           sexp      = parser.process(ruby)
           sexp2cauldron = Sexp2Cauldron.new
-          @pot.brew(cases).reset_ids!.basic_write.should == sexp2cauldron.process(sexp).basic_write
+          @pot2.brew(cases).reset_ids!.basic_write.should == sexp2cauldron.process(sexp).basic_write
         end
         it 'can repeatedly generate a demo 2 solution' do
           case_set_one = []
@@ -135,7 +135,7 @@ module Cauldron
           parser    = RubyParser.new          
           sexp      = parser.process(ruby)
           sexp2cauldron = Sexp2Cauldron.new
-          @pot.brew(case_set_one).reset_ids!.basic_write.should == sexp2cauldron.process(sexp).basic_write          
+          @pot2.brew(case_set_one).reset_ids!.basic_write.should == sexp2cauldron.process(sexp).basic_write          
           
           case_set_two = []
           case_set_two << convert_to_example(separate_values("'carrot','vegtable'"))
@@ -152,7 +152,7 @@ module Cauldron
           parser    = RubyParser.new          
           sexp      = parser.process(ruby)
           sexp2cauldron = Sexp2Cauldron.new
-          @pot.brew(case_set_two).reset_ids!.basic_write.should == sexp2cauldron.process(sexp).basic_write
+          @pot2.brew(case_set_two).reset_ids!.basic_write.should == sexp2cauldron.process(sexp).basic_write
                                         
         end
       end

@@ -34,7 +34,7 @@ module Cauldron
           test_cases = demo_one[:test_cases]
           
           connector = TheoryConnector.new(demo_one[:values])
-          connector.generate_chains(runtime_method,test_cases,@theories).length.should == 1          
+          connector.generate_chains(runtime_method,test_cases,@theories).length.should == 2          
         end
         it 'will generate two chains when given demo two test cases' do
           @theories = demo_one[:chain].collect {|x| x} + demo_two[:chain].collect {|x| x}
@@ -42,7 +42,7 @@ module Cauldron
           test_cases = demo_two[:test_cases]
           
           connector = TheoryConnector.new(demo_one[:values])
-          connector.generate_chains(runtime_method,test_cases,@theories).length.should == 1          
+          connector.generate_chains(runtime_method,test_cases,@theories).length.should == 2          
         end
       end
     end

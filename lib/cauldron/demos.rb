@@ -19,9 +19,16 @@ module Cauldron
       raise StandardError.new('Unable to find demo with id '+id)
     
     end
+    
+    @@demo_one = nil
+    @@demo_two = nil
       
     def demo_one
       
+      unless @@demo_one.nil?
+        return @@demo_one
+      end
+        
       @demo_1_test_cases = convert_to_cauldron_test_cases(
         [
           [['sparky'],'sparky'],
@@ -56,17 +63,22 @@ module Cauldron
       implemented_chain = chain.implement
       
       # TODO  It should generate the values too.(TheoryGenerator)
-      return {
+      @@demo_one = {
         :initial_method=>RuntimeMethod.new(MethodUsage.new(MethodParameter.new)),
         :test_cases=>@demo_1_test_cases.copy,
         :chain=>chain,
         :values=>{}
       }            
-      
+      return @@demo_one
     end
         
     # => "def method_3(var_0)\n\tif(var_0 == 'fish')\n\t\treturn 'animal'\n\tend\n\treturn 'vegetable'\nend\n"
     def demo_two
+      
+      unless @@demo_two.nil?
+        return @@demo_two
+      end      
+      
       @demo_2_test_cases = convert_to_cauldron_test_cases(
         [
           [['fish'],'animal'],
@@ -266,13 +278,13 @@ module Cauldron
       
       implemented_chain = chain.implement
       
-      return {
+      @@demo_two = {
         :initial_method=>RuntimeMethod.new(MethodUsage.new(MethodParameter.new)),
         :test_cases=>@demo_2_test_cases.copy,
         :chain=>chain,
         :values=>{}
       }            
-                  
+      return @@demo_two
     end    
 
   end

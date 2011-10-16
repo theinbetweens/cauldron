@@ -9,35 +9,13 @@ class TheoryConnector
   def initialize(potential_values)
     @potential_values = potential_values
   end
-  
-  # Attempts to chain the theories togeather so that the final theory
-  # results in the specified "finish".
-  #
-  # @param  runtime_method    This is an instance of the core runtime method
-  #                           instance that is populated with any number of statements.
-  # @param  test_cases        An array of test cases that contain the values for 
-  #                           runtime method's paramters and the expected return value
-  #                           given those parameters.
-  # @param  finish            A description of the desired final outcome - this will
-  #                           probably be
-  #                           '<runtime_method>.all_pass?(<test_cases>) = true'
-  # @param  theories          A array of theories to be chained togeather to result 
-  #                           in the finish outcome.   
-  #
-  # TODO Last runtime method dependencies can't be shared down the the theory chain 
-  # 
-  def chain(runtime_method,test_cases,finish,theories)
-    
-    return create_possible_chains(runtime_method,test_cases,finish,theories)
-    
-  end
 
   # NOTE: Will probably replace the create_possible_chains and chain call  
   # Returns an array of complete chains that conclude with a valid 
   # runtime method.
   #
   def generate_chains(runtime_method,test_cases,theories,exclude=[])
-    
+
     theories = remove_irrelevant_theories(theories.copy)
 
     # Create the inital chain (with the head and tail)
@@ -60,9 +38,6 @@ class TheoryConnector
     end       
     complete_chains = complete_chains.delete_if do |x|
       exclude.any? {|y| y == x.theories_sequence}
-    end
-    unless complete_chains.empty? 
-      return complete_chains 
     end
     possible_chains.each do |chain|
         

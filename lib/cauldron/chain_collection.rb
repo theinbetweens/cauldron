@@ -8,23 +8,22 @@ module Cauldron
     
     def initialize(test_cases)
       @runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))
-      @test_cases = test_cases    
+      @test_cases = test_cases  
       @connector = TheoryConnector.new(MappingValues.new([]))
       @chains, @exclude = [], []
+      @chains = @connector.generate_chains(@runtime_method,@test_cases,saved_theories,[])
     end
     
     def next_chain
-      if @chains.empty?  
-        @chains = @connector.generate_chains(@runtime_method,@test_cases,saved_theories,@exclude)        
-        if @chains.empty?
-          raise StandardError.new('No more chains available')
-        end
+      puts 'Total number of chains: '+@chains.length.to_s
+      until @chains.empty?
+        chain = @chains.shift
+        unified_chain = chain.unify_chain
+        unless @exclude.any? {|x| x == unified_chain.theories_sequence }
+          return unified_chain
+        end        
       end
-      chain = @chains.shift
-      if @exclude.any? {|x| x == chain.theories_sequence }
-        return next_chain
-      end
-      chain.unify_chain
+      raise StandardError.new('No more chains available')
     end
     
     def exclude(sequence)
@@ -38,9 +37,12 @@ module Cauldron
         @@cached_saved_theories = saved_theory_file_paths.collect {|x| Marshal.load(File.open(x,'r'))}
         @@cached_saved_theories.freeze
       end
-      puts @@cached_saved_theories.length.to_s
       @@cached_saved_theories
     end    
+    
+    def self.clear_cache!
+      @@cached_saved_theories = nil
+    end
     
     def theory_repository_path
       File.join(home,'cauldron',Cauldron::Pot::VERSION,'theories')
