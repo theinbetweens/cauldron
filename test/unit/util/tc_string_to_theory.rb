@@ -14,14 +14,6 @@ class TestStringToTheory < Test::Unit::TestCase
     RuntimeMethod.reset_global_id
   end  
   
-  def test_run_1
-    assert(StringToTheory.run('var6 = 8').kind_of?(Statement))
-    assert_equal("#{TheoryVariable.variable_colour(4)}var4#{TheoryVariable::NORMAL} = 7",StringToTheory.run('var4 = 7').describe)
-    assert_equal(9,StringToTheory.run('var8 = 9')[2].value)
-    assert(StringToTheory.run('var8 = 9')[0].kind_of?(TheoryVariable))
-    assert_equal(8,StringToTheory.run('var8 = 9')[0].theory_variable_id)
-  end
-  
   def test_run_2
     assert_equal(
       "#{TheoryVariable.variable_colour(5)}var5#{TheoryVariable::NORMAL} = 'enterprise'",

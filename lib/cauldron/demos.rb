@@ -88,36 +88,27 @@ module Cauldron
       # => head = Theory.new([],nil,[])
       
       # Statementents
-      # => TODO Need a clear way to format theories
       # => OpenStatement.new(If.new,Container.new(runtime_method.params[var1],Equivalent.new,test_cases[var2][:params][var3]))
       # => Statement.new(Return.new,test_cases[var2][:result]) (added to the open statement)
       # => Statement.new(Return.new,test_cases[var6][:result])
       
       # => TODO Don't actually want to include these connection hacks
       
+      # TODO  I need a chain format file
+      
       # => HEAD
-      head_result = TheoryResult.new(StringToTheory.run(
-        "if(var1.kind_of?(RuntimeMethod))\nreturn true\nend")
-      )
-      head_result_2 = TheoryResult.new(StringToTheory.run(
-        "if(var2.length == 2)\nreturn true\nend")
-      )      
+      head_result = StringToTheory.create_result('var1.kind_of?(RuntimeMethod)')
+      head_result_2 = StringToTheory.create_result('var2.length == 2')
       head = Theory.new([],nil,[head_result,head_result_2])
       
       # => LINK #1
-      link_one_dependent = TheoryDependent.new(StringToTheory.run(
-          "if(var1.kind_of?(RuntimeMethod))\nreturn true\nend"
-        )
-      )
-      link_one_dependent_2 = TheoryDependent.new(StringToTheory.run(
-        "if(var2.length == 2)\nreturn true\nend")
-      )       
-      link_one_action = TheoryAction.new(
-        TheoryStatement.new(StringToTheory.run(
-          'OpenStatement.new(TheoryStatement.new(If.new,Container.new(var1.params[var3],Equivalent.new,var2[var4][:params][var5])))'
-        )),
-        StringToTheory.run('var1.statement_id')
-      )
+      link_one_dependent = StringToTheory.create_dependent('var1.kind_of?(RuntimeMethod)')
+      link_one_dependent_2 = StringToTheory.create_dependent('var2.length == 2')
+      link_one_action = StringToTheory.create_action(
+        'if x == y',
+        'var1.statement_id',
+        {'x' => 'var1.params[var3]', 'y' => 'var2[var4][:params][var5]'}
+      )  
       link_one_result = TheoryResult.new(StringToTheory.run(
         "if(var1.kind_of?(RuntimeMethod))\nreturn true\nend"
       ))

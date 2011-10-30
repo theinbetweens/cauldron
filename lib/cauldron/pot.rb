@@ -16,8 +16,6 @@ module Cauldron
     # Returns a runtime method that meets the requirements of the test cases.
     def brew(test_cases)
       @@brew_count += 1
-      puts "#{@@brew_count} - TestCases: "
-      pp test_cases  
       @chain_collection = ChainCollection.new(test_cases.copy)      
       loop do
         runtime_method = RuntimeMethod.new(MethodUsage.new(MethodParameter.new))
