@@ -109,39 +109,23 @@ module Cauldron
         'var1.statement_id',
         {'x' => 'var1.params[var3]', 'y' => 'var2[var4][:params][var5]'}
       )  
-      link_one_result = TheoryResult.new(StringToTheory.run(
-        "if(var1.kind_of?(RuntimeMethod))\nreturn true\nend"
-      ))
-      link_one_result_2 = TheoryResult.new(StringToTheory.run(
-        "if(var2.length == 2)\nreturn true\nend"
-      ))
-      link_one_result_3 = TheoryResult.new(StringToTheory.run(
-        "if(var4.kind_of?(Fixnum))\nreturn true\nend"
-      ))            
+      link_one_result = StringToTheory.create_result('var1.kind_of?(RuntimeMethod)')
+      link_one_result_2 = StringToTheory.create_result('var2.length == 2')
+      link_one_result_3 = StringToTheory.create_result('var4.kind_of?(Fixnum)')
       link_one = Theory.new([link_one_dependent,link_one_dependent_2],link_one_action,[link_one_result,link_one_result_2,link_one_result_3])      
       
       # => LINK #2
-      link_two_dependent = TheoryDependent.new(StringToTheory.run(
-        "if(var1.kind_of?(RuntimeMethod))\nreturn true\nend"
-      ))
-      link_two_dependent_2 = TheoryDependent.new(StringToTheory.run(
-        "if(var2.length == 2)\nreturn true\nend"
-      ))
-      link_two_dependent_3 = TheoryDependent.new(StringToTheory.run(
-        "if(var4.kind_of?(Fixnum))\nreturn true\nend"
-      ))                                    
+      link_two_dependent = StringToTheory.create_dependent('var1.kind_of?(RuntimeMethod)')
+      link_two_dependent_2 = StringToTheory.create_dependent('var2.length == 2')
+      link_two_dependent_3 = StringToTheory.create_dependent('var4.kind_of?(Fixnum)')
       link_two_action = TheoryAction.new(
         TheoryStatement.new(StringToTheory.run(
           'Statement.new(Return.new,var2[var4][:output])'
         )),
         StringToTheory.run('var1.first.statement_id')
-      )
-      # link_two_result = TheoryResult.new(StringToTheory.run(
-        # "if(var1.history(var2[var4][:params]) == var2[var4][:output])\nreturn true\nend"
-      # ))   
-      link_two_result = TheoryResult.new(StringToTheory.run(
-        "if(var2[var4][:params].length == 1)\nreturn true\nend"
-      ))        
+      )  
+      link_two_result = StringToTheory.create_result('var2[var4][:params].length == 1')      
+      
       # TODO  Don't want to have to include this one
       link_two_result_2 = TheoryResult.new(StringToTheory.run(
         "if(var6.kind_of?(Fixnum))\nreturn true\nend"

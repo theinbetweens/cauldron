@@ -51,6 +51,24 @@ end
         }.strip
         StringToTheory.create_result('var1.kind_of?(RuntimeMethod)').write.should == result_string 
       end      
+      
+      it 'can convert "var4.kind_of?(Fixnum)" into a theory result' do
+        result_string = %q{
+if(var4.kind_of?(Fixnum))
+  return true
+end        
+        }.strip
+        StringToTheory.create_result('var4.kind_of?(Fixnum)').write.should == result_string                
+      end
+      
+      it "can convert 'if(var2[var4][:params].length == 1)'" do
+        result_string = %q{
+if(var2[var4][:params].length)
+  return true
+end        
+        }.strip
+        StringToTheory.create_result('var2[var4][:params].length').write.should == result_string           
+      end
     end
     
     describe '.create_action' do
