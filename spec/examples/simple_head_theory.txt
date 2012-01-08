@@ -1,0 +1,13 @@
+dependent:
+
+action:
+
+result: 
+  var1.kind_of?(RuntimeMethod)
+  var2.length == 2
+ 
+dependents:
+action:
+results:
+  - var1.kind_of?(RuntimeMethod)
+  - var2.length == 2

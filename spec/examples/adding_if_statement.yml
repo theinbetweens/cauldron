@@ -1,0 +1,13 @@
+dependents:
+  - 'var1.kind_of?(RuntimeMethod)'
+  - 'var2.length == 2'
+action:
+  statement: if x == y
+  position: var1.statement_id
+  values: 
+    x: var1.params[var3]
+    y: var2[var4][:params][var5]
+results:
+  - var1.kind_of?(RuntimeMethod)
+  - var2.length == 2    
+  - var4.kind_of?(Fixnum)

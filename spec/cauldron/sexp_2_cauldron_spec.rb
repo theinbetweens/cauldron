@@ -112,6 +112,15 @@ module Cauldron
         sexp2cauldron.process(sexp).basic_write.should == strip_whitespace(ruby)+"\n"         
       end
       
+      it 'can parse statements using ".kind_of?"' do
+        parser    = RubyParser.new
+        ruby = "var1.kind_of?(RuntimeMethod)"
+        sexp2cauldron = Sexp2Cauldron.new
+        debugger
+        sexp      = parser.process(ruby)
+        sexp2cauldron.process(sexp).write.should == "var_1.kind_of?(RuntimeMethod)"
+      end
+      
     end
   end
   
