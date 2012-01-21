@@ -1,9 +1,0 @@
-#
-#	@param	var_0		= 'tested'
-#
-def method_0(var_0)
-	var_31 = var_0.chop 
-	var_35 = var_31.chop 
-	var_34 = var_35 
-	return var_34 
-end

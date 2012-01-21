@@ -1,6 +1,0 @@
-
-#
-#
-def method_0
-	var_0 = 8 
-end

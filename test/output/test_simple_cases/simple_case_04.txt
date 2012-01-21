@@ -1,8 +1,0 @@
-#
-#	@param	var_0		= 'tests'
-#
-def method_0(var_0)
-	var_7 = var_0.length 
-	var_4 = var_7 
-	return var_4 
-end

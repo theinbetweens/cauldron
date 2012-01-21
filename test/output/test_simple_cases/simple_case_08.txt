@@ -1,9 +1,0 @@
-#
-#	@param	var_0		= 6
-#	@param	var_1		= 4
-#
-def method_0(var_0, var_1)
-	var_11 = var_0  -  var_1 
-	var_6 = var_11 
-	return var_6 
-end

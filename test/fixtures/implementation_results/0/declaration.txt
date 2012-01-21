@@ -1,3 +1,0 @@
-
-          TheoryResult.new(Parser.run("if(runtime_method.all_pass?(test_cases))\nreturn true\nend"))
-        
