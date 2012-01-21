@@ -12,6 +12,7 @@ class OpenStatement < StatementGroup
   include ActsAsTrackable  
   include ActsAsCode
   
+  attr_reader :statement
   
   def initialize(open_statement,*statements)
     super(*statements)

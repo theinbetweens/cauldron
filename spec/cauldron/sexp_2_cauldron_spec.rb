@@ -5,31 +5,22 @@ module Cauldron
   describe "Sexp2Cauldron" do
     describe "#process" do
       it "Generates a cauldron literal from a sexp literal" do
-        parser    = RubyParser.new
-        ruby      = "8"
-        sexp      = parser.process(ruby)
-        sexp2cauldron = Sexp2Cauldron.new      
-        sexp2cauldron.process(sexp).write.should == Literal.new(8).write        
+        sexp2cauldron = Sexp2Cauldron.new
+        sexp2cauldron.process("8").write.should == Literal.new(8).write        
       end      
       
       it "Generates a basic cauldron statement" do
-        parser    = RubyParser.new
-        ruby      = "var4 = 9"
-        sexp      = parser.process(ruby)
         sexp2cauldron = Sexp2Cauldron.new
-        sexp2cauldron.process(sexp).write.should == Statement.new(Unknown.new(4),Equal.new,Literal.new(9)).write        
+        sexp2cauldron.process("var4 = 9").write.should == Statement.new(Unknown.new(4),Equal.new,Literal.new(9)).write        
       end
       
       it 'generates a basic if container' do 
-        parser    = RubyParser.new
         ruby      =  %q!
           if(var5 == 6)
           end
         !
-        sexp      = parser.process(ruby)
         sexp2cauldron = Sexp2Cauldron.new
-        sexp      = parser.process(ruby)
-        sexp2cauldron.process(sexp).write.should == "if(var_5 == 6)\nend"        
+        sexp2cauldron.process(ruby).write.should == "if(var_5 == 6)\nend"        
       end
       
       it 'generates an empty runtime method' do
@@ -116,9 +107,16 @@ module Cauldron
         parser    = RubyParser.new
         ruby = "var1.kind_of?(RuntimeMethod)"
         sexp2cauldron = Sexp2Cauldron.new
-        debugger
         sexp      = parser.process(ruby)
         sexp2cauldron.process(sexp).write.should == "var_1.kind_of?(RuntimeMethod)"
+      end
+      
+      it 'can parse statements with more complex access "var1.params[var3]"' do
+        parser    = RubyParser.new
+        ruby = "var1.params[var3]"
+        sexp2cauldron = Sexp2Cauldron.new
+        sexp      = parser.process(ruby)
+        sexp2cauldron.process(sexp).write.should == "var_1.params[var_3]"                
       end
       
     end

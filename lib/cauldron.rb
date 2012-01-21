@@ -13,5 +13,3 @@ require 'cauldron/terminal'
 
 require 'cauldron/chain_collection'
 require 'cauldron/theory_parser'
-
-puts '----------------HERE'

@@ -17,6 +17,13 @@ module Cauldron
       @unsupported_checked = true
     end
     
+    def process(ruby)
+      parser    = RubyParser.new
+      sexp      = parser.process(ruby)
+      debugger      
+      super(sexp)
+    end
+    
     def process_lit(exp)
       #debugger
       obj = exp.shift
@@ -32,8 +39,6 @@ module Cauldron
     end
     
     def process_const(exp)
-      puts '----------parse const'
-      debugger
       #raise StandardError.new(exp.shift.to_s)
       exp.shift.to_s
       RuntimeMethodClass.new
@@ -126,8 +131,19 @@ module Cauldron
         # TODO This should receiver, name, args foramt - the call should be with the receiver
         return Statement.new(receiver,Equivalent.new,*args)
       else
-        # TODO This is a complete hack
-        return Statement.new(receiver,KindOf.new,Container.new(*args))
+        receiver_method_call =  case name 
+                                when :kind_of?
+                                  KindOf.new
+                                when :params
+                                  Params.new
+                                when :[]
+                                  #Statement.new(receiver,Container.new(*args))
+                                  puts 'RESULT------'
+                                  puts receiver.write
+                                  return Statement.new(ArrayAccess.new(receiver,args))
+                                end
+                                #debugger
+        return Statement.new(receiver,receiver_method_call,Container.new(*args))
         #"#{receiver}#{name}#{args}"
       end
       
@@ -207,9 +223,6 @@ module Cauldron
   private
    
     def convert_to_variable(variable)
-      puts '---------------'
-      puts variable.to_s.match(VARIABLE_EXPRESSION)[1]
-      puts '---------------'
       return Unknown.new(variable.to_s.match(VARIABLE_EXPRESSION)[1])
     end
     
