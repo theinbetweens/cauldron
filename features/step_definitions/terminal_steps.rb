@@ -1,6 +1,4 @@
 
-include Cauldron::Conversion
-
 Given /^that the terminal has been created$/ do
   @terminal = Cauldron::Terminal.new(output)
   @terminal.start
