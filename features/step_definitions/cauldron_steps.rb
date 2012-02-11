@@ -6,6 +6,17 @@
   # end
 # end
 
+Given /^a theory named "([^"]*)" with:$/ do |file_name, string|
+  steps %Q{
+    Given a file named "#{file_name}" with:
+      """
+      #{string}
+      """
+  }
+  FileUtils.mkdir_p(File.join(home,'cauldron','tmp'))
+  FileUtils.cp File.join('.',file_name), File.join(home,'cauldron','tmp',file_name)
+end
+
 When /^I add a case with a param "([^"]*)" and an expected output of "([^"]*)"$/ do |param, output|
   #@terminal.submit("'"+param+,"'+output+'"')  
   @terminal.submit("'#{param}','#{output}'")

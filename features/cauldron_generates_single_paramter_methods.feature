@@ -7,14 +7,7 @@ Feature: Cauldron generates single parameter methods
 
  	@announce @slow_process @new_approach
 	Scenario: Method returns the passed in value
-  	Given a file named "launch.rb" with:
-      """
-			$LOAD_PATH.unshift File.expand_path( File.join('lib') )
-			require 'cauldron'
-			cauldron = Cauldron::Terminal.new(STDOUT,false)
-			cauldron.start
-      """		
-    And it has the following theory:
+    Given a theory named "example_1.yml" with:
       """
         dependents:
           RUNTIME_METHOD.kind_of?(RuntimeMethod)
@@ -26,7 +19,14 @@ Feature: Cauldron generates single parameter methods
           position: RUNTIME_METHOD.first.statement_id
         results:
           COMPLETE
+      """	
+  	And a file named "launch.rb" with:
       """
+			$LOAD_PATH.unshift File.expand_path( File.join('lib') )
+			require 'cauldron'
+			cauldron = Cauldron::Terminal.new(STDOUT,false)
+			cauldron.start
+      """		
 		And I run `ruby launch.rb` interactively
     And I add the case "sparky","sparky"
     And I type "RUN"

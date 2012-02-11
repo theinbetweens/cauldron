@@ -13,3 +13,8 @@ end
 Before do
   @dirs = ["."]
 end
+
+After do
+  tmp_directory = File.join(home,'cauldron','tmp')
+  FileUtils.rm_r(tmp_directory) if File.exists?(tmp_directory) 
+end
