@@ -6,6 +6,10 @@ module Cauldron
       load_saved_theories
     end
     
+    def load_saved_theories
+      
+    end
+    
   end
   
 end
