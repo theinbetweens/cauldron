@@ -25,19 +25,18 @@ Feature: Cauldron generates single parameter methods
           position: RUNTIME_METHOD.first.statement_id
         results:
           :1
-            RUNTIME_METHOD.all_pass(ARG_1) == true
+            RUNTIME_METHOD.all_pass(ARG_1)
       """ 
     And a file named "launch.rb" with:
       """
       $LOAD_PATH.unshift File.expand_path( File.join('lib') )
       require 'cauldron'
-      cauldron = Cauldron::Terminal.new(STDOUT,false)
-      cauldron.start
+      #cauldron = Cauldron::Terminal.new(STDOUT)
+      #cauldron.generate "sparky","sparky"
+      cauldron = Cauldron::Pot.new
+      cauldron.generate "sparky","sparky"
       """   
-    And I run `ruby launch.rb` interactively
-    And I add the case "sparky","sparky"
-    And I type "RUN"
-    When I type "QUIT"
+    When I run `ruby launch.rb` interactively
     Then the output should contain:
       """
       def method_0(var_0)
