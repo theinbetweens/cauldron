@@ -1,6 +1,9 @@
 $LOAD_PATH.unshift File.expand_path('../lib',__FILE__)
 
 require 'cauldron'
+require 'ruby_debug'
+require 'yaml'
+
 
 # unified_chain = Cauldron::Util::Saver.load(1)
 # 
@@ -25,3 +28,17 @@ string = <<-EOF
   EOF
 puts string
 
+module YAML
+
+  require 'rspec'
+
+  def YAML.load_file( filepath )
+    File.open( filepath ) do |f|
+      f = double(:file)
+      load( double(:file) )
+    end
+  end
+
+end
+
+details = YAML.load_file("loaded_file.yaml")

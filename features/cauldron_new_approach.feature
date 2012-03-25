@@ -21,11 +21,11 @@ Feature: Cauldron generates single parameter methods
         action:
           statement: "return x"
           values
-            x: ARG_1
+            x: PARAM_1
           position: RUNTIME_METHOD.first.statement_id
         results:
           :1
-            RUNTIME_METHOD.all_pass(ARG_1)
+            RUNTIME_METHOD.all_pass(PARAM_1)
       """ 
     And a file named "launch.rb" with:
       """
@@ -42,6 +42,44 @@ Feature: Cauldron generates single parameter methods
         return var_0
       end
       """
+      
+    @announce @slow_process @wip      
+    Scenario: Generate return fixed value solution
+      Given a theory named "example_1.yml" with:
+        """
+          dependents:
+            :1
+              if RUNTIME_METHOD.kind_of?(RuntimeMethod)
+                return true
+              end
+            :2
+              if ARG_1 == OUTPUT
+                return true
+              end
+          action:
+            statement: "return x"
+            values
+              x: OUTPUT
+            position: RUNTIME_METHOD.first.statement_id
+          results:
+            :1
+              RUNTIME_METHOD.all_pass(ARG_1)
+        """ 
+      And a file named "launch.rb" with:
+        """
+        $LOAD_PATH.unshift File.expand_path( File.join('lib') )
+        require 'cauldron'
+        cauldron = Cauldron::Pot.new
+        cauldron.load_theory 'example_1.yml'
+        puts cauldron.generate [["sparky","sparky"]]
+        """   
+      When I run `ruby launch.rb` interactively
+      Then the output should contain:
+        """
+        def method_0(var_0)
+          return 'sparky'
+        end
+        """      
 
     @announce @slow_process
     Scenario: No theories loaded
@@ -56,6 +94,5 @@ Feature: Cauldron generates single parameter methods
       Then the output should contain:
         """
         There aren't any theories loaded so Cauldron is unable to generate a solution
-        """    
-    
+        """
       
