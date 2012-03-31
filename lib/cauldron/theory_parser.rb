@@ -6,21 +6,19 @@ module Cauldron
       puts filepath
       puts '-----------------'
       data = YAML.load_file(filepath)
-      puts data
-      puts data.class.to_s
-      Theory.new([],{},[])
+      Theory.new(data['dependents'],data['action'],data['results'])
     end
    
   end
   
 end
 
-module YAML
-
-  def YAML.load( io )
-    puts '-----------LOADING YAML file'
-    puts parser.class.to_s
-    yp = parser.load( "dependents: 'adfadsf'" )
-  end
-
-end
+# module YAML
+# 
+  # def YAML.load( io )
+    # puts '-----------LOADING YAML file'
+    # puts parser.class.to_s
+    # yp = parser.load( "dependents: 'adfadsf'" )
+  # end
+# 
+# end

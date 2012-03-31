@@ -10,11 +10,11 @@ Feature: Cauldron generates single parameter methods
     Given a theory named "example_1.yml" with:
       """
         dependents:
-          :1
+          -
             if RUNTIME_METHOD.kind_of?(RuntimeMethod)
               return true
             end
-          :2
+          -
             if ARG_1 == OUTPUT
               return true
             end
@@ -24,7 +24,7 @@ Feature: Cauldron generates single parameter methods
             x: PARAM_1
           position: RUNTIME_METHOD.first.statement_id
         results:
-          :1
+          -
             RUNTIME_METHOD.all_pass(PARAM_1)
       """ 
     And a file named "launch.rb" with:
