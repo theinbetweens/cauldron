@@ -15,7 +15,8 @@ end
     end
     
     def load_theory(filepath)
-      theories << filepath
+      theory = TheoryParser.new.parse(filepath)
+      theories << theory
       return true
     end
 

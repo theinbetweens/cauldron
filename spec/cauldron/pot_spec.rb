@@ -11,6 +11,11 @@ module Cauldron
         pot.load_theory('example.yml').should == true
       end
       
+      it "should raise an exception if the theory is missing" do
+        pot = Pot.new
+        lambda {pot.load_theory('not_there.yml')}.should raise_exception(Errno::ENOENT)
+      end
+      
     end
     
     describe '#generate' do
