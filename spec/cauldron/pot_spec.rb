@@ -8,7 +8,7 @@ module Cauldron
       
       it 'should be able to load theory' do
         pot = Pot.new
-        pot.load_theory('example.yml').should == true
+        pot.load_theory(File.join('theories','example_1.yml')).should == true
       end
       
       it "should raise an exception if the theory is missing" do
@@ -22,7 +22,7 @@ module Cauldron
       
       it 'should return a runtime method' do
         pot = Pot.new
-        pot.load_theory('example.yml')
+        pot.load_theory(File.join('theories','example_1.yml'))
         pot.generate("sparky","sparky").should == 
 """
 def method_0(var_0)
