@@ -32,7 +32,7 @@ Feature: Cauldron generates single parameter methods
       $LOAD_PATH.unshift File.expand_path( File.join('lib') )
       require 'cauldron'
       cauldron = Cauldron::Pot.new
-      cauldron.load_theory 'example_1.yml'
+      cauldron.load_theory File.join('theories','example_1.yml')
       puts cauldron.generate [["sparky","sparky"],["kel","kel"]]
       """   
     When I run `ruby launch.rb` interactively
@@ -70,7 +70,7 @@ Feature: Cauldron generates single parameter methods
         $LOAD_PATH.unshift File.expand_path( File.join('lib') )
         require 'cauldron'
         cauldron = Cauldron::Pot.new
-        cauldron.load_theory 'example_1.yml'
+        cauldron.load_theory File.join('theories','example_1.yml')
         puts cauldron.generate [["sparky","sparky"]]
         """   
       When I run `ruby launch.rb` interactively
