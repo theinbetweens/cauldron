@@ -13,6 +13,45 @@ module Cauldron
       return false unless subject.action == @action
       subject.results == @results
     end
+
+    def insert_statement
+
+      # Change the names of all ARG values
+      # {:statement => 
+      #     'return x',
+      #     :values => {:x => 'ARG_1'},
+      #     :position => 'RUNTIME_METHOD.first.statement_id'
+      # },
+      values = @action[:values].clone      
+      values = @action[:values].inject({}) do |hash, (key, value)| 
+        if value == 'ARG_1'
+          hash[key] = 'var1'
+        end
+        hash
+      end
+      
+      # http://stackoverflow.com/questions/10357303/ruby-string-substitution
+      # Might be better with
+      # num1 = 4  
+      # num2 = 2  
+      # print "Lucky numbers: %d %d" % [num1, num2]
+
+      # or
+
+      # num1 = 4  
+      # num2 = 2  
+      # puts "Lucky numbers: #{num1} #{num2}";      
+
+      # TODO Maybe save the statemetns in the format 'return %x'
+
+
+      # evalue all the variables - 
+      #TODO Stick in some sort of sandbox here
+      parser    = RubyParser.new
+      ruby2ruby = Ruby2Ruby.new
+      sexp      = parser.process(@action[:statement])      
+
+    end
    
   end
   

@@ -2,16 +2,14 @@ module Cauldron
 
   class Pot
     
-    def generate(*params)
+    def generate(cases)
       if theories.empty?
         return "There aren't any theories loaded so Cauldron is unable to generate a solution"
       end
-      printed_method = 
-%q{
-def method_0(var_0)
-  return var_0
-end                  
-}
+
+      # Generate a resulting function using the available theories
+      empty_function.apply_theory(theories.first).write
+      #theories.first.generate_function(cases).write
     end
     
     def load_theory(filepath)

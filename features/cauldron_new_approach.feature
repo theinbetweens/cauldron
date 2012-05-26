@@ -33,7 +33,8 @@ Feature: Cauldron generates single parameter methods
       require 'cauldron'
       cauldron = Cauldron::Pot.new
       cauldron.load_theory File.join('theories','example_1.yml')
-      puts cauldron.generate [["sparky","sparky"],["kel","kel"]]
+      #puts cauldron.generate [["sparky","sparky"],["kel","kel"]]
+      cauldron.generate [["sparky","sparky"],["kel","kel"]]
       """   
     When I run `ruby launch.rb` interactively
     Then the output should contain:
