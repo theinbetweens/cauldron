@@ -57,6 +57,10 @@ module Cauldron
         theory.insert_statement('sparky').should == %q{return 'sparky'}
       end
 
+      it "can create a 'statement' with more than one value"
+
+      it "can create a 'statement' with the substituted value occuring twice"
+
     end
     
   end

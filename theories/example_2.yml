@@ -1,0 +1,17 @@
+dependents:
+  -
+    if RUNTIME_METHOD.kind_of?(RuntimeMethod)
+      return true
+    end
+  -
+    if ARG_1 == OUTPUT
+      return true
+    end
+action:
+  statement: "return x"
+  values:
+    x: OUTPUT
+  position: RUNTIME_METHOD.first.statement_id
+results:
+  -
+    RUNTIME_METHOD.all_pass(ARG_1)
