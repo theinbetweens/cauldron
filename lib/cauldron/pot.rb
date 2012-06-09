@@ -9,8 +9,15 @@ module Cauldron
 
       # Generate a resulting function using the available theories
       empty_function = Function.new
-      empty_function.apply_theory(theories.first).write
-      #theories.first.generate_function(cases).write
+      # TODO I need a proper $STDOUT check so I don't need this puts
+      puts 'WARREN------------============='
+      puts theories.length
+      puts theories.first.insert_statement('AHSDS')
+      puts 'WARREN-END------------============='
+      output = empty_function.apply_theory(theories.first,cases.first).write
+      puts output
+      output
+      #empty_function.apply_theory(theories.first).write
     end
     
     def load_theory(filepath)

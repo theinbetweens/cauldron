@@ -3,8 +3,6 @@ module Cauldron
   class TheoryParser
     
     def parse(filepath)
-      puts filepath
-      puts '-----------------'
       data = YAML.load_file(filepath)
       Theory.new(data['dependents'],data['action'],data['results'])
     end

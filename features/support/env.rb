@@ -1,6 +1,6 @@
 $LOAD_PATH << File.expand_path('../../../lib',__FILE__)
 
-require 'ruby-debug'
+#require 'ruby-debug'
 require 'cauldron'
 
 require 'aruba/cucumber'

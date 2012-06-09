@@ -33,7 +33,7 @@ module Cauldron
 
     describe '#insert_statement' do
 
-      it 'should should substitute function arguments for var1 syntax' do
+      it 'should substitute function arguments for var1 syntax' do
         theory = Theory.new(
           [],
           { 'statement' => 'return x',
@@ -43,6 +43,18 @@ module Cauldron
           []
         )      
         theory.insert_statement.should == 'return var1'
+      end
+
+      it 'can generate a output return statement' do
+        theory = Theory.new(
+          [],
+          { 'statement' => 'return x',
+            'values' => {:x => 'OUTPUT'},
+            'position' => 'RUNTIME_METHOD.first.statement_id'
+          },
+          []
+        )      
+        theory.insert_statement('sparky').should == %q{return 'sparky'}
       end
 
     end

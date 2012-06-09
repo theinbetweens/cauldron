@@ -12,8 +12,8 @@ module Cauldron
       		}
 		end
 
-		def apply_theory(theory)
-			@content.gsub!("'#CODE_HERE#'",theory.insert_statement)
+		def apply_theory(theory,sample = [])
+			@content.gsub!("'#CODE_HERE#'",theory.insert_statement(sample.last))
 			self
 		end
 

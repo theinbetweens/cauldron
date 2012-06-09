@@ -14,7 +14,7 @@ module Cauldron
       subject.results == @results
     end
 
-    def insert_statement
+    def insert_statement(output = nil)
 
       # Change the names of all ARG values
       # {:statement => 
@@ -26,6 +26,12 @@ module Cauldron
       values = @action['values'].inject({}) do |hash, (key, value)| 
         if value == 'ARG_1'
           hash[key] = 'var1'
+        end
+        if value == 'OUTPUT'
+          if output.kind_of?(String)
+            output = %Q{'#{output}'}
+          end
+          hash[key] = output
         end
         hash
       end

@@ -5,6 +5,8 @@ Feature: Cauldron generates single parameter methods
   NOTE: it creates the file in tmp/aruba/launch.rb - so that loading path needs to be changed
         - use @pause to see if it's working.
 
+  #TODO Change the method name
+
   @announce @slow_process
   Scenario: Method returns the passed in value
     Given a theory named "example_1.yml" with:
@@ -38,46 +40,46 @@ Feature: Cauldron generates single parameter methods
     When I run `ruby launch.rb` interactively
     Then the output should contain:
       """
-      def method_0(var_0)
-        return var_0
+      def extend_function_test_method(var1)
+        return var1
       end
       """
       
     @announce @slow_process @wip      
     Scenario: Generate return fixed value solution
-      Given a theory named "example_1.yml" with:
+      Given a theory named "example_2.yml" with:
         """
-          dependents:
-            -
-              if RUNTIME_METHOD.kind_of?(RuntimeMethod)
-                return true
-              end
-            -
-              if ARG_1 == OUTPUT
-                return true
-              end
-          action:
-            statement: "return x"
-            values
-              x: OUTPUT
-            position: RUNTIME_METHOD.first.statement_id
-          results:
-            -
-              RUNTIME_METHOD.all_pass(ARG_1)
+        dependents:
+          -
+            if RUNTIME_METHOD.kind_of?(RuntimeMethod)
+              return true
+            end
+          -
+            if ARG_1 == OUTPUT
+              return true
+            end
+        action:
+          statement: "return x"
+          values:
+            x: OUTPUT
+          position: RUNTIME_METHOD.first.statement_id
+        results:
+          -
+            RUNTIME_METHOD.all_pass(ARG_1)
         """ 
       And a file named "launch.rb" with:
         """
         $LOAD_PATH.unshift File.expand_path( File.join('lib') )
         require 'cauldron'
         cauldron = Cauldron::Pot.new
-        cauldron.load_theory File.join('theories','example_1.yml')
+        cauldron.load_theory File.join('theories','example_2.yml')
         puts cauldron.generate [["sparky","sparky"]]
         """   
       When I run `ruby launch.rb` interactively
       Then the output should contain:
         """
-        def method_0(var_0)
-          return 'sparky'
+        def extend_function_test_method(var1)
+          return "sparky"
         end
         """      
 

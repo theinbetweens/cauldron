@@ -23,12 +23,23 @@ module Cauldron
       it 'should return a runtime method' do
         pot = Pot.new
         pot.load_theory(File.join('theories','example_1.yml'))
-        pot.generate(["sparky","sparky"]).should == 
+        pot.generate([["sparky","sparky"]]).should == 
 """
 def extend_function_test_method(var1)
   return var1
 end                  
 """.strip
+      end
+
+      it 'generates a hard coded value method' do
+        pot = Pot.new
+        pot.load_theory(File.join('theories','example_2.yml'))
+        pot.generate([["sparky","sparky"]]).should == 
+%q{
+def extend_function_test_method(var1)
+  return "sparky"
+end                  
+}.strip        
       end
 
       context 'passed two cases' do
