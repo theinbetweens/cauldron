@@ -58,22 +58,14 @@ module Cauldron
       sexp      = parser.process(@action['statement'])      
 
       # Construct the declarations
-      puts '-================== START'
-      puts values.inspect
       res = nil
       values.each do |key,value|
         match = s(:call, nil, key.to_sym, s(:arglist))
         replace = s(:call, nil, value.to_sym, s(:arglist))
-        puts '=-----------inside'
-        puts value
         res = sexp.gsub(match,replace)
-        puts sexp
       end
-      puts '--------------------'
       res = ruby2ruby.process(res)
-      puts res
       res
-      #puts res.class
 
     end
    
