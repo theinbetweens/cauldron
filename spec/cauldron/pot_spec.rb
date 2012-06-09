@@ -23,12 +23,27 @@ module Cauldron
       it 'should return a runtime method' do
         pot = Pot.new
         pot.load_theory(File.join('theories','example_1.yml'))
-        pot.generate("sparky","sparky").should == 
+        pot.generate(["sparky","sparky"]).should == 
 """
-def method_0(var_0)
-  return var_0
+def extend_function_test_method(var1)
+  return var1
 end                  
+""".strip
+      end
+
+      context 'passed two cases' do
+
+        it 'should generate a valid runtime method' do
+          pot = Pot.new
+          pot.load_theory(File.join('theories','example_1.yml'))
+          pot.generate([["sparky","sparky"],["kel","kel"]]).should == 
 """
+def extend_function_test_method(var1)
+  return var1
+end                  
+""".strip          
+        end
+
       end
       
       it "shouldn't generate a method if hasn't any theories loaded" do

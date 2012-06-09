@@ -21,4 +21,3 @@ group :development, :cucumber do
 end
 
 gem "ruby2ruby", "~>1.2.5"
-

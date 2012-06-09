@@ -22,8 +22,8 @@ module Cauldron
       #     :values => {:x => 'ARG_1'},
       #     :position => 'RUNTIME_METHOD.first.statement_id'
       # },
-      values = @action[:values].clone      
-      values = @action[:values].inject({}) do |hash, (key, value)| 
+      values = @action['values'].clone      
+      values = @action['values'].inject({}) do |hash, (key, value)| 
         if value == 'ARG_1'
           hash[key] = 'var1'
         end
@@ -48,8 +48,26 @@ module Cauldron
       # evalue all the variables - 
       #TODO Stick in some sort of sandbox here
       parser    = RubyParser.new
-      ruby2ruby = Ruby2Ruby.new
-      sexp      = parser.process(@action[:statement])      
+      ruby2ruby = Ruby2Ruby.new  
+      sexp      = parser.process(@action['statement'])      
+
+      # Construct the declarations
+      puts '-================== START'
+      puts values.inspect
+      res = nil
+      values.each do |key,value|
+        match = s(:call, nil, key.to_sym, s(:arglist))
+        replace = s(:call, nil, value.to_sym, s(:arglist))
+        puts '=-----------inside'
+        puts value
+        res = sexp.gsub(match,replace)
+        puts sexp
+      end
+      puts '--------------------'
+      res = ruby2ruby.process(res)
+      puts res
+      res
+      #puts res.class
 
     end
    

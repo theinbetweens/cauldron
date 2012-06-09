@@ -34,6 +34,7 @@ module Cauldron
       it 'should print out an empty statement' do
         Function.new.write.gsub(/\s/,'').should == %q{
           def extend_function_test_method(var1)
+            #donothing
           end
         }.gsub(/\s/,'')
       end

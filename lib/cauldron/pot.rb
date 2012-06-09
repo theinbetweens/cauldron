@@ -8,6 +8,7 @@ module Cauldron
       end
 
       # Generate a resulting function using the available theories
+      empty_function = Function.new
       empty_function.apply_theory(theories.first).write
       #theories.first.generate_function(cases).write
     end
