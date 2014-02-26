@@ -17,6 +17,34 @@ module Cauldron
       end
       
     end
+
+    describe '#solve' do
+
+      context 'passed simple if statement problem' do
+
+        it 'returns a valid statement' do
+          pot = Pot.new
+          pot.solve(
+            [
+              {arguments: [7], response: 'seven'},
+              {arguments: [8], response: 'eight'}
+            ]
+          ).should == 
+%q{
+def function(var0)
+  if var0 == 7
+    return 'seven'
+  end
+  if var0 == 8
+    return 'eight'
+  end
+end  
+}.strip
+        end
+
+      end
+
+    end
     
     describe '#generate' do
       

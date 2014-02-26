@@ -10,14 +10,16 @@ source "http://rubygems.org"
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
 group :development, :cucumber, :test do
-  gem "shoulda", ">= 0"
-  gem "bundler", "~> 1.0.15"
+  #gem "shoulda", ">= 0"
+  #gem "bundler", "~> 1.0.15"
   gem "jeweler", "~> 1.6.2"
   gem "rspec", "~>2.6.0"
   gem "rcov", ">= 0"
   gem "ruby_parser", "~>2.0.6"
   gem "aruba", "~>0.4.5"
-  gem 'ruby-debug', '0.10.4'
+  #gem 'ruby-debug', '0.10.4'
+  gem 'debugger'
+  gem 'pry'
 end
 
 gem "ruby2ruby", "~>1.2.5"

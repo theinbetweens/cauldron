@@ -14,6 +14,28 @@ module Cauldron
       puts output
       output
     end
+
+    def solve(problems)
+
+      # Generate if statements
+      result = ''
+
+      # Add the arguments
+      args = problems.first[:arguments]
+      variables = (0...args.length).collect {|x| 'var'+x.to_s}
+      result = 'def function('+variables.join(',')+')'+"\n"
+
+      problems.each_with_index do |x,i|
+        #binding.pry
+        result += '  if '+variables[0].to_s+' == '+quote(x[:arguments][0])+"\n"
+        result += '    return '+quote(x[:response])+"\n"
+        result += '  end'+"\n"
+      end
+      result += 'end'
+
+      result
+
+    end
     
     def load_theory(filepath)
       theory = TheoryParser.new.parse(filepath)
@@ -25,6 +47,13 @@ module Cauldron
     
     def theories
       @theories ||= []
+    end
+
+    def quote(value)
+      if value.kind_of?(String)
+        return "'#{value}'"
+      end
+      value.to_s
     end
     
   end
