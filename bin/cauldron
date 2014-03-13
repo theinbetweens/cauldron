@@ -4,7 +4,7 @@ $LOAD_PATH.unshift File.expand_path('../../lib',__FILE__)
 
 require 'cauldron'
 
-StandardLogger.instance.level = Logger::FATAL
+#StandardLogger.instance.level = Logger::FATAL
 
-cauldron = Cauldron::Terminal.new(STDOUT,false)
+cauldron = Cauldron::Terminal.new(STDOUT)
 cauldron.start

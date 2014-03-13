@@ -6,7 +6,8 @@ class NumericValueRelationship < Relationship
   end
 
   def to_ruby  
-    ''
+    result = ''
+    result += '  var0 + '+@problems.collect {|x| x[:response] - x[:arguments].first }.uniq.first.to_s+"\n"
   end
 
   def self.match?(problem)

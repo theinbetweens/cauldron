@@ -1,5 +1,7 @@
 class IfRelationship < Relationship
 
+  # TODO Need to change to IfSolution probably
+
   def initialize(problems)
     @problems = problems
   end
