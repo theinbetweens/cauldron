@@ -1,6 +1,0 @@
-def method_1(var_1)
-	if var_1 == 'fish'
-		return 'animal'
-	end
-	return 'vegtable'
-end
