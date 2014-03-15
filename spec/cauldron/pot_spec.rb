@@ -49,6 +49,25 @@ end
 
       end
 
+      context 'passed "foo" and return "foobar"' do
+
+        it 'returns a concat function' do
+          pot = Pot.new
+          pot.solve(
+            [
+              {arguments: ['foo'], response: 'foobar'},
+              {arguments: ['bar'], response: 'barbar'}
+            ]
+          ).should == 
+%q{
+def function(var0)
+  var0.concat('bar')
+end
+}.strip          
+        end
+
+      end
+
     end
     
   end
