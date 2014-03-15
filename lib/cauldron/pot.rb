@@ -38,9 +38,37 @@ module Cauldron
     end
 
     def find_relationship(problems)
-      if NumericValueRelationship.match? problems
-        return NumericValueRelationship.new(problems)
-      end      
+      #if NumericValueRelationship.match? problems
+      #  return NumericValueRelationship.new(problems)
+      #end      
+
+      # Are all the problems viable for this operation
+      if problems.all? {|x| NumericOperator.viable?(x[:arguments],x[:response]) }
+        possible_constants = NumericOperator.find_constants(problems)
+        possible_constants.each do |constant|
+          numeric_operator = NumericOperator.new(constant)
+
+          # Does the operator always result in the correct solution
+          if problems.all? {|x| numeric_operator.successful?(x) }
+            return numeric_operator
+          end
+
+        end
+      end
+
+      # possible_constants = NumericOperator.find_constants(problems)
+      # possible_constants.each do |constant|
+      #   numeric_operator = NumericOperator.new(constant)
+
+      #   # viability needs to come before the operator is created
+
+      #   # Are all the problems viable for this operation
+      #   if problems.all? {|x| numeric_operator.viable?(x[:arguments],x[:response]) }
+      #     binding.pry
+      #   end
+
+      # end
+
       if IfRelationship.match? problems
         return IfRelationship.new(problems)
       end
@@ -50,3 +78,6 @@ module Cauldron
   end
   
 end
+
+# Package Gem
+# http://www.zenspider.com/projects/hoe.html
