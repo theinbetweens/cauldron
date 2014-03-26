@@ -38,18 +38,32 @@ module Cauldron
       operations.each do |operation_class|
 
         # Are all the problems viable for this operation
-        if problems.all? {|x| NumericOperator.viable?(x[:arguments],x[:response]) }
-          possible_constants = NumericOperator.find_constants(problems)
+        if problems.all? {|x| operation_class.viable?(x[:arguments],x[:response]) }
+          possible_constants = operation_class.find_constants(problems)
           possible_constants.each do |constant|
-            numeric_operator = NumericOperator.new(constant)
+            operator = operation_class.new(constant)
 
             # Does the operator always result in the correct solution
-            if problems.all? {|x| numeric_operator.successful?(x) }
-              return numeric_operator
+            if problems.all? {|x| operator.successful?(x) }
+              return operator
             end
-
           end
         end
+
+
+        # # Are all the problems viable for this operation
+        # if problems.all? {|x| NumericOperator.viable?(x[:arguments],x[:response]) }
+        #   possible_constants = NumericOperator.find_constants(problems)
+        #   possible_constants.each do |constant|
+        #     numeric_operator = NumericOperator.new(constant)
+
+        #     # Does the operator always result in the correct solution
+        #     if problems.all? {|x| numeric_operator.successful?(x) }
+        #       return numeric_operator
+        #     end
+
+        #   end
+        # end
 
       end
 
