@@ -32,7 +32,7 @@ module Cauldron
 
     def find_relationship(problems)     
 
-      operations = [NumericOperator, ConcatOperator]
+      operations = [NumericOperator, ConcatOperator, ArrayReverseOperator]
 
       # Try each possible operation
       operations.each do |operation_class|
@@ -49,21 +49,6 @@ module Cauldron
             end
           end
         end
-
-
-        # # Are all the problems viable for this operation
-        # if problems.all? {|x| NumericOperator.viable?(x[:arguments],x[:response]) }
-        #   possible_constants = NumericOperator.find_constants(problems)
-        #   possible_constants.each do |constant|
-        #     numeric_operator = NumericOperator.new(constant)
-
-        #     # Does the operator always result in the correct solution
-        #     if problems.all? {|x| numeric_operator.successful?(x) }
-        #       return numeric_operator
-        #     end
-
-        #   end
-        # end
 
       end
 

@@ -32,6 +32,28 @@ module Cauldron
 
     end
 
+    describe '#successful?' do
+
+      context 'using array that needs reversed' do
+
+        it 'is true' do
+          operator = ArrayReverseOperator.new
+          operator.successful?([['lions','tigers']],['tigers','lions']).should be_true
+        end
+
+      end
+
+      context "using array that can't be reversed" do
+
+        it 'is false' do
+          operator = ArrayReverseOperator.new
+          operator.successful?([['lions','tigers']],['lions','tigers']).should be_false
+        end
+        
+      end
+
+    end
+
   end
 
 end

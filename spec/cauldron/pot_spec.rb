@@ -68,6 +68,25 @@ end
 
       end
 
+      context 'passed ["lion","bear"] and return ["bear","lion"]' do
+
+        it 'returns a reverse function' do
+          pot = Pot.new
+          pot.solve(
+            [
+              { arguments: [['lion','bear']], response: ['bear','lion'] },
+              { arguments: [['foo','bar']], response: ['bar','foo'] }
+            ]
+          ).should == 
+%q{
+def function(var0)
+  var0.reverse
+end
+}.strip      
+        end
+
+      end
+
     end
     
   end
