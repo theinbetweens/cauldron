@@ -39,7 +39,10 @@ class NumericOperator
 
   def self.find_constants(problems)
     problems.collect {|x| x[:response] - x[:arguments].first }.uniq
-    
   end
+
+  def self.uses_constants?
+    true
+  end  
 
 end

@@ -38,7 +38,9 @@ module Cauldron
 
         it 'is true' do
           operator = ArrayReverseOperator.new
-          operator.successful?([['lions','tigers']],['tigers','lions']).should be_true
+          operator.successful?(
+            { arguments: [['lions','tigers']],response: ['tigers','lions']}
+          ).should be_true
         end
 
       end
@@ -47,7 +49,9 @@ module Cauldron
 
         it 'is false' do
           operator = ArrayReverseOperator.new
-          operator.successful?([['lions','tigers']],['lions','tigers']).should be_false
+          operator.successful?(
+            {arguments:[['lions','tigers']],response: ['lions','tigers']}
+          ).should be_false
         end
         
       end

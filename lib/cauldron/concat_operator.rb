@@ -19,6 +19,10 @@ class ConcatOperator
     end.uniq
   end
 
+  def self.uses_constants?
+    true
+  end  
+
   # Operator for "x.concat("bar")"
   def successful?(problem)
     if (problem[:arguments].first + @constant) == problem[:response]

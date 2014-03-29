@@ -6,7 +6,7 @@ class ArrayReverseOperator
   end  
 
   # Matching in 
-  def successful?(input,output)
+  def successful?(problem)
     # NOTE - for the future - like the idea of not actually calling the method
     # input.length.each do |i|
     # does input[0] == output[input.length-0]
@@ -15,7 +15,7 @@ class ArrayReverseOperator
     # end
     
     # in this case x.reverse will work
-    return true if input.first.reverse == output
+    return true if problem[:arguments].first.reverse == problem[:response]
     false
   end
 
@@ -29,9 +29,17 @@ class ArrayReverseOperator
     true
   end
 
+  def self.uses_constants?
+    false
+  end
+
   def self.find_constants(problems)
     []
   end
+
+  def to_ruby
+    '  var0.reverse'+"\n"
+  end  
 
   # def describe - 
   # should be able to describe the x.object_id moving to the different locations

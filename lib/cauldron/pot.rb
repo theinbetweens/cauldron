@@ -39,15 +39,29 @@ module Cauldron
 
         # Are all the problems viable for this operation
         if problems.all? {|x| operation_class.viable?(x[:arguments],x[:response]) }
-          possible_constants = operation_class.find_constants(problems)
-          possible_constants.each do |constant|
-            operator = operation_class.new(constant)
+
+          if operation_class.uses_constants?
+
+            possible_constants = operation_class.find_constants(problems)
+            possible_constants.each do |constant|
+              operator = operation_class.new(constant)
+
+              # Does the operator always result in the correct solution
+              if problems.all? {|x| operator.successful?(x) }
+                return operator
+              end
+            end
+
+          else
 
             # Does the operator always result in the correct solution
+            operator = operation_class.new
             if problems.all? {|x| operator.successful?(x) }
               return operator
-            end
+            end            
+
           end
+
         end
 
       end
