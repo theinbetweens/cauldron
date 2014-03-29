@@ -1,3 +1,0 @@
-class Cauldron
-  
-end

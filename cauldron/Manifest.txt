@@ -1,8 +1,0 @@
-.autotest
-History.txt
-Manifest.txt
-README.txt
-Rakefile
-bin/cauldron
-lib/cauldron.rb
-test/test_cauldron.rb
