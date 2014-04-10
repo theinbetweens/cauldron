@@ -1,7 +1,5 @@
 class ArrayReverseOperator
 
-  #Arra
-
   def initialize
   end  
 

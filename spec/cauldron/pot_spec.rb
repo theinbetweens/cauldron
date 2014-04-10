@@ -87,6 +87,29 @@ end
 
       end
 
+      context '{:foo => 5, :bar => 7 } and return 7' do
+
+        context '{:foo => 10, :bar => 5 } and return 10' do
+
+          it 'returns the value of foo' do
+            pot = Pot.new
+            pot.solve(
+              [
+                { arguments: [{:foo => 5, :bar => 7 }], response: 5 },
+                { arguments: [{:foo => 10, :bar => 5 }], response: 10 }
+              ]
+            ).should == 
+%q{
+def function(var0)
+  var0[:foo]
+end
+}.strip  
+          end
+
+        end
+
+      end
+
     end
     
   end
