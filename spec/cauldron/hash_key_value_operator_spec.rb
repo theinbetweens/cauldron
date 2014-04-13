@@ -45,7 +45,46 @@ module Cauldron
 
       end
 
-    end    
+    end
+
+    describe '#successful?' do
+
+      context 'both problems return reponse when using the key' do
+
+        it 'is true' do
+          problems = [
+            { arguments: [{:foo => 'bar'}], response: 'bar'},
+            { arguments: [{:foo => 'mass', :bar => 'effect'}], response: 'mass'}
+          ]
+          operator = HashKeyValueOperator.new(:foo)  
+          problems.all? {|x| operator.successful?(x) }.should == true
+        end
+
+      end
+
+    end
+
+    describe '#to_ruby' do
+
+      context 'using the constant ":foo"' do
+
+        it 'returns "var0[:foo]"' do
+          operator = HashKeyValueOperator.new(:foo)
+          operator.to_ruby.should == '  var0[:foo]'+"\n"
+        end
+
+      end
+
+      context 'using the constant "foo"' do
+
+        it "returns 'var0['foo']" do
+          operator = HashKeyValueOperator.new('foo')
+          operator.to_ruby.should == "  var0['foo']"+"\n"
+        end
+
+      end
+
+    end
 
   end
   
