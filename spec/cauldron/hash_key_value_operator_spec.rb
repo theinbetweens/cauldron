@@ -24,6 +24,29 @@ module Cauldron
 
     end
 
+    describe '.uses_constants?' do
+
+      it 'is true' do
+        HashKeyValueOperator.uses_constants?.should be_true
+      end
+
+    end
+
+    describe '.find_constants' do
+
+      context 'hash uses key :foo' do
+
+        it 'return ":foo"' do
+          problems = [
+            { arguments: [{:foo => 'bar'}], response: 'bar'}
+          ]
+          HashKeyValueOperator.find_constants(problems).should == [:foo]
+        end
+
+      end
+
+    end    
+
   end
   
 end
