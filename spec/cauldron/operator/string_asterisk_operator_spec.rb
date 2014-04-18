@@ -32,6 +32,38 @@ module Cauldron
 
       end
 
+    end
+
+    describe '.viable?' do
+
+      context 'argument is a string' do
+
+        context 'response is string' do
+
+          it 'is true' do
+            StringAsteriskOperator.viable?(['hello'],'hellohello').should be_true         
+          end
+
+        end
+
+        context 'response is an array' do
+
+          it 'is false' do
+            StringAsteriskOperator.viable?(['hello'],['hellohello']).should be_false
+          end
+
+        end
+
+      end
+
+      context 'argument is not a string' do
+
+        it 'is false' do
+          StringAsteriskOperator.viable?([8],'hellohello').should be_false
+        end
+
+      end
+
     end    
 
   end

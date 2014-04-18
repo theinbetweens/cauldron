@@ -32,7 +32,10 @@ module Cauldron
 
     def find_relationship(problems)     
 
-      operations = [NumericOperator, ConcatOperator, ArrayReverseOperator, HashKeyValueOperator]
+      operations = [ 
+        NumericOperator, ConcatOperator, ArrayReverseOperator, 
+        HashKeyValueOperator, StringAsteriskOperator
+      ]
 
       # Try each possible operation
       operations.each do |operation_class|

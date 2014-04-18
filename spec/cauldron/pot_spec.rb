@@ -110,6 +110,25 @@ end
 
       end
 
+      describe 'using string#* problem' do
+
+        it 'returns a valid statement' do
+          pot = Pot.new
+          pot.solve(
+            [
+              {arguments: ['foo'], response: 'foofoofoo'},
+              {arguments: ['bar'], response: 'barbarbar'}
+            ]
+          ).should == 
+%q{
+def function(var0)
+  var0 * 3
+end
+}.strip
+        end
+
+      end      
+
     end
     
   end
