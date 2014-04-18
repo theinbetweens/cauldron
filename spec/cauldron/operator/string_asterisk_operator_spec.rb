@@ -66,6 +66,59 @@ module Cauldron
 
     end    
 
+    describe '.uses_constants?' do
+
+      it 'is true' do
+        StringAsteriskOperator.uses_constants?.should be_true
+      end
+
+    end
+
+    describe '#successful?' do
+
+      context 'argument string is "hello"' do
+
+        context 'response string is hellohello' do
+
+          context 'constant is 2' do
+
+            it 'is true' do
+              problem = { arguments: ['hello'], response: 'hellohello' }
+              operator = StringAsteriskOperator.new(2)
+              operator.successful?(problem).should be_true           
+            end
+
+          end
+
+          context 'constant is 1' do
+
+            it 'is false' do
+              problem = { arguments: ['hello'], response: 'hellohello' }
+              operator = StringAsteriskOperator.new(1)
+              operator.successful?(problem).should be_false            
+            end
+
+          end
+
+        end
+
+      end      
+
+    end
+
+    describe '#to_ruby' do
+
+      context 'constant is 2' do
+
+        it 'returns "var0 * 2"' do
+          operator = StringAsteriskOperator.new(2)
+          operator.to_ruby.should == "  var0 * 2"+"\n"
+        end
+
+      end
+
+    end
+
   end
 
 end

@@ -14,4 +14,17 @@ class StringAsteriskOperator
     true
   end
 
+  def self.uses_constants?
+    true
+  end
+
+  def successful?(problem)
+    return true if problem[:arguments].first*@constant == problem[:response]    
+    false
+  end
+
+  def to_ruby
+    '  var0 * '+"#{@constant}"+"\n"
+  end
+
 end
