@@ -19,13 +19,13 @@ module Cauldron
 %q{
 def function(var0)
   if var0 == 7
-    return 'seven'
+    return "seven"
   end
   if var0 == 8
-    return 'eight'
+    return "eight"
   end
-end  
-}.strip
+end
+}.lstrip
         end
 
       end
@@ -43,8 +43,8 @@ end
 %q{
 def function(var0)
   var0 + 1
-end  
-}.strip          
+end
+}.lstrip
         end
 
       end
@@ -61,9 +61,9 @@ end
           ).should == 
 %q{
 def function(var0)
-  var0.concat('bar')
+  var0.concat("bar")
 end
-}.strip          
+}.lstrip
         end
 
       end
@@ -82,7 +82,7 @@ end
 def function(var0)
   var0.reverse
 end
-}.strip      
+}.lstrip
         end
 
       end
@@ -103,7 +103,7 @@ end
 def function(var0)
   var0[:foo]
 end
-}.strip  
+}.lstrip
           end
 
         end
@@ -113,6 +113,7 @@ end
       describe 'using string#* problem' do
 
         it 'returns a valid statement' do
+          sexp = Ripper::SexpBuilder.new(%Q{def function(var0)\n  var0 * 3\nend}).parse
           pot = Pot.new
           pot.solve(
             [
@@ -124,7 +125,7 @@ end
 def function(var0)
   var0 * 3
 end
-}.strip
+}.lstrip
         end
 
       end
@@ -147,7 +148,7 @@ end
 def function(var0)
   var0.collect { |x| x * 2 }
 end
-}.strip              
+}.lstrip
             end
 
           end

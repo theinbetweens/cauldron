@@ -112,7 +112,7 @@ module Cauldron
 
         it 'returns "var0 * 2"' do
           operator = StringAsteriskOperator.new(2)
-          operator.to_ruby.should == "  var0 * 2"+"\n"
+          operator.to_ruby.should == "var0 * 2"
         end
 
       end

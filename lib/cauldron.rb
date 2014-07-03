@@ -5,6 +5,7 @@ require 'logger'
 require 'yaml'
 require 'ruby2ruby'
 require 'ruby_parser'
+require 'sorcerer'
 
 require 'core/string'
 

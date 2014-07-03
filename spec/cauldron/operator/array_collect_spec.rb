@@ -8,7 +8,7 @@ module Cauldron
 
       it 'returns "var0.collect { |x| x }"' do
         operator = ArrayCollect.new
-        operator.to_ruby.should == "  var0.collect { |x| x }"+"\n"
+        operator.to_ruby.should == "  var0.collect { |x| x }"
       end
 
       context 'passed "a * 2"' do
@@ -16,7 +16,7 @@ module Cauldron
         it 'returns "var0.collect { |x| x * 2}"' do
           a_times_2 = StringAsteriskOperator.new(2)
           operator = ArrayCollect.new
-          operator.to_ruby(a_times_2).should == '  var0.collect { |x| x * 2}'
+          operator.to_ruby(a_times_2).should == '  var0.collect { |x| x * 2 }'+"\n"
         end
 
       end

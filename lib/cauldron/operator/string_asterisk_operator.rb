@@ -26,7 +26,7 @@ class StringAsteriskOperator
   def to_ruby(variable_name = 'var0')
     #Sorcerer.source [:binary, [:vcall, [:@ident, "a"]], :*, [:@int, "3"]]
     Sorcerer.source [:binary, [:vcall, [:@ident, variable_name]], :*, [:@int, @constant]]
-    "  #{variable_name} * "+"#{@constant}"+"\n"
+    #{}"  #{variable_name} * "+"#{@constant}"+"\n"
   end
 
 end

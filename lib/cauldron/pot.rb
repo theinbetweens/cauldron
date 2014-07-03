@@ -11,13 +11,26 @@ module Cauldron
       result = ''
 
       # Add the arguments
+      # [:program, 
+      #   [:stmts_add, 
+      #     [:stmts_new], 
+      #     [:def, 
+      #       [:@ident, "function", [1, 4]], 
+      #       [:paren, [:params, [[:@ident, "var0", [1, 13]]], nil, nil, nil, nil]], 
+      #       [:bodystmt, [:stmts_add, [:stmts_new], [:binary, [:var_ref, [:@ident, "var0", [2, 2]]], :*, [:@int, "3", [2, 9]]]], nil, nil, nil]]
+      #   ]
+      # ]
       args = problems.first[:arguments]
       variables = (0...args.length).collect {|x| 'var'+x.to_s}
-      result = 'def function('+variables.join(',')+')'+"\n"
-      result << relationship.to_ruby
-      result += 'end'
+      sexp = Ripper::SexpBuilder.new('def function('+variables.join(',')+');'+relationship.to_ruby+"; end").parse
+      # args = problems.first[:arguments]
+      # variables = (0...args.length).collect {|x| 'var'+x.to_s}
+      # result = 'def function('+variables.join(',')+')'+"\n"
+      # result << relationship.to_ruby
+      # result += 'end'
 
-      result
+      #result
+      Sorcerer.source(sexp, indent: true)
 
     end
 
