@@ -21,6 +21,10 @@ module Cauldron
 
     end
 
+    def chain_operators(problems,operators)
+      operators.inject('') { |total,x| total += x.to_ruby; total }
+    end
+
   protected
 
     def quote(value)

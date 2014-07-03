@@ -19,6 +19,10 @@ require 'yaml'
 # 
 # puts unified_chain.describe
 
+# gem install ruby_parser
+# RubyParser.new.parse "1+1"
+
+# gem 'sexp_processor', '~> 4.4.3'
 
 #unified_chain.valid_mapping_permutations(runtime_method,test_cases)
 

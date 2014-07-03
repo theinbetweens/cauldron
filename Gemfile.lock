@@ -60,6 +60,7 @@ GEM
       sexp_processor (~> 3.0)
     sexp_processor (3.0.5)
     slop (3.4.7)
+    sorcerer (1.0.2)
     term-ansicolor (1.0.6)
 
 PLATFORMS
@@ -74,3 +75,4 @@ DEPENDENCIES
   rspec (~> 2.6.0)
   ruby2ruby (~> 1.2.5)
   ruby_parser (~> 2.0.6)
+  sorcerer (~> 1.0.2)

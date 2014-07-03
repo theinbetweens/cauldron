@@ -74,8 +74,8 @@ end
           pot = Pot.new
           pot.solve(
             [
-              { arguments: [['lion','bear']], response: ['bear','lion'] },
-              { arguments: [['foo','bar']], response: ['bar','foo'] }
+              { arguments: [['lion', 'bear']], response: ['bear','lion'] },
+              { arguments: [['foo', 'bar']], response: ['bar','foo'] }
             ]
           ).should == 
 %q{
@@ -127,7 +127,57 @@ end
 }.strip
         end
 
-      end      
+      end
+
+      describe 'chaining operators' do
+
+        describe 'use of Array#collect' do
+
+          describe 'use of string#*' do
+
+            it 'returns a correct function' do
+              pot = Pot.new
+              pot.solve(
+                [
+                  { arguments: [['foo', 'lima']], response: ['foofoo', 'limalima'] },
+                  { arguments: [['bar', 'delta']], response: ['barbar', 'deltadelta'] }
+                ]
+              ).should == 
+%q{
+def function(var0)
+  var0.collect { |x| x * 2 }
+end
+}.strip              
+            end
+
+          end
+
+        end
+
+      end 
+
+
+           
+
+    end
+
+    describe '#chain_operators' do
+
+      it 'returns a solution function' do
+              pot = Pot.new
+              pot.chain_operators(
+                [
+                  { arguments: [['foo','lima']], response: ['foofoo','limalima'] },
+                  { arguments: [['bar','delta']], response: ['barbar','deltadelta'] }
+                ],
+                [ArrayCollect.new, StringAsteriskOperator.new(2)]
+              ).should == 
+%q{
+def function(var0)
+  var0.collect { |x| x * 2 }
+end
+}.strip             
+      end
 
     end
     

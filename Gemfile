@@ -23,3 +23,4 @@ group :development, :cucumber, :test do
 end
 
 gem "ruby2ruby", "~>1.2.5"
+gem 'sorcerer', '~> 1.0.2'

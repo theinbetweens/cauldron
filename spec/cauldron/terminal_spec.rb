@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module Cauldron
   
-  describe 'Terminal' do 
+  describe 'Terminal' do
     
   end
   
