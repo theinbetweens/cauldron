@@ -157,8 +157,25 @@ end
 
       end 
 
+    end
 
-           
+    describe '#viable_double_operators' do
+
+      context 'using the foo*2 problem' do
+
+        it 'returns Array#collect and String#*' do
+          pot = Pot.new
+          pot.viable_double_operators(
+            [
+              { arguments: [['foo','lima']], response: ['foofoo','limalima'] },
+              { arguments: [['bar','delta']], response: ['barbar','deltadelta'] }
+            ]
+          ).should == [
+            [ArrayCollect, StringAsteriskOperator]
+          ]
+        end
+
+      end
 
     end
 

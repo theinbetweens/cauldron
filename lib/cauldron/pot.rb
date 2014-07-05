@@ -33,6 +33,11 @@ module Cauldron
       operators[0].to_ruby(operators[1])
     end
 
+    def viable_double_operators(problems)
+      child_operators = single_viable_operators(problems)
+      []
+    end    
+
   protected
 
     def quote(value)
@@ -42,7 +47,7 @@ module Cauldron
       value.to_s
     end
 
-    def find_relationship(problems)     
+    def single_viable_operators(problems)
 
       operations = [ 
         NumericOperator, ConcatOperator, ArrayReverseOperator, 
@@ -50,36 +55,53 @@ module Cauldron
       ]
 
       # Try each possible operation
+      viable_option_classes = []
       operations.each do |operation_class|
 
         # Are all the problems viable for this operation
         if problems.all? {|x| operation_class.viable?(x[:arguments],x[:response]) }
-
-          if operation_class.uses_constants?
-
-            possible_constants = operation_class.find_constants(problems)
-            possible_constants.each do |constant|
-              operator = operation_class.new(constant)
-
-              # Does the operator always result in the correct solution
-              if problems.all? {|x| operator.successful?(x) }
-                return operator
-              end
-            end
-
-          else
-
-            # Does the operator always result in the correct solution
-            operator = operation_class.new
-            if problems.all? {|x| operator.successful?(x) }
-              return operator
-            end            
-
-          end
-
+          viable_option_classes << operation_class
         end
 
       end
+
+      viable_option_classes
+
+    end
+
+    def build_operators(operation_class,problems)
+      results = []
+      if operation_class.uses_constants?
+
+        possible_constants = operation_class.find_constants(problems)
+        possible_constants.each do |constant|
+          operator = operation_class.new(constant)
+          results << operator
+        end
+
+      else
+
+        # Does the operator always result in the correct solution
+        operator = operation_class.new
+        results << operator                 
+
+      end
+      results
+    end
+
+    def find_relationship(problems)     
+
+      single_viable_operators(problems).each do |operation_class|
+
+        operators = build_operators(operation_class,problems)
+        operators.each do |operator|
+          if problems.all? {|x| operator.successful?(x) }
+            return operator
+          end
+        end
+      end
+
+      operator_chains = viable_double_operators(problems)
 
       if IfRelationship.match? problems
         return IfRelationship.new(problems)
