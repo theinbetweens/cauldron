@@ -30,9 +30,9 @@ class ArrayCollect
     # ]
     sexp = 
     [
-      :program, 
-      [:stmts_add, 
-        [:stmts_new], 
+      # :program, 
+      # [:stmts_add, 
+      #   [:stmts_new], 
         [:method_add_block, 
           [:call, 
             [:vcall, 
@@ -47,7 +47,7 @@ class ArrayCollect
             ]
           ]
         ]
-      ]
+      # ]
     ]    
     return Sorcerer.source(sexp) if operator.nil?
     "  var0.collect { |x| #{operator.to_ruby('x')} }"+"\n"
