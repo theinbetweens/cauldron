@@ -23,19 +23,14 @@ module Cauldron
       args = problems.first[:arguments]
       variables = (0...args.length).collect {|x| 'var'+x.to_s}
       sexp = Ripper::SexpBuilder.new('def function('+variables.join(',')+');'+relationship.to_ruby+"; end").parse
-      # args = problems.first[:arguments]
-      # variables = (0...args.length).collect {|x| 'var'+x.to_s}
-      # result = 'def function('+variables.join(',')+')'+"\n"
-      # result << relationship.to_ruby
-      # result += 'end'
 
-      #result
       Sorcerer.source(sexp, indent: true)
 
     end
 
     def chain_operators(problems,operators)
-      operators.inject('') { |total,x| total += x.to_ruby; total }
+      # TODO Presumes only two operators
+      operators[0].to_ruby(operators[1])
     end
 
   protected

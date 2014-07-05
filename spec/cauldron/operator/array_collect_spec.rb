@@ -8,7 +8,7 @@ module Cauldron
 
       it 'returns "var0.collect { |x| x }"' do
         operator = ArrayCollect.new
-        operator.to_ruby.should == "  var0.collect { |x| x }"
+        operator.to_ruby.should == "var0.collect { |x| x }"
       end
 
       context 'passed "a * 2"' do

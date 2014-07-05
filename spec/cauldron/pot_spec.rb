@@ -165,19 +165,14 @@ end
     describe '#chain_operators' do
 
       it 'returns a solution function' do
-              pot = Pot.new
-              pot.chain_operators(
-                [
-                  { arguments: [['foo','lima']], response: ['foofoo','limalima'] },
-                  { arguments: [['bar','delta']], response: ['barbar','deltadelta'] }
-                ],
-                [ArrayCollect.new, StringAsteriskOperator.new(2)]
-              ).should == 
-%q{
-def function(var0)
-  var0.collect { |x| x * 2 }
-end
-}.strip             
+        pot = Pot.new
+        pot.chain_operators(
+          [
+            { arguments: [['foo','lima']], response: ['foofoo','limalima'] },
+            { arguments: [['bar','delta']], response: ['barbar','deltadelta'] }
+          ],
+          [ArrayCollect.new, StringAsteriskOperator.new(2)]
+        ).should == "var0.collect { |x| x * 2 }"
       end
 
     end
