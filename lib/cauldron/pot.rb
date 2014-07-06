@@ -36,22 +36,13 @@ module Cauldron
     def viable_double_operators(problems)
       child_operators = single_viable_operators(problems)
       []
-    end    
-
-  protected
-
-    def quote(value)
-      if value.kind_of?(String)
-        return "'#{value}'"
-      end
-      value.to_s
-    end
+    end   
 
     def single_viable_operators(problems)
 
       operations = [ 
         NumericOperator, ConcatOperator, ArrayReverseOperator, 
-        HashKeyValueOperator, StringAsteriskOperator
+        HashKeyValueOperator, StringAsteriskOperator, ArrayCollect
       ]
 
       # Try each possible operation
@@ -67,6 +58,15 @@ module Cauldron
 
       viable_option_classes
 
+    end     
+
+  protected
+
+    def quote(value)
+      if value.kind_of?(String)
+        return "'#{value}'"
+      end
+      value.to_s
     end
 
     def build_operators(operation_class,problems)

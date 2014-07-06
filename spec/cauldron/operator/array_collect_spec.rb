@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module Cauldron
   
-  describe 'ArrayCollect' do
+  describe ArrayCollect do
 
     describe '#to_ruby' do
 
@@ -20,6 +20,45 @@ module Cauldron
         end
 
       end
+
+    end
+
+    describe '.viable?' do
+
+      context 'argument is an array' do
+
+        it 'is true' do
+          arg = []
+          ArrayCollect.viable?( [arg], [] ).should be_true
+        end
+
+      end
+
+    end
+
+    describe '#successful?' do
+
+      let(:first_argument) do
+        ['a','b','c']
+      end
+
+      let(:bad_response) do
+        ['a','b','d']
+      end
+
+      let(:operator) do
+        ArrayCollect.new
+      end
+
+      it 'is true' do
+        problem = {arguments: [first_argument], response: ['a','b','c']}
+        operator.successful?(problem).should == true
+      end
+
+      it 'is true' do
+        problem = {arguments: [first_argument], response: bad_response}
+        operator.successful?(problem).should be_false
+      end      
 
     end
 

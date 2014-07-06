@@ -28,4 +28,19 @@ class ArrayCollect
     Sorcerer.source(sexp)
   end
 
+  def self.viable?(arguments,output)
+    return false unless output.kind_of? Array
+    return false unless arguments.first.kind_of? Array
+    true    
+  end
+
+  def self.uses_constants?
+    false
+  end
+
+  def successful?(problem)
+    return true if problem[:arguments].first == problem[:response]    
+    false    
+  end
+
 end

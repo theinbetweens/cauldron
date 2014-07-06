@@ -193,6 +193,25 @@ end
       end
 
     end
+
+    describe '#single_viable_operators' do
+
+      context 'argument is ["a","b","c"]' do
+
+        context 'response is ["a","b","c"]' do
+
+          it 'response contains "ArrayCollect" class' do
+            pot = Pot.new
+            pot.single_viable_operators(
+              [{ arguments: [['a','b','c']], response: ['a','b','c']}]
+            ).should include(ArrayCollect)
+          end
+
+        end
+
+      end
+
+    end
     
   end
   
