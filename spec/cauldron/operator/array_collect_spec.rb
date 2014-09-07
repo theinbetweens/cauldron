@@ -62,6 +62,30 @@ module Cauldron
 
     end
 
+    describe '.step_problems' do
+
+      context 'using arguments "["foo","lima"]" and "["bar","delta"]"' do
+
+        it 'returns arguments "["foo","lima"]" and "["bar","delta"]"' do
+          #ArrayCollect.step_problems(
+          # Maybe blockify would be more appropriate
+          ArrayCollect.step_problem(
+            #[
+              { arguments: [['foo','lima']], response: ['foofoo','limalima'] }#,
+              #{ arguments: [['bar','delta']], response: ['barbar','deltadelta'] }
+            #]            
+          ).should == [
+            { arguments: ['foo'], response: 'foofoo' },
+            { arguments: ['lima'], response: 'limalima' }
+            #{ arguments: [['foo','lima']], response: ['foofoo','limalima'] },
+            #{ arguments: [['bar','delta']], response: ['barbar','deltadelta'] }
+          ]     
+        end
+
+      end
+
+    end    
+
   end
 
 end

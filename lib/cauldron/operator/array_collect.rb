@@ -34,6 +34,19 @@ class ArrayCollect
     true    
   end
 
+  def self.uses_block?
+    true
+  end  
+
+  # Could be blockify_problem
+  def self.step_problem(problem)
+    result = []
+    problem[:arguments].flatten.zip( problem[:response]) do |argument, response|
+      result << { arguments: [argument], response: response }
+    end
+    result
+  end
+
   def self.uses_constants?
     false
   end

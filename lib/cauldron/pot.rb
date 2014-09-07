@@ -35,7 +35,19 @@ module Cauldron
 
     def viable_double_operators(problems)
       child_operators = single_viable_operators(problems)
-      []
+
+      # Update the arguements operator
+      results = []
+      child_operators.each do |action|
+        next unless action.uses_block?
+        updated_problems = []
+        problems.each do |problem|
+          updated_problems += action.step_problem(problem)
+        end
+        viable_next_operators = single_viable_operators(updated_problems) 
+        results += [action].product(viable_next_operators)
+      end
+      results
     end   
 
     def single_viable_operators(problems)

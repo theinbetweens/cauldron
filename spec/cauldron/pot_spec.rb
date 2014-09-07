@@ -171,7 +171,7 @@ end
               { arguments: [['bar','delta']], response: ['barbar','deltadelta'] }
             ]
           ).should == [
-            [ArrayCollect, StringAsteriskOperator]
+            [ArrayCollect, ConcatOperator],[ArrayCollect, StringAsteriskOperator]
           ]
         end
 

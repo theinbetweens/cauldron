@@ -35,6 +35,14 @@ class ArrayReverseOperator
     []
   end
 
+  def self.uses_block?
+    false
+  end
+
+  def self.process(arguments)
+    arguments.collect {|x| x.reverse }
+  end
+
   def to_ruby
     '  var0.reverse'+"\n"
   end  
