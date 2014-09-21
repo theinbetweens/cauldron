@@ -70,7 +70,16 @@ module Cauldron
 
       viable_option_classes
 
-    end     
+    end 
+
+    def build_chain_operators(operators, problems)
+      
+      next_problem = operators.first.step_problem(problems.first)
+
+      res = build_operators(operators.last,next_problem)
+
+      operators.first.new.to_ruby(res.first)
+    end        
 
   protected
 
@@ -84,13 +93,15 @@ module Cauldron
     def build_operators(operation_class,problems)
       results = []
       if operation_class.uses_constants?
-
+        puts problems
         possible_constants = operation_class.find_constants(problems)
+        puts '---->>>'
+        puts possible_constants.inspect
         possible_constants.each do |constant|
           operator = operation_class.new(constant)
           results << operator
         end
-
+        puts results
       else
 
         # Does the operator always result in the correct solution
@@ -114,6 +125,21 @@ module Cauldron
       end
 
       operator_chains = viable_double_operators(problems)
+
+      operator_chains.each do |operators|
+        code = build_chain_operators(operators,problems)
+        if problems.all? {|x| code.successful?(x) }
+          return code
+        end
+      end
+
+      # operator_chains.each do |operations|
+      #   operations.each do |operation_class|
+      #     # TODO problems need to change
+      #     operators = build_operators(operation_class,problems)
+      #     #binding.pry
+      #   end
+      # end
 
       if IfRelationship.match? problems
         return IfRelationship.new(problems)

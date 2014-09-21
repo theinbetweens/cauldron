@@ -32,7 +32,27 @@ class ConcatOperator
   end
 
   def to_ruby
-    '  var0.concat(\''+@constant.to_s+'\')'+"\n"
+    #'  var0.concat(\''+@constant.to_s+'\')'+"\n"
+    puts 'var0'.to_sym
+    puts @constant.to_s
+    puts '---'
+    Sorcerer.source self.to_sexp('var0')
+  end
+
+  def to_sexp(subject)
+    #[s(:call, s(:call, nil, subject.to_sym, s(:arglist)), :concat, s(:arglist, s(:str, string))]
+    #sexp = Ripper::SexpBuilder.new("  var0.concat('bar')").parse
+    [:program, 
+      [:stmts_add, 
+        [:stmts_new], 
+        [:method_add_arg, 
+          [:call, 
+            [:vcall, [:@ident, subject, [1, 2]]], 
+            :".", [:@ident, "concat", [1, 7]]
+          ], 
+          [:arg_paren, [:args_add_block, [:args_add, [:args_new], [:string_literal, [:string_add, [:string_content], [:@tstring_content, @constant, [1, 15]]]]], false]]]
+      ]
+    ]
   end
 
 end

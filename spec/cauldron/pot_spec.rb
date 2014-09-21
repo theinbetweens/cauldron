@@ -4,6 +4,13 @@ module Cauldron
   
   describe 'Pot' do
 
+    let(:collect_and_multiple) do
+      [
+        { arguments: [['foo','lima']], response: ['foofoo','limalima'] },
+        { arguments: [['bar','delta']], response: ['barbar','deltadelta'] }
+      ]      
+    end
+
     describe '#solve' do
 
       context 'passed simple if statement problem' do
@@ -184,10 +191,7 @@ end
       it 'returns a solution function' do
         pot = Pot.new
         pot.chain_operators(
-          [
-            { arguments: [['foo','lima']], response: ['foofoo','limalima'] },
-            { arguments: [['bar','delta']], response: ['barbar','deltadelta'] }
-          ],
+          collect_and_multiple,
           [ArrayCollect.new, StringAsteriskOperator.new(2)]
         ).should == "var0.collect { |x| x * 2 }"
       end
@@ -211,6 +215,27 @@ end
 
       end
 
+    end
+
+    describe '#build_chain_operators' do
+
+# def function(var0)
+#   var0.collect { |x| x * 2 }
+# end
+
+      #[ArrayCollect, StringAsteriskOperator]
+      context 'operators are Array#collect and String#*' do
+
+        it 'is "var0.collect { |x| x * 2 }"' do
+          pot = Pot.new
+          pot.build_chain_operators(
+            [ArrayCollect, StringAsteriskOperator],
+            collect_and_multiple
+          ).to_s.should == "var0.collect { |x| x * 2 }"
+        end
+
+      end
+ 
     end
     
   end

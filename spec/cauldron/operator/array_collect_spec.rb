@@ -77,8 +77,6 @@ module Cauldron
           ).should == [
             { arguments: ['foo'], response: 'foofoo' },
             { arguments: ['lima'], response: 'limalima' }
-            #{ arguments: [['foo','lima']], response: ['foofoo','limalima'] },
-            #{ arguments: [['bar','delta']], response: ['barbar','deltadelta'] }
           ]     
         end
 

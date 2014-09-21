@@ -77,7 +77,7 @@ module Cauldron
 
         it 'returns "var0.concat("bar")"' do
           operator = ConcatOperator.new('bar')
-          operator.to_ruby.should == "  var0.concat('bar')"+"\n"
+          operator.to_ruby.should == "var0.concat(\"bar\")"
         end
 
       end
