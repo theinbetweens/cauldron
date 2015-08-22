@@ -143,7 +143,11 @@ end
 
           describe 'use of string#*' do
 
-            it 'returns a correct function' do
+            it %{returns the function
+def function(var0)
+  var0.collect { |x| x * 2 }
+end
+              } do
               pot = Pot.new
               pot.solve(
                 [

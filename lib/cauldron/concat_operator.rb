@@ -33,9 +33,6 @@ class ConcatOperator
 
   def to_ruby
     #'  var0.concat(\''+@constant.to_s+'\')'+"\n"
-    puts 'var0'.to_sym
-    puts @constant.to_s
-    puts '---'
     Sorcerer.source self.to_sexp('var0')
   end
 

@@ -7,8 +7,6 @@ class ArrayCollect
   def to_ruby(operator = nil)
     #sexp = Ripper::SexpBuilder.new(%q{var0.collect { |x| x * 2 }}).parse
     block_sexp = [:var_ref, [:@ident, "x"]]
-    puts '=========>>>'
-    puts operator.nil?
     unless operator.nil?
       block_sexp = operator.to_sexp('x')
     end

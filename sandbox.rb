@@ -12,6 +12,9 @@ require 'yaml'
 # 
 # puts 'Working'
 
+# === Pry ===
+# Pry::Code.new(@str).length 
+
 
 # unified_chain = Cauldron::Util::Saver.load(298)
 # runtime_method = Cauldron::Util::Saver.load(31)

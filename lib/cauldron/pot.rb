@@ -5,6 +5,8 @@ module Cauldron
     def solve(problems)
 
       # Identify the relationship
+      
+      # Pry::Code
       relationship = find_relationship(problems)
 
       # Generate if statements
@@ -93,10 +95,9 @@ module Cauldron
     def build_operators(operation_class,problems)
       results = []
       if operation_class.uses_constants?
-        puts problems
+        
         possible_constants = operation_class.find_constants(problems)
-        puts '---->>>'
-        puts possible_constants.inspect
+
         possible_constants.each do |constant|
           operator = operation_class.new(constant)
           results << operator
@@ -127,6 +128,7 @@ module Cauldron
       operator_chains = viable_double_operators(problems)
 
       operator_chains.each do |operators|
+        
         code = build_chain_operators(operators,problems)
         if problems.all? {|x| code.successful?(x) }
           return code

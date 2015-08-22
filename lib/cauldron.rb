@@ -19,3 +19,5 @@ require 'cauldron/array_reverse_operator'
 require 'cauldron/hash_key_value_operator'
 require 'cauldron/operator/string_asterisk_operator'
 require 'cauldron/operator/array_collect'
+
+require 'cauldron/solution/one'
