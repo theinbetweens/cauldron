@@ -11,8 +11,10 @@ module Cauldron::Solution
     end
 
     def successful?(problem)
-      return true if problem[:arguments].first * 2 == problem[:response]    
-      false    
+      return false unless problem[:arguments].first.kind_of?(Array)
+      return false unless problem[:arguments].first[0] * 2 == problem[:response][0]
+      return false unless problem[:arguments].first[1] * 2 == problem[:response][1]
+      true    
     end
 
     def to_ruby
@@ -31,15 +33,11 @@ module Cauldron::Solution
               [[:@ident, "x"]]
             ]
           ], 
-            [
-              :stmts_add, 
-              [:stmts_new],
-              [
-                :binary, 
-                [:var_ref, [:@ident, "x"]],
-                :*,
-                [:@int, "2"]
-              ]
+          [
+            :binary, 
+            [:var_ref, [:@ident, "x"]],
+            :*,
+            [:@int, "2"]
           ]
         ]
       ] 

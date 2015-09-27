@@ -102,7 +102,6 @@ module Cauldron
           operator = operation_class.new(constant)
           results << operator
         end
-        puts results
       else
 
         # Does the operator always result in the correct solution
@@ -114,6 +113,20 @@ module Cauldron
     end
 
     def find_relationship(problems)     
+
+      # ==== NEW APPROACH ====
+
+      # BRUTE FORCE - Loop through all the solutions
+      solutions = [
+        Cauldron::Solution::One.new
+      ]
+      successful_solutions = solutions.select do |solution|
+        problems.all? { |problem| solution.successful?(problem) }
+      end
+      return successful_solutions[0] unless successful_solutions.empty?
+
+
+      # ======================
 
       single_viable_operators(problems).each do |operation_class|
 
@@ -134,14 +147,6 @@ module Cauldron
           return code
         end
       end
-
-      # operator_chains.each do |operations|
-      #   operations.each do |operation_class|
-      #     # TODO problems need to change
-      #     operators = build_operators(operation_class,problems)
-      #     #binding.pry
-      #   end
-      # end
 
       if IfRelationship.match? problems
         return IfRelationship.new(problems)
