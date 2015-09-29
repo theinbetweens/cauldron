@@ -38,6 +38,23 @@ class ArrayCollect
     true
   end  
 
+  def build(operators)
+    [:method_add_block, 
+      [:call, 
+        [:vcall, 
+          [:@ident, "var0"]], 
+          :".", 
+          [:@ident, "collect"]
+      ], 
+      [:brace_block, 
+        [:block_var, 
+          [:params, [[:@ident, "x"]]]], 
+          [:stmts_add, [:stmts_new], operators.first.build('x')
+        ]
+      ]
+    ]    
+  end
+
   # Could be blockify_problem
   def self.step_problem(problem)
     result = []

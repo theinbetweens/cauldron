@@ -21,3 +21,4 @@ require 'cauldron/operator/string_asterisk_operator'
 require 'cauldron/operator/array_collect'
 
 require 'cauldron/solution/one'
+require 'cauldron/solution/composite'

@@ -31,4 +31,8 @@ class StringAsteriskOperator
     [:binary, [:vcall, [:@ident, variable_name]], :*, [:@int, @constant]]
   end
 
+  def build(variable_name)
+    [:binary, [:vcall, [:@ident, variable_name]], :*, [:@int, @constant]]
+  end
+
 end
