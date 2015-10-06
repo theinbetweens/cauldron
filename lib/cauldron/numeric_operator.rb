@@ -23,9 +23,33 @@ class NumericOperator
 
   end
 
-  def to_ruby
-    '  var0 + '+@constant.to_s+"\n"
+  def to_sexp
+    [:binary, [:@ident, "var0"], :+, [:@int, @constant.to_s]]
   end
+
+  def to_ruby
+    #'  var0 + '+@constant.to_s+"\n"
+    #[:binary, [:@ident, "var0"], :+, [:@int, @constant.to_s]]
+    Sorcerer.source self.to_sexp
+  end
+
+  def build(operators)
+    # [:method_add_block, 
+    #   [:call, 
+    #     [:vcall, 
+    #       [:@ident, "var0"]], 
+    #       :".", 
+    #       [:@ident, "collect"]
+    #   ], 
+    #   [:brace_block, 
+    #     [:block_var, 
+    #       [:params, [[:@ident, "x"]]]], 
+    #       [:stmts_add, [:stmts_new], operators.first.build('x')
+    #     ]
+    #   ]
+    # ]
+    to_sexp    
+  end  
 
   # Operator for "x + n" e.g. x + 1
   def successful?(problem)
