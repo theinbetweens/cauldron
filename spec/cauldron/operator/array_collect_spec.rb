@@ -82,7 +82,21 @@ module Cauldron
 
       end
 
-    end    
+    end
+
+    describe '#trace' do
+
+      context 'promblem has argument "["foo","lima"]"' do
+
+        it 'returns "["foo","lima"]"' do
+          ArrayCollect.new.trace(
+            { arguments: [['foo','lima']] }
+          ).should == ['foo','lima']
+        end
+
+      end
+
+    end
 
   end
 

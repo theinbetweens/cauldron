@@ -126,17 +126,24 @@ module Cauldron
       return successful_solutions[0] unless successful_solutions.empty?
 
 
-      # ======================
-
+      solutions = []
       single_viable_operators(problems).each do |operation_class|
 
         operators = build_operators(operation_class,problems)
         operators.each do |operator|
-          if problems.all? {|x| operator.successful?(x) }
-            return operator
-          end
+          solutions << Cauldron::Solution::Composite.new( operator )
+          # if problems.all? {|x| operator.successful?(x) }
+          #   return operator
+          # end
         end
       end
+      #solutions.each { |x| x.successful?(problem) }
+      solutions.each do |solution|
+        if problems.all? {|x| solution.successful?(x) }
+          return solution
+        end
+      end
+
 
       operator_chains = viable_double_operators(problems)
 

@@ -7,6 +7,8 @@ require 'ruby2ruby'
 require 'ruby_parser'
 require 'sorcerer'
 
+require 'pry_tester'
+
 require 'core/string'
 
 require 'cauldron/pot'
