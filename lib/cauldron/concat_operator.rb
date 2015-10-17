@@ -36,6 +36,10 @@ class ConcatOperator
     Sorcerer.source self.to_sexp('var0')
   end
 
+  def build(subject)
+    to_sexp(subject)
+  end
+
   def to_sexp(subject)
     #[s(:call, s(:call, nil, subject.to_sym, s(:arglist)), :concat, s(:arglist, s(:str, string))]
     #sexp = Ripper::SexpBuilder.new("  var0.concat('bar')").parse

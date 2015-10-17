@@ -55,8 +55,9 @@ module Cauldron
     def single_viable_operators(problems)
 
       operations = [ 
-        NumericOperator, ConcatOperator, ArrayReverseOperator, 
-        HashKeyValueOperator, StringAsteriskOperator, ArrayCollect
+        NumericOperator, ArrayReverseOperator, 
+        HashKeyValueOperator, StringAsteriskOperator, ArrayCollect#,
+        #ConcatOperator
       ]
 
       # Try each possible operation
@@ -131,19 +132,16 @@ module Cauldron
 
         operators = build_operators(operation_class,problems)
         operators.each do |operator|
-          solutions << Cauldron::Solution::Composite.new( operator )
-          # if problems.all? {|x| operator.successful?(x) }
-          #   return operator
-          # end
+          solutions << Cauldron::Solution::Composite.new( [operator] )
         end
       end
+
       #solutions.each { |x| x.successful?(problem) }
       solutions.each do |solution|
         if problems.all? {|x| solution.successful?(x) }
           return solution
         end
       end
-
 
       operator_chains = viable_double_operators(problems)
 

@@ -1,5 +1,7 @@
 class StringAsteriskOperator
 
+  # var0 * 3
+
   def initialize(constant)
     @constant = constant
   end
@@ -18,6 +20,10 @@ class StringAsteriskOperator
     true
   end
 
+  def self.uses_block?
+    false
+  end  
+
   def successful?(problem)
     return true if problem[:arguments].first*@constant == problem[:response]    
     false
@@ -31,7 +37,8 @@ class StringAsteriskOperator
     [:binary, [:vcall, [:@ident, variable_name]], :*, [:@int, @constant]]
   end
 
-  def build(variable_name)
+  # TODO Get rid of the defined names
+  def build(nested, variable_name = 'var0')
     [:binary, [:vcall, [:@ident, variable_name]], :*, [:@int, @constant]]
   end
 

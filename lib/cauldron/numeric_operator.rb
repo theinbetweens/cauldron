@@ -67,6 +67,10 @@ class NumericOperator
 
   def self.uses_constants?
     true
-  end  
+  end
 
+  def self.uses_block?
+    false
+  end
+    
 end
