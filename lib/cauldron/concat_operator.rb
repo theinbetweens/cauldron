@@ -36,7 +36,7 @@ class ConcatOperator
     Sorcerer.source self.to_sexp('var0')
   end
 
-  def build(subject)
+  def build(subject, variables = [])
     to_sexp(subject)
   end
 

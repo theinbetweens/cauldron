@@ -2,8 +2,8 @@ class NumericOperator
 
   # Maybe NumericOperation
 
-  def initialize(constant)
-    @constant = constant
+  def initialize(constant, indexes)
+    @constant, @indexes = constant, indexes
   end
 
   # Is the problem suitable for a numeric operatio?
@@ -23,8 +23,8 @@ class NumericOperator
 
   end
 
-  def to_sexp
-    [:binary, [:@ident, "var0"], :+, [:@int, @constant.to_s]]
+  def to_sexp(variables)
+    [:binary, [:@ident, variables[@indexes[0]] ] , :+, [:@int, @constant.to_s]]
   end
 
   def to_ruby
@@ -33,7 +33,7 @@ class NumericOperator
     Sorcerer.source self.to_sexp
   end
 
-  def build(operators)
+  def build(operators, variables)
     # [:method_add_block, 
     #   [:call, 
     #     [:vcall, 
@@ -48,7 +48,7 @@ class NumericOperator
     #     ]
     #   ]
     # ]
-    to_sexp    
+    to_sexp(variables)    
   end  
 
   # Operator for "x + n" e.g. x + 1

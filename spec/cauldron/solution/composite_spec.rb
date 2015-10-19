@@ -8,13 +8,13 @@ module Cauldron::Solution
 
       it %q{generates the code} do
         Composite.new(
-          [ArrayCollect.new, NumericOperator.new(2)],
-          [ArrayCollect.new, ToSOperator.new]
-        ).to_ruby.should == %q{
-var2 = var1.collect do |x|
+          [ArrayCollect.new([0]), NumericOperator.new(2, [1]) ],
+          [ArrayCollect.new([2]), ToSOperator.new]
+        ).to_ruby(['var0']).should == %q{
+var1 = var0.collect do |x|
   x + 2
 end
-var3 = var2.collect do |x|
+var2 = var1.collect do |x|
   x.to_s
 end
 }
@@ -26,14 +26,14 @@ end
 
       context 'using initial operator "Array#collect"' do
 
-        let(:collect_operator) { ArrayCollect.new }
+        let(:collect_operator) { ArrayCollect.new([0]) }
 
         context 'using second operator "x * 3"' do
 
-          let(:string_multiple) { StringAsteriskOperator.new(3) }
+          let(:string_multiple) { StringAsteriskOperator.new(3, [1]) }
 
           it 'returns "var0.collect {|x| x + 3}"' do
-            Composite.new([collect_operator, string_multiple]).sexp.should == [
+            Composite.new([collect_operator, string_multiple]).sexp(['var0']).should == [
               :method_add_block, 
               [:call, 
                 [:vcall, 

@@ -5,7 +5,7 @@
     def intialize
     end
 
-    def build(operators)
+    def build(operators, variables = [])
       # [:method_add_block, 
       #   [:call, 
       #     [:vcall, 

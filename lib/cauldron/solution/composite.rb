@@ -8,26 +8,22 @@ module Cauldron::Solution
       @operators = operators
     end
 
-    def sexp
+    def sexp(variables=[])
       # [ 
       #   :1, [],
       #   :2, [],
       # ]
-
-      #operators.shift.build(operators)
-      #puts operators.inspect
-      #puts '===='
+      #args = problem[:arguments]
+      #variables = (0...args.length).collect {|x| 'var'+x.to_s}
       results = operators.collect do |x|
-        #line = x.shift
-        #options = x
-        x[0].build(x[1...x.length])
+        x[0].build(x[1...x.length], variables)
       end
       # TODO Not sure why this is needed just yet
       results.shift
     end
 
-    def to_ruby
-      Sorcerer.source(sexp)
+    def to_ruby(variables = [])
+      Sorcerer.source(sexp(variables))
     end
 
     def successful?(problem)
@@ -44,33 +40,29 @@ module Cauldron::Solution
       args = problem[:arguments]
       variables = (0...args.length).collect {|x| 'var'+x.to_s}
 
-      result = [
-        'def function('+variables.join(',')+')',
-        self.to_ruby,
-        'end'
-      ]
+      # result = [
+      #   'def function('+variables.join(',')+')',
+      #   self.to_ruby,
+      #   'end'
+      # ]
 
 
       #pt.eval(result)
       #pt.eval(['def function('+variables.join(',')+');'+self.to_ruby+"; end"])
-
+      
       # 'def function('+variables.join(',')+');'+self.to_ruby+"; end", 'function('+problem[:arguments][0].to_s+')'
       # "def function('+variables.join(',')+');'+self.to_ruby+"; end", 'function('+problem[:arguments][0].to_s+')'
       a = [
-        'def function('+variables.join(',')+');'+self.to_ruby+"; end", 
+        'def function('+variables.join(',')+');'+self.to_ruby(variables)+"; end", 
         'function('+problem[:arguments].collect {|x| to_programme(x) }.join(',')+')'
       ]
       
       res = pt.eval(
-        ['def function('+variables.join(',')+');'+self.to_ruby+"; end", 'function('+problem[:arguments].collect {|x| to_programme(x) }.join(',')+')']
+        ['def function('+variables.join(',')+');'+self.to_ruby(variables)+"; end", 'function('+problem[:arguments].collect {|x| to_programme(x) }.join(',')+')']
       )
 
       #problem[:response] == Pry::Code.new(self.to_ruby)
       problem[:response] == res
-      #''
-
-
-      #false
     end
 
     def to_programme(value)

@@ -32,7 +32,7 @@ module Cauldron
 
     def chain_operators(problems,operators)
       # TODO Presumes only two operators
-      operators[0].to_ruby(operators[1])
+      operators[0].to_ruby(operators[1...operators.length], ['var0'])
     end
 
     def viable_double_operators(problems)
@@ -77,11 +77,19 @@ module Cauldron
 
     def build_chain_operators(operators, problems)
       
-      next_problem = operators.first.step_problem(problems.first)
+      first_operator_class, second_operator_class = operators[0], operators[1]
 
-      res = build_operators(operators.last,next_problem)
+      first_operator = build_operators( first_operator_class, problems )
+      second_operator = build_operators( second_operator_class, problems )
 
-      operators.first.new.to_ruby(res.first)
+      Cauldron::Solution::Composite.new(
+        [first_operator, second_operator]
+      )
+      #next_problem = operators.first.step_problem(problems.first)
+
+      #res = build_operators(operators.last,next_problem)
+
+      #operators.first.new.to_ruby(res.first)
     end        
 
   protected
@@ -100,13 +108,13 @@ module Cauldron
         possible_constants = operation_class.find_constants(problems)
 
         possible_constants.each do |constant|
-          operator = operation_class.new(constant)
+          operator = operation_class.new([0],constant)
           results << operator
         end
       else
 
         # Does the operator always result in the correct solution
-        operator = operation_class.new
+        operator = operation_class.new([0])
         results << operator                 
 
       end
@@ -136,7 +144,6 @@ module Cauldron
         end
       end
 
-      #solutions.each { |x| x.successful?(problem) }
       solutions.each do |solution|
         if problems.all? {|x| solution.successful?(x) }
           return solution

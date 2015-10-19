@@ -2,8 +2,27 @@ class StringAsteriskOperator
 
   # var0 * 3
 
-  def initialize(constant)
-    @constant = constant
+  # TODO Possibly include the scope of the index
+  # a = 5
+  # ['sdsd'].each do |b|
+  #   c = 5
+  # end
+  # (1...6).each do |d|
+  #   g = d
+  # end
+
+  # [0] = ['a']
+  # [1] = ['b', 'c']
+  # [2] = ['g', 'd']
+
+  # Although it should probably be
+  # [0] = [ ['a'] ]
+  # [1] = [ ['b', 'c'], ['g', 'd'] ]
+  #
+  # Or the order it was added might be more useful - e.g. last variable, second last variable or first variable
+  # - variable at depth(1)[1] - stepUp(1).first
+  def initialize(constant, indexes)
+    @constant, @indexes = constant, indexes
   end
 
   def self.find_constants(problems)
@@ -33,13 +52,13 @@ class StringAsteriskOperator
     Sorcerer.source self.to_sexp
   end
 
-  def to_sexp(variable_name = 'var0')
-    [:binary, [:vcall, [:@ident, variable_name]], :*, [:@int, @constant]]
+  def to_sexp(variables)
+    [:binary, [:vcall, [:@ident, variables[@indexes[0]] ]], :*, [:@int, @constant]]
   end
 
   # TODO Get rid of the defined names
-  def build(nested, variable_name = 'var0')
-    [:binary, [:vcall, [:@ident, variable_name]], :*, [:@int, @constant]]
+  def build(nested, variables)
+    [:binary, [:vcall, [:@ident, variables[@indexes[0]] ]], :*, [:@int, @constant]]
   end
 
 end

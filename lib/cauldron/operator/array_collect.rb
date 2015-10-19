@@ -1,31 +1,34 @@
 class ArrayCollect
 
-  def initialize
-    
+  def initialize(indexes)
+    @indexes = indexes
   end
 
-  def to_ruby(operator = nil)
+  def to_ruby(operators, variables)
+
     #sexp = Ripper::SexpBuilder.new(%q{var0.collect { |x| x * 2 }}).parse
-    block_sexp = [:var_ref, [:@ident, "x"]]
-    unless operator.nil?
-      block_sexp = operator.to_sexp('x')
-    end
-    sexp = 
-    [:method_add_block, 
-      [:call, 
-        [:vcall, 
-          [:@ident, "var0"]], 
-          :".", 
-          [:@ident, "collect"]
-      ], 
-      [:brace_block, 
-        [:block_var, 
-          [:params, [[:@ident, "x"]]]], 
-          [:stmts_add, [:stmts_new], block_sexp
-        ]
-      ]
-    ] 
-    Sorcerer.source(sexp)
+    # block_sexp = [:var_ref, [:@ident, "x"]]
+    # unless operator.nil?
+    #   block_sexp = operator.to_sexp('x')
+    # end
+    # sexp = 
+    # [:method_add_block, 
+    #   [:call, 
+    #     [:vcall, 
+    #       [:@ident, "var0"]], 
+    #       :".", 
+    #       [:@ident, "collect"]
+    #   ], 
+    #   [:brace_block, 
+    #     [:block_var, 
+    #       [:params, [[:@ident, "x"]]]], 
+    #       [:stmts_add, [:stmts_new], block_sexp
+    #     ]
+    #   ]
+    # ] 
+
+    #Sorcerer.source(sexp)
+    Sorcerer.source build(operators, variables)
   end
 
   def self.viable?(arguments,output)
@@ -38,21 +41,39 @@ class ArrayCollect
     true
   end  
 
-  def build(operators)
+  def build(operators, variables = [])
     [:method_add_block, 
       [:call, 
         [:vcall, 
-          [:@ident, "var0"]], 
+          [:@ident, variables[@indexes[0]] ]], 
           :".", 
           [:@ident, "collect"]
       ], 
       [:brace_block, 
         [:block_var, 
           [:params, [[:@ident, "x"]]]], 
-          [:stmts_add, [:stmts_new], operators.first.build('x')
+          [:stmts_add, [:stmts_new], operators.first.build('x', variables.push('x') )
         ]
       ]
     ]    
+  end
+
+  def to_sexp(operators, variables)
+    build(operators, variables)
+    # [:method_add_block, 
+    #   [:call, 
+    #     [:vcall, 
+    #       [:@ident, variables[@indexes[0]] ]], 
+    #       :".", 
+    #       [:@ident, "collect"]
+    #   ], 
+    #   [:brace_block, 
+    #     [:block_var, 
+    #       [:params, [[:@ident, "x"]]]], 
+    #       [:stmts_add, [:stmts_new], operators.first.build('x', variables.push('x') )
+    #     ]
+    #   ]
+    # ]    
   end
 
   # Could be blockify_problem
