@@ -49,12 +49,21 @@ class ArrayCollect
           :".", 
           [:@ident, "collect"]
       ], 
-      [:brace_block, 
-        [:block_var, 
-          [:params, [[:@ident, "x"]]]], 
-          [:stmts_add, [:stmts_new], operators.first.build('x', variables.push('x') )
+      unless operators.empty?
+        [:brace_block, 
+          [:block_var, 
+            [:params, [[:@ident, "x"]]]], 
+            [:stmts_add, [:stmts_new], operators.first.build('x', variables.push('x') )
+          ]
         ]
-      ]
+      else
+        [:brace_block, 
+          [:block_var, 
+            [:params, [[:@ident, "x"]]], 
+            [:stmts_add, [:stmts_new]]
+          ]
+        ]        
+      end
     ]    
   end
 

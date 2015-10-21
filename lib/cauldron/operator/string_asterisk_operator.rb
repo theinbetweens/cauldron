@@ -48,8 +48,8 @@ class StringAsteriskOperator
     false
   end
 
-  def to_ruby(variable_name = 'var0')
-    Sorcerer.source self.to_sexp
+  def to_ruby(variables)
+    Sorcerer.source self.to_sexp(variables)
   end
 
   def to_sexp(variables)
@@ -58,7 +58,8 @@ class StringAsteriskOperator
 
   # TODO Get rid of the defined names
   def build(nested, variables)
-    [:binary, [:vcall, [:@ident, variables[@indexes[0]] ]], :*, [:@int, @constant]]
+    #[:binary, [:vcall, [:@ident, variables[@indexes[0]] ]], :*, [:@int, @constant]]
+    to_sexp(variables)
   end
 
 end

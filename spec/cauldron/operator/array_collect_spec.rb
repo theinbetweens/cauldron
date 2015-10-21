@@ -7,16 +7,18 @@ module Cauldron
     describe '#to_ruby' do
 
       it 'returns "var0.collect { |x| x }"' do
-        operator = ArrayCollect.new
-        operator.to_ruby.should == "var0.collect { |x| x }"
+        operator = ArrayCollect.new([0])
+        operator.to_ruby([],['var0']).should == "var0.collect { |x| x }"
       end
 
       context 'passed "a * 2"' do
 
         it 'returns "var0.collect { |x| x * 2}"' do
-          a_times_2 = StringAsteriskOperator.new(2)
-          operator = ArrayCollect.new
-          operator.to_ruby(a_times_2).should == 'var0.collect { |x| x * 2 }'
+          a_times_2 = StringAsteriskOperator.new(2,[1])
+          operator = ArrayCollect.new([0])
+          operator.to_ruby(
+            [a_times_2], ['var0', 'x'] 
+          ).should == 'var0.collect { |x| x * 2 }'
         end
 
       end
@@ -47,7 +49,7 @@ module Cauldron
       end
 
       let(:operator) do
-        ArrayCollect.new
+        ArrayCollect.new([0])
       end
 
       it 'is true' do
@@ -89,7 +91,7 @@ module Cauldron
       context 'promblem has argument "["foo","lima"]"' do
 
         it 'returns "["foo","lima"]"' do
-          ArrayCollect.new.trace(
+          ArrayCollect.new([0]).trace(
             { arguments: [['foo','lima']] }
           ).should == ['foo','lima']
         end
