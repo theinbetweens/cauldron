@@ -30,7 +30,7 @@ end
 
         context 'using second operator "x * 3"' do
 
-          let(:string_multiple) { StringAsteriskOperator.new(3, [1]) }
+          let(:string_multiple) { StringAsteriskOperator.new([1],3) }
 
           it 'returns "var0.collect {|x| x + 3}"' do
             Composite.new([collect_operator, string_multiple]).sexp(['var0']).should == [

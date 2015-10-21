@@ -1,6 +1,7 @@
 class ArrayReverseOperator
 
-  def initialize
+  def initialize(indexes)
+    @indexes = indexes
   end  
 
   # Matching in 

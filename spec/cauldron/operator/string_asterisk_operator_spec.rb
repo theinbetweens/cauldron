@@ -84,7 +84,7 @@ module Cauldron
 
             it 'is true' do
               problem = { arguments: ['hello'], response: 'hellohello' }
-              operator = StringAsteriskOperator.new(2, [0])
+              operator = StringAsteriskOperator.new([0],2)
               operator.successful?(problem).should be_true           
             end
 
@@ -94,7 +94,7 @@ module Cauldron
 
             it 'is false' do
               problem = { arguments: ['hello'], response: 'hellohello' }
-              operator = StringAsteriskOperator.new(1, [0])
+              operator = StringAsteriskOperator.new([0],1)
               operator.successful?(problem).should be_false            
             end
 
@@ -111,7 +111,7 @@ module Cauldron
       context 'constant is 2' do
 
         it 'returns "var0 * 2"' do
-          operator = StringAsteriskOperator.new(2, [0])
+          operator = StringAsteriskOperator.new([0],2)
           operator.to_ruby(['var0']).should == "var0 * 2"
         end
 

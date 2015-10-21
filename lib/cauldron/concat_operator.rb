@@ -1,7 +1,7 @@
 class ConcatOperator
 
-  def initialize(constant)
-    @constant = constant
+  def initialize(indexes, constant)
+    @indexes, @constant = indexes, constant
   end
 
   def self.viable?(arguments, response)

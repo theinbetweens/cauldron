@@ -63,7 +63,7 @@ module Cauldron
             {arguments: ['foo'], response: 'foobar'},
             {arguments: ['goo'], response: 'goobar'}
           ]          
-          operator = ConcatOperator.new('bar')  
+          operator = ConcatOperator.new([],'bar')  
           problems.all? {|x| operator.successful?(x) }.should == true
         end
 
@@ -76,7 +76,7 @@ module Cauldron
       context 'using the constant "bar"' do
 
         it 'returns "var0.concat("bar")"' do
-          operator = ConcatOperator.new('bar')
+          operator = ConcatOperator.new([],'bar')
           operator.to_ruby.should == "var0.concat(\"bar\")"
         end
 

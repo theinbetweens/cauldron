@@ -2,7 +2,7 @@ class NumericOperator
 
   # Maybe NumericOperation
 
-  def initialize(constant, indexes)
+  def initialize(indexes, constant)
     @constant, @indexes = constant, indexes
   end
 

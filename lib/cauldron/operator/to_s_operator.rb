@@ -2,7 +2,8 @@
 
   class ToSOperator
 
-    def intialize
+    def intialize(indexes)
+      @indexes = indexes
     end
 
     def build(operators, variables = [])

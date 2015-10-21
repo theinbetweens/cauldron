@@ -2,8 +2,8 @@
 #hsh[key] → value
 class HashKeyValueOperator
 
-  def initialize(constant)
-    @constant = constant
+  def initialize(indexes, constant)
+    @constant, @indexes = constant, indexes
   end
 
   def self.viable?(arguments, response)
@@ -26,11 +26,11 @@ class HashKeyValueOperator
     return false    
   end
 
-  def to_ruby
+  def to_ruby(variables)
     if @constant.kind_of?(Symbol)
-      return %Q{  var0[:#{@constant}]}+"\n"
+      return %Q{  #{variables[@indexes[0]]}[:#{@constant}]}+"\n"
     end
-    %Q{  var0['#{@constant}']}+"\n"
+    %Q{  #{variables[@indexes[0]]}['#{@constant}']}+"\n"
   end
 
 end

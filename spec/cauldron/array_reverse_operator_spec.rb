@@ -37,7 +37,7 @@ module Cauldron
       context 'using array that needs reversed' do
 
         it 'is true' do
-          operator = ArrayReverseOperator.new
+          operator = ArrayReverseOperator.new([0])
           operator.successful?(
             { arguments: [['lions','tigers']],response: ['tigers','lions']}
           ).should be_true
@@ -48,7 +48,7 @@ module Cauldron
       context "using array that can't be reversed" do
 
         it 'is false' do
-          operator = ArrayReverseOperator.new
+          operator = ArrayReverseOperator.new([0])
           operator.successful?(
             {arguments:[['lions','tigers']],response: ['lions','tigers']}
           ).should be_false

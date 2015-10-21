@@ -21,7 +21,7 @@ class StringAsteriskOperator
   #
   # Or the order it was added might be more useful - e.g. last variable, second last variable or first variable
   # - variable at depth(1)[1] - stepUp(1).first
-  def initialize(constant, indexes)
+  def initialize(indexes, constant)
     @constant, @indexes = constant, indexes
   end
 

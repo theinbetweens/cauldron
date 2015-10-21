@@ -56,7 +56,7 @@ module Cauldron
             { arguments: [{:foo => 'bar'}], response: 'bar'},
             { arguments: [{:foo => 'mass', :bar => 'effect'}], response: 'mass'}
           ]
-          operator = HashKeyValueOperator.new(:foo)  
+          operator = HashKeyValueOperator.new([0],:foo)  
           problems.all? {|x| operator.successful?(x) }.should == true
         end
 
@@ -69,8 +69,8 @@ module Cauldron
       context 'using the constant ":foo"' do
 
         it 'returns "var0[:foo]"' do
-          operator = HashKeyValueOperator.new(:foo)
-          operator.to_ruby.should == '  var0[:foo]'+"\n"
+          operator = HashKeyValueOperator.new([0],:foo)
+          operator.to_ruby(['var0']).should == '  var0[:foo]'+"\n"
         end
 
       end
@@ -78,8 +78,8 @@ module Cauldron
       context 'using the constant "foo"' do
 
         it "returns 'var0['foo']" do
-          operator = HashKeyValueOperator.new('foo')
-          operator.to_ruby.should == "  var0['foo']"+"\n"
+          operator = HashKeyValueOperator.new([0],'foo')
+          operator.to_ruby(['var0']).should == "  var0['foo']"+"\n"
         end
 
       end

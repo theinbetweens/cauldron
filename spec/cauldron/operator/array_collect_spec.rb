@@ -14,7 +14,7 @@ module Cauldron
       context 'passed "a * 2"' do
 
         it 'returns "var0.collect { |x| x * 2}"' do
-          a_times_2 = StringAsteriskOperator.new(2,[1])
+          a_times_2 = StringAsteriskOperator.new([1],2)
           operator = ArrayCollect.new([0])
           operator.to_ruby(
             [a_times_2], ['var0', 'x'] 
