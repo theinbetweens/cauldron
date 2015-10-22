@@ -33,4 +33,8 @@ class HashKeyValueOperator
     %Q{  #{variables[@indexes[0]]}['#{@constant}']}+"\n"
   end
 
+  def build(operators, variables)
+    
+  end
+
 end

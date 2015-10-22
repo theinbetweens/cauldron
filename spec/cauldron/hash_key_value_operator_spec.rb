@@ -86,6 +86,12 @@ module Cauldron
 
     end
 
+    describe '#build' do
+
+      
+      
+    end
+
   end
   
 end
