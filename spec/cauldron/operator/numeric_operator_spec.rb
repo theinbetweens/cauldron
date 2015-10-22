@@ -56,7 +56,7 @@ module Cauldron
             {arguments: [7], response: 24},
             {arguments: [10], response: 11}
           ]          
-          operator = NumericOperator.new(17)  
+          operator = NumericOperator.new([0],17)  
           #NumericValueRelationship.match?(problem).should be_false
           problem.all? {|x| operator.successful?(x) }.should be_false
         end

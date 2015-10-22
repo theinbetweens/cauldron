@@ -56,8 +56,8 @@ module Cauldron
 
       operations = [ 
         NumericOperator, ArrayReverseOperator, 
-        HashKeyValueOperator, StringAsteriskOperator, ArrayCollect#,
-        #ConcatOperator
+        HashKeyValueOperator, StringAsteriskOperator, ArrayCollect,
+        ConcatOperator
       ]
 
       # Try each possible operation
@@ -85,11 +85,6 @@ module Cauldron
       Cauldron::Solution::Composite.new(
         [first_operator, second_operator]
       )
-      #next_problem = operators.first.step_problem(problems.first)
-
-      #res = build_operators(operators.last,next_problem)
-
-      #operators.first.new.to_ruby(res.first)
     end        
 
   protected

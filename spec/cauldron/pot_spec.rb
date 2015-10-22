@@ -183,9 +183,9 @@ end
               { arguments: [['foo','lima']], response: ['foofoo','limalima'] },
               { arguments: [['bar','delta']], response: ['barbar','deltadelta'] }
             ]
-          ).should == [
+          ).to_set.should == [
             [ArrayCollect, ConcatOperator],[ArrayCollect, StringAsteriskOperator]
-          ]
+          ].to_set
         end
 
       end
