@@ -22,7 +22,7 @@ module Cauldron::Solution
       results.shift
     end
 
-    def to_ruby(variables = [])
+    def to_ruby(variables)
       Sorcerer.source(sexp(variables))
     end
 

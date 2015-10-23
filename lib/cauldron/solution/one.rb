@@ -17,12 +17,12 @@ module Cauldron::Solution
       true    
     end
 
-    def to_ruby
+    def to_ruby(variables)
       sexp =
       [:method_add_block, 
         [:call, 
           [:vcall, 
-            [:@ident, "var0"]
+            [:@ident, variables[0]]
           ], 
           :".", 
           [:@ident, "collect"]

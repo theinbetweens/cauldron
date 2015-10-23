@@ -7,6 +7,7 @@ module Cauldron
       # Identify the relationship
       
       # Pry::Code
+      # TODO Change term to solution
       relationship = find_relationship(problems)
 
       # Generate if statements
@@ -24,7 +25,7 @@ module Cauldron
       # ]
       args = problems.first[:arguments]
       variables = (0...args.length).collect {|x| 'var'+x.to_s}
-      sexp = Ripper::SexpBuilder.new('def function('+variables.join(',')+');'+relationship.to_ruby+"; end").parse
+      sexp = Ripper::SexpBuilder.new('def function('+variables.join(',')+');'+relationship.to_ruby(variables)+"; end").parse
 
       Sorcerer.source(sexp, indent: true)
 
@@ -128,7 +129,6 @@ module Cauldron
         problems.all? { |problem| solution.successful?(problem) }
       end
       return successful_solutions[0] unless successful_solutions.empty?
-
 
       solutions = []
       single_viable_operators(problems).each do |operation_class|

@@ -225,10 +225,6 @@ end
 
     describe '#build_chain_operators' do
 
-# def function(var0)
-#   var0.collect { |x| x * 2 }
-# end
-
       #[ArrayCollect, StringAsteriskOperator]
       context 'operators are Array#collect and String#*' do
 
