@@ -4,6 +4,49 @@ module Cauldron
   
   describe 'StringAsteriskOperator' do
 
+    describe '.history_goals' do
+
+      context 'with the history [{:x => "lima"},{:x => "bear"}]' do
+
+        let(:history) { [{:x => "lima"},{:x => "bear"}] }
+
+        context "and target ['limalima','bearbear']" do
+
+          it 'returns "x * 2"' do
+            StringAsteriskOperator.history_goals(
+              history, ['limalima','bearbear']
+            ).should == [
+              [{:x => 'lima'}, 'limalima'],
+              [{:x => 'bear'}, 'bearbear']
+            ]
+          end
+
+        end
+
+      end
+
+    end
+
+    describe '.instances' do
+
+      context 'with the history [{:x => "lima"},{:x => "bear"}]' do
+
+        let(:history) { [{:x => "lima"},{:x => "bear"}] }
+
+        context "and target ['limalima','bearbear']" do
+
+          it 'returns "x * 2"' do
+            StringAsteriskOperator.instances(
+              history, ['limalima','bearbear']
+            ).first.to_ruby(['var0','x']).should == "x * 2"
+          end
+
+        end
+
+      end
+
+    end
+
     describe '.find_constants' do
 
       context 'argument string is "hello"' do

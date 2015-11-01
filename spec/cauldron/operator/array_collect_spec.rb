@@ -4,14 +4,14 @@ module Cauldron
   
   describe ArrayCollect do
 
-    describe '#history' do
+    describe '#context_history' do
 
       context 'using ["lions", "bears"]' do
 
         let(:instance) { ArrayCollect.new([0]) }
 
         it "is [{x: 'lions'},{x: 'bears'}]" do
-          instance.history(
+          instance.context_history(
             ['var0'],['lions','bears']
           ).should == [{x: 'lions'},{x: 'bears'}]
         end

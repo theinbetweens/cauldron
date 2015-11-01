@@ -4,10 +4,17 @@ class ArrayCollect
     @indexes = indexes
   end
 
-  def history(variable_names,values)
-    to_ruby([],variable_names)
-    #binding.pry
-    #to_ruby
+  # NOTE #history is used by Pry
+  def context_history(variable_names,values)
+    values.collect {|x| {x: x} }
+    # to_ruby([],variable_names)
+    # TODO Change to something like this
+    # sexp = Ripper::SexpBuilder.new(%q{
+    #   var0.collect do |x|
+    #     record(local_variable)
+    #   end
+    # }).parse
+    # puts sexp.inspect    
   end
 
   def to_ruby(operators, variables)

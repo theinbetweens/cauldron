@@ -81,7 +81,20 @@ module Cauldron
       first_operator_class, second_operator_class = operators[0], operators[1]
 
       first_operators = build_operators( first_operator_class, problems )
-      second_operators = build_operators( second_operator_class, problems )
+
+      first_operator = first_operators.first 
+      
+      values = problems.first[:arguments][0]
+      first_operator_history = first_operator.context_history(['var0'], values)
+
+      second_operators =  second_operator_class.instances(
+                            first_operator_history,
+                            problems.first[:response]
+                          )
+
+      
+
+      #second_operators = build_operators( second_operator_class, problems )
 
       return nil if first_operators.empty? || second_operators.empty?
 

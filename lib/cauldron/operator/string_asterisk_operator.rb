@@ -25,8 +25,22 @@ class StringAsteriskOperator
     @constant, @indexes = constant, indexes
   end
 
-  def instances()
+  def self.instances(context_history, target)
+    res = history_goals(context_history, target)
 
+    possible_constant = res.collect do |x|
+      x[1].scan( x[0][:x] ).count
+    end.uniq
+
+    if possible_constant.length == 1
+      return [StringAsteriskOperator.new([1],possible_constant.first)]
+    end
+
+  end
+
+  def self.history_goals(context_history,target)
+    variables = context_history.first.keys
+    context_history.each {|x| x[variables.first] }.zip(target)
   end
 
   def self.find_constants(problems)
