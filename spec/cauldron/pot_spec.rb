@@ -199,7 +199,7 @@ end
         pot = Pot.new
         pot.chain_operators(
           collect_and_multiple,
-          [ArrayCollect.new([0]), StringAsteriskOperator.new(2, [1])]
+          [ArrayCollect.new([0]), StringAsteriskOperator.new([1], 2)]
         ).should == "var0.collect { |x| x * 2 }"
       end
 

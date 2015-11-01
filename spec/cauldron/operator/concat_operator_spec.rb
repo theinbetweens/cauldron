@@ -76,8 +76,8 @@ module Cauldron
       context 'using the constant "bar"' do
 
         it 'returns "var0.concat("bar")"' do
-          operator = ConcatOperator.new([],'bar')
-          operator.to_ruby.should == "var0.concat(\"bar\")"
+          operator = ConcatOperator.new([0],'bar')
+          operator.to_ruby(['var0']).should == "var0.concat(\"bar\")"
         end
 
       end

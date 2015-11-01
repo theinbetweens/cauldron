@@ -50,7 +50,7 @@ class ArrayReverseOperator
   end
 
   def build(operators, variables)
-    build(operators, variables)
+    to_sexp(operators, variables)
   end
 
   def to_sexp(operators, variables)

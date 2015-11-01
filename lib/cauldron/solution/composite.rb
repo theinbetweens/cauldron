@@ -56,6 +56,7 @@ module Cauldron::Solution
         'def function('+variables.join(',')+');'+self.to_ruby(variables)+"; end", 
         'function('+problem[:arguments].collect {|x| to_programme(x) }.join(',')+')'
       ]
+      puts 'def function('+variables.join(',')+');'+self.to_ruby(variables)+"; end", 'function('+problem[:arguments].collect {|x| to_programme(x) }.join(',')+')'
       
       res = pt.eval(
         ['def function('+variables.join(',')+');'+self.to_ruby(variables)+"; end", 'function('+problem[:arguments].collect {|x| to_programme(x) }.join(',')+')']

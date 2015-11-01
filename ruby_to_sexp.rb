@@ -1,10 +1,11 @@
 require 'ripper'
 require 'sorcerer'
+require 'pp'
 
-sexp = Ripper::SexpBuilder.new("var0['foo']").parse
-puts sexp.inspect
-Sorcerer.source(sexp, indent: true)
-
+sexp = Ripper::SexpBuilder.new("x.concat('bar')").parse
+pp sexp
+pp Sorcerer.source(sexp, indent: true)
+puts '===='
 
 sexp = Ripper::SexpBuilder.new(%q{
   var0.collect do |x|
