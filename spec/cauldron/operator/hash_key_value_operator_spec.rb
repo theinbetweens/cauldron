@@ -70,7 +70,7 @@ module Cauldron
 
         it 'returns "var0[:foo]"' do
           operator = HashKeyValueOperator.new([0],:foo)
-          operator.to_ruby(['var0']).should == '  var0[:foo]'+"\n"
+          operator.to_ruby([],['var0']).should == 'var0[:foo]'
         end
 
       end
@@ -79,7 +79,7 @@ module Cauldron
 
         it "returns 'var0['foo']" do
           operator = HashKeyValueOperator.new([0],'foo')
-          operator.to_ruby(['var0']).should == "  var0['foo']"+"\n"
+          operator.to_ruby([],['var0']).should == "var0[\"foo\"]"
         end
 
       end

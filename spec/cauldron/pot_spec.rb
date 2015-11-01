@@ -98,8 +98,9 @@ end
 
         context '{:foo => 10, :bar => 5 } and return 10' do
 
+          let(:pot) { Pot.new }
+
           it 'returns the value of foo' do
-            pot = Pot.new
             pot.solve(
               [
                 { arguments: [{:foo => 5, :bar => 7 }], response: 5 },
@@ -223,17 +224,19 @@ end
 
     end
 
-    describe '#build_chain_operators' do
+    describe '#build_chain_operator' do
 
       #[ArrayCollect, StringAsteriskOperator]
       context 'operators are Array#collect and String#*' do
 
         it 'is "var0.collect { |x| x * 2 }"' do
           pot = Pot.new
-          pot.build_chain_operators(
+          pot.build_chain_operator(
             [ArrayCollect, StringAsteriskOperator],
             collect_and_multiple
-          ).to_s.should == "var0.collect { |x| x * 2 }"
+          ).to_ruby(['var0']).should == Cauldron::Solution::Composite.new(
+            [ArrayCollect.new([0]),StringAsteriskOperator.new([1],2)]
+          ).to_ruby(['var0'])
         end
 
       end

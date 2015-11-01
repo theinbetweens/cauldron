@@ -12,7 +12,7 @@ module Cauldron::Solution
 
       #it 'returns "var0.concat("bar")"' do
       it %q{returns var0.collect { |x| x * 2 } } do
-          solution.to_ruby.to_s.should == %q{
+          solution.to_ruby(['var0']).to_s.should == %q{
 var0.collect { |x| x * 2 }
 }.strip
       end

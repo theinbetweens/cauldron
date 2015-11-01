@@ -6,11 +6,9 @@ class IfRelationship < Relationship
     @problems = problems
   end
 
-  def to_ruby
+  def to_ruby(variables)
 
     # Add the arguments
-    args = @problems.first[:arguments]
-    variables = (0...args.length).collect {|x| 'var'+x.to_s}
     result = ''
     @problems.each_with_index do |x,i|
       result += '  if '+variables[0].to_s+' == '+quote(x[:arguments][0])+"\n"

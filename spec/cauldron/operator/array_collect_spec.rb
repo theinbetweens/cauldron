@@ -4,11 +4,27 @@ module Cauldron
   
   describe ArrayCollect do
 
+    describe '#history' do
+
+      context 'using ["lions", "bears"]' do
+
+        let(:instance) { ArrayCollect.new([0]) }
+
+        it "is [{x: 'lions'},{x: 'bears'}]" do
+          instance.history(
+            ['var0'],['lions','bears']
+          ).should == [{x: 'lions'},{x: 'bears'}]
+        end
+
+      end
+
+    end
+
     describe '#to_ruby' do
 
       it 'returns "var0.collect { |x| x }"' do
         operator = ArrayCollect.new([0])
-        operator.to_ruby([],['var0']).should == "var0.collect { |x| x }"
+        operator.to_ruby([],['var0']).should == "var0.collect { |x| }"
       end
 
       context 'passed "a * 2"' do
@@ -91,6 +107,7 @@ module Cauldron
       context 'promblem has argument "["foo","lima"]"' do
 
         it 'returns "["foo","lima"]"' do
+          pending
           ArrayCollect.new([0]).trace(
             { arguments: [['foo','lima']] }
           ).should == ['foo','lima']

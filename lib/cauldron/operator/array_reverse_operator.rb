@@ -44,9 +44,24 @@ class ArrayReverseOperator
     arguments.collect {|x| x.reverse }
   end
 
-  def to_ruby
-    '  var0.reverse'+"\n"
-  end  
+  def to_ruby(operators, variables)
+    Sorcerer.source build(operators, variables)
+    #'  var0.reverse'+"\n"
+  end
+
+  def build(operators, variables)
+    build(operators, variables)
+  end
+
+  def to_sexp(operators, variables)
+    [:call, 
+      [:vcall, 
+        [:@ident, variables[@indexes[0]] ]
+      ], 
+      :".", 
+      [:@ident, "reverse"]
+    ]    
+  end
 
   # def describe - 
   # should be able to describe the x.object_id moving to the different locations

@@ -76,16 +76,18 @@ module Cauldron
 
     end 
 
-    def build_chain_operators(operators, problems)
+    def build_chain_operator(operators, problems)
       
       first_operator_class, second_operator_class = operators[0], operators[1]
 
-      first_operator = build_operators( first_operator_class, problems )
-      second_operator = build_operators( second_operator_class, problems )
+      first_operators = build_operators( first_operator_class, problems )
+      second_operators = build_operators( second_operator_class, problems )
 
-      Cauldron::Solution::Composite.new(
-        [first_operator, second_operator]
-      )
+      return nil if first_operators.empty? || second_operators.empty?
+
+      variations = first_operators.product(second_operators) 
+
+      Cauldron::Solution::Composite.new( variations.first)
     end        
 
   protected
@@ -149,7 +151,7 @@ module Cauldron
 
       operator_chains.each do |operators|
         
-        code = build_chain_operators(operators,problems)
+        code = build_chain_operator(operators,problems)
         if problems.all? {|x| code.successful?(x) }
           return code
         end

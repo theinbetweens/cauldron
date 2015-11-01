@@ -4,6 +4,34 @@ module Cauldron::Solution
   
   describe 'Composite' do
 
+    describe '#to_ruby' do
+
+      context 'first line' do
+
+        context 'has operator "Array#collect"' do
+
+          let(:array_collect) { ArrayCollect.new([0]) }
+
+          context 'has operator "String#*"' do
+
+            let(:string_asterisk) { StringAsteriskOperator.new([1],2) }
+
+            let(:composite) { Composite.new() }
+
+            it 'is "var0.collect {|x| x * 2} "' do
+              Cauldron::Solution::Composite.new(
+                [array_collect, string_asterisk]
+              ).to_ruby(['var0']).should == 'var0.collect { |x| x * 2 }'
+            end
+
+          end
+
+        end
+
+      end
+
+    end
+
     context %q{with the operators} do 
 
       it %q{generates the code} do

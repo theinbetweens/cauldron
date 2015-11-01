@@ -32,6 +32,22 @@ module Cauldron
 
       end
 
+      context 'argument is ["foo", "lima"]' do
+
+        context 'response is ["foofoo", "limalima"]' do
+
+          let(:problems) do
+            [{:arguments=>[["foo", "lima"]], :response=>["foofoo", "limalima"]}]
+          end
+
+          it 'returns []' do
+            StringAsteriskOperator.find_constants(problems).should == []
+          end
+
+        end
+
+      end
+
     end
 
     describe '.viable?' do

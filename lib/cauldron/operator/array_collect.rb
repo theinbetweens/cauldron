@@ -4,30 +4,13 @@ class ArrayCollect
     @indexes = indexes
   end
 
+  def history(variable_names,values)
+    to_ruby([],variable_names)
+    #binding.pry
+    #to_ruby
+  end
+
   def to_ruby(operators, variables)
-
-    #sexp = Ripper::SexpBuilder.new(%q{var0.collect { |x| x * 2 }}).parse
-    # block_sexp = [:var_ref, [:@ident, "x"]]
-    # unless operator.nil?
-    #   block_sexp = operator.to_sexp('x')
-    # end
-    # sexp = 
-    # [:method_add_block, 
-    #   [:call, 
-    #     [:vcall, 
-    #       [:@ident, "var0"]], 
-    #       :".", 
-    #       [:@ident, "collect"]
-    #   ], 
-    #   [:brace_block, 
-    #     [:block_var, 
-    #       [:params, [[:@ident, "x"]]]], 
-    #       [:stmts_add, [:stmts_new], block_sexp
-    #     ]
-    #   ]
-    # ] 
-
-    #Sorcerer.source(sexp)
     Sorcerer.source build(operators, variables)
   end
 
@@ -68,21 +51,7 @@ class ArrayCollect
   end
 
   def to_sexp(operators, variables)
-    build(operators, variables)
-    # [:method_add_block, 
-    #   [:call, 
-    #     [:vcall, 
-    #       [:@ident, variables[@indexes[0]] ]], 
-    #       :".", 
-    #       [:@ident, "collect"]
-    #   ], 
-    #   [:brace_block, 
-    #     [:block_var, 
-    #       [:params, [[:@ident, "x"]]]], 
-    #       [:stmts_add, [:stmts_new], operators.first.build('x', variables.push('x') )
-    #     ]
-    #   ]
-    # ]    
+    build(operators, variables)   
   end
 
   # Could be blockify_problem
@@ -124,8 +93,6 @@ class ArrayCollect
     #   self.to_ruby,
     #   'end'
     # ]
-
-    # binding.pry
 
     # #pt.eval(result)
     # #pt.eval(['def function('+variables.join(',')+');'+self.to_ruby+"; end"])
