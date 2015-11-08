@@ -22,6 +22,7 @@ require 'cauldron/operator/hash_key_value_operator'
 require 'cauldron/operator/string_asterisk_operator'
 require 'cauldron/operator/array_collect'
 require 'cauldron/operator/to_s_operator'
+require 'cauldron/operator/var_collect_operator'
 
 require 'cauldron/solution/one'
 require 'cauldron/solution/composite'

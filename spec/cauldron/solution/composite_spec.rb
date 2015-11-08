@@ -30,23 +30,23 @@ module Cauldron::Solution
 
       end
 
-    end
+      context %q{with the operators} do 
 
-    context %q{with the operators} do 
+        it %q{generates the code} do
+          Composite.new(
+            [ArrayCollect.new([0]), NumericOperator.new(2, [1]) ],
+            [ArrayCollect.new([2]), ToSOperator.new]
+          ).to_ruby(['var0']).should == %q{
+  var1 = var0.collect do |x|
+    x + 2
+  end
+  var2 = var1.collect do |x|
+    x.to_s
+  end
+  }
+        end
 
-      it %q{generates the code} do
-        Composite.new(
-          [ArrayCollect.new([0]), NumericOperator.new(2, [1]) ],
-          [ArrayCollect.new([2]), ToSOperator.new]
-        ).to_ruby(['var0']).should == %q{
-var1 = var0.collect do |x|
-  x + 2
-end
-var2 = var1.collect do |x|
-  x.to_s
-end
-}
-      end
+      end      
 
     end
 
