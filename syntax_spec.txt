@@ -1,0 +1,2 @@
+var count is 1
+var0 is Array

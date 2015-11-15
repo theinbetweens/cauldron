@@ -46,6 +46,24 @@ module Cauldron::Solution
   }
         end
 
+      end
+
+      context 'with VarCollect' do
+
+        it %q{
+var1 = var0.collect do |x|
+  x + 2
+end
+} do
+          Composite.new(
+            [Cauldron::VarCollectOperator.new([0]), StringAsteriskOperator.new([1], 2) ]
+          ).to_ruby(['var0']).should == %q{
+var1 = var0.collect do |x|
+ x * 2 
+end
+}.strip.gsub(/\n/,'')
+        end
+
       end      
 
     end
