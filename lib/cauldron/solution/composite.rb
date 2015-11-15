@@ -19,7 +19,7 @@ module Cauldron::Solution
         x[0].build(x[1...x.length], variables)
       end
       # TODO Not sure why this is needed just yet
-      results.shift
+      [:program, *results]
     end
 
     def to_ruby(variables)

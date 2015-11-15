@@ -34,8 +34,8 @@ module Cauldron::Solution
 
         it %q{generates the code} do
           Composite.new(
-            [ArrayCollect.new([0]), NumericOperator.new(2, [1]) ],
-            [ArrayCollect.new([2]), ToSOperator.new]
+            [Cauldron::VarCollectOperator.new([0]), NumericOperator.new([1], 2) ],
+            [Cauldron::VarCollectOperator.new([2]), ToSOperator.new]
           ).to_ruby(['var0']).should == %q{
   var1 = var0.collect do |x|
     x + 2
