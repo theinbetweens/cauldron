@@ -80,27 +80,29 @@ end
 
           it 'returns "var0.collect {|x| x + 3}"' do
             Composite.new([collect_operator, string_multiple]).sexp(['var0']).should == [
-              :method_add_block, 
-              [:call, 
-                [:vcall, 
-                  [:@ident, "var0"]
+              :program, 
+              [ :method_add_block, 
+                [:call, 
+                  [:vcall, 
+                    [:@ident, "var0"]
+                  ], 
+                  :".", 
+                  [:@ident, "collect"]
                 ], 
-                :".", 
-                [:@ident, "collect"]
-              ], 
-              [:brace_block, 
-                [
-                  :block_var, 
-                  [:params, [[:@ident, "x"]]]
-                ], 
-                [
-                  :stmts_add, 
-                  [:stmts_new], 
+                [:brace_block, 
                   [
-                    :binary, 
-                    [:vcall, [:@ident, "x"]], 
-                    :*, 
-                    [:@int, 3]
+                    :block_var, 
+                    [:params, [[:@ident, "x"]]]
+                  ], 
+                  [
+                    :stmts_add, 
+                    [:stmts_new], 
+                    [
+                      :binary, 
+                      [:vcall, [:@ident, "x"]], 
+                      :*, 
+                      [:@int, 3]
+                    ]
                   ]
                 ]
               ]

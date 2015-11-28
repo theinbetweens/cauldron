@@ -38,6 +38,23 @@ sexp = [:program,
 #  [:program, [:stmts_add, [:stmts_add, [:stmts_new], 'ball.bound'], 'ball.kick' ]
 
 # 3. 
+# ball.bounce
+# ball.kick
+# ball.throw
+sexp =  [:program,
+          [:stmts_add,
+            [:stmts_add,
+              [:stmts_add,
+                [:stmts_new],
+                #CALL ball.bounce
+              ]
+              #CALL ball.kick
+            ]
+            # CALL ball.throw
+          ]
+        ]
+
+# 4. 
 # def test(var0)
 #  var0.bounce
 #  var1.kick
