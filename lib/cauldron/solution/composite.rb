@@ -18,7 +18,7 @@ module Cauldron::Solution
       results = operators.collect do |x|
         x[0].build(x[1...x.length], variables)
       end
-      binding.pry
+      
       # TODO Not sure why this is needed just yet
       [:program, *results]
     end
