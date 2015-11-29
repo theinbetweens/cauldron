@@ -26,9 +26,10 @@ pp sexp
 puts '-------'
 
 sexp = Ripper::SexpBuilder.new(%q{
-  var0.collect do |x|
-    record(local_variable)
-  end
+var0.collect do |x|
+  record(local_variable)
+end
 }).parse
 puts sexp.inspect
+pp sexp
 Sorcerer.source(sexp, indent: true)
