@@ -10,11 +10,11 @@ module Cauldron
       Sorcerer.source self.to_sexp([],variables)
     end
 
-    def to_sexp(operators, variables)
+    def to_sexp(operators, scope)
       if operators.empty?
-        return [:stmts_add, [:stmts_new], [:assign, [:var_field, [:@ident, "var1"]], [:method_add_block, [:call, [:vcall, [:@ident, variables[@indexes[0]]]], :".", [:@ident, "collect"]], [:do_block, [:block_var, [:params, [[:@ident, "x"]], nil, nil, nil, nil, nil, nil], false], [:stmts_add, [:stmts_new], [:var_ref, [:@ident, "x", [3, 2]]]]]]]]
+        return [:stmts_add, [:stmts_new], [:assign, [:var_field, [:@ident, scope.new_variable! ]], [:method_add_block, [:call, [:vcall, [:@ident, scope[@indexes[0]]]], :".", [:@ident, "collect"]], [:do_block, [:block_var, [:params, [[:@ident, "x"]], nil, nil, nil, nil, nil, nil], false], [:stmts_add, [:stmts_new], [:var_ref, [:@ident, "x", [3, 2]]]]]]]]
       else
-        return [:stmts_add, [:stmts_new], [:assign, [:var_field, [:@ident, "var1"]], [:method_add_block, [:call, [:vcall, [:@ident, variables[@indexes[0]]]], :".", [:@ident, "collect"]], [:do_block, [:block_var, [:params, [[:@ident, "x"]], nil, nil, nil, nil, nil, nil], false], [:stmts_add, [:stmts_new], operators.first.build([], variables.push('x')) ]]]]]
+        return [:stmts_add, [:stmts_new], [:assign, [:var_field, [:@ident, scope.new_variable! ]], [:method_add_block, [:call, [:vcall, [:@ident, scope[@indexes[0]]]], :".", [:@ident, "collect"]], [:do_block, [:block_var, [:params, [[:@ident, "x"]], nil, nil, nil, nil, nil, nil], false], [:stmts_add, [:stmts_new], operators.first.build([], scope.push('x')) ]]]]]
       end
     end
 

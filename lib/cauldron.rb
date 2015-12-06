@@ -13,6 +13,7 @@ require 'core/string'
 
 require 'cauldron/pot'
 require 'cauldron/terminal'
+require 'cauldron/scope'
 require 'cauldron/relationship'
 require 'cauldron/if_relationship'
 require 'cauldron/operator/numeric_operator'

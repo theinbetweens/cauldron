@@ -18,10 +18,12 @@ module Cauldron::Solution
 
             let(:composite) { Composite.new() }
 
+            let(:variables) { Cauldron::Scope.new(['var0']) }
+
             it 'is "var0.collect {|x| x * 2} "' do
               Cauldron::Solution::Composite.new(
                 [array_collect, string_asterisk]
-              ).to_ruby(['var0']).should == 'var0.collect { |x| x * 2 }'
+              ).to_ruby( variables ).should == 'var0.collect { |x| x * 2 }'
             end
 
           end
@@ -32,18 +34,20 @@ module Cauldron::Solution
 
       context %q{with the operators} do 
 
+        let(:variables) { Cauldron::Scope.new(['var0']) }
+
         it %q{generates the code} do
           Composite.new(
             [Cauldron::VarCollectOperator.new([0]), NumericOperator.new([1], 2) ],
             [Cauldron::VarCollectOperator.new([2]), ToSOperator.new]
-          ).to_ruby(['var0']).should == %q{
-  var1 = var0.collect do |x|
-    x + 2
-  end
-  var2 = var1.collect do |x|
-    x.to_s
-  end
-  }
+          ).to_ruby( variables ).should == %q{
+var1 = var0.collect do |x|
+ x + 2
+ end
+ var2 = var1.collect do |x|
+ x.to_s
+end
+}.strip.gsub(/\n/,'')
         end
 
       end

@@ -15,16 +15,46 @@ module Cauldron::Solution
       # ]
       #args = problem[:arguments]
       #variables = (0...args.length).collect {|x| 'var'+x.to_s}
-      results = operators.collect do |x|
-        x[0].build(x[1...x.length], variables)
-      end
+
+      number_of_lines = operators.length
+
+      # NOTE: for 2 lines
+      # [:stmts_add, [:stmts_add, [:stmts_new], first_call], second_call ]
+      
+      test = %w{ a b }
+
+      [:stmts_add, [:stmts_new], test.shift] 
+      #[:stmts_add, [:stmts_add, [:stmts_new, first_line], second_line ] ]
+      #[:stmts_add, ]
+
+      first = operators.shift
+      
+      inner = add_first_statement(first[0].build(first[1...first.length], variables) )
+
+      second = operators.shift
+      results = add_statement(
+                  second[0].build(second[1...second.length], variables),
+                  inner
+                )
+
+      # results = operators.collect do |x|
+      #   x[0].build(x[1...x.length], variables)
+      # end
       
       # TODO Not sure why this is needed just yet
-      [:program, *results]
+      [:program, results]
     end
 
     def to_ruby(variables)
       Sorcerer.source(sexp(variables))
+    end
+
+    def add_first_statement(statement)
+      [:stmts_add, [:stmts_new], statement]
+    end
+
+    def add_statement(statement, inner)
+      [:stmts_add, inner, statement]
     end
 
     def successful?(problem)
