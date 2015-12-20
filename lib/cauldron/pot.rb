@@ -92,10 +92,6 @@ module Cauldron
                             problems.first[:response]
                           )
 
-      
-
-      #second_operators = build_operators( second_operator_class, problems )
-
       return nil if first_operators.empty? || second_operators.empty?
 
       variations = first_operators.product(second_operators) 

@@ -8,6 +8,7 @@ require 'ruby_parser'
 require 'sorcerer'
 
 require 'pry_tester'
+require 'pry'
 
 require 'core/string'
 

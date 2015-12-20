@@ -34,13 +34,12 @@ Feature: Cauldron generates single parameter methods
       $LOAD_PATH.unshift File.expand_path( File.join('lib') )
       require 'cauldron'
       cauldron = Cauldron::Pot.new
-      cauldron.load_theory File.join('theories','example_1.yml')
-      cauldron.generate [["sparky","sparky"],["kel","kel"]]
+      puts cauldron.solve [{arguments: [7], response: 8},{arguments: [10], response: 11}]
       """   
     When I run `ruby launch.rb` interactively
     Then the output should contain:
       """
-      def extend_function_test_method(var1)
-        return var1
+      def function(var0)
+        var0 + 1
       end
       """
