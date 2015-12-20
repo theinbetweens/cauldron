@@ -36,18 +36,17 @@ class ConcatOperator
     Sorcerer.source self.to_sexp(variables)
   end
 
-  def build(nested, variables)
-    to_sexp(variables)
+  def build(operators, scope)
+    to_sexp(scope)
   end
 
-  def to_sexp(variables)
+  def to_sexp(scope)
     [:program,
      [:stmts_add,
       [:stmts_new],
       [:method_add_arg,
        [:call,
-        #[:vcall, [:@ident, variables[@indexes[0]] ]],
-        [:vcall, [:@ident, variables[@indexes[0]] ]],
+        [:vcall, [:@ident, scope[@indexes[0]] ]],
         :".",
         [:@ident, "concat", [1, 2]]],
        [:arg_paren,

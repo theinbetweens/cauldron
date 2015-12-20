@@ -36,28 +36,23 @@ class HashKeyValueOperator
     # %Q{  #{variables[@indexes[0]]}['#{@constant}']}+"\n"
   end
 
-  def build(operators, variables)
-    to_sexp(variables)
+  def build(operators, scope)
+    to_sexp(scope)
   end
 
-  def to_sexp(variables)
+  def to_sexp(scope)
     [:aref,
       [:vcall, 
-        [:@ident, variables[0]]
+        [:@ident, scope[0]]
       ], 
       [:args_add_block, 
-        [:args_add, [:args_new], 
-        sexp_index
-          # [constant_literal, 
-          #   [:symbol, [:@ident, @constant]]
-          #   [:string_add, [:@ident, @constant]]
-          # ]
+        [
+          :args_add, 
+          [:args_new], 
+          sexp_index
         ]
       ]
     ]
-    #[:program, [:stmts_add, [:stmts_new], [:aref, [:vcall, [:@ident, "var0"]], [:args_add_block, [:args_add, [:args_new], [:symbol_literal, [:symbol, [:@ident, "foo", [1, 6]]]]], false]]]]    
-
-    # [:program, [:stmts_add, [:stmts_new], [:aref, [:vcall, [:@ident, "var0", [1, 0]]], [:args_add_block, [:args_add, [:args_new], [:string_literal, [:string_add, [:string_content], [:@tstring_content, "foo", [1, 6]]]]], false]]]]
   end 
 
   def sexp_index

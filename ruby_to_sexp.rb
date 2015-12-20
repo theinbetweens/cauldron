@@ -3,6 +3,13 @@ require 'sorcerer'
 require 'pp'
 
 sexp = Ripper::SexpBuilder.new(%q{
+var0.to_s
+}).parse
+pp sexp
+pp Sorcerer.source(sexp, indent: true)
+puts '===='
+
+sexp = Ripper::SexpBuilder.new(%q{
 def test(var0)
   var0.bounce
   var1.kick

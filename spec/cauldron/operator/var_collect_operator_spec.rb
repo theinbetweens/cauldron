@@ -8,15 +8,19 @@ module Cauldron
       VarCollectOperator.new([0])
     end
 
+    let(:scope) do
+      Cauldron::Scope.new(['var0'])
+    end
+
     describe '#to_ruby' do
 
       it %q{is 
-var1 = var0.collect do |x|
-  x
+var1 = var0.collect do |var2|
+  var2
 end        
 } do
-        operator.to_ruby(['var0']).should == %{
-var1 = var0.collect do |x| x end          
+        operator.to_ruby(scope).should == %{
+var1 = var0.collect do |var2| var2 end          
 }.strip
       end
 

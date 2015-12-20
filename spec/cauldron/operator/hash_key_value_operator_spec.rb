@@ -66,11 +66,13 @@ module Cauldron
 
     describe '#to_ruby' do
 
+      let(:scope) { Cauldron::Scope.new(['var0']) }
+
       context 'using the constant ":foo"' do
 
         it 'returns "var0[:foo]"' do
           operator = HashKeyValueOperator.new([0],:foo)
-          operator.to_ruby([],['var0']).should == 'var0[:foo]'
+          operator.to_ruby([],scope).should == 'var0[:foo]'
         end
 
       end
@@ -79,7 +81,7 @@ module Cauldron
 
         it "returns 'var0['foo']" do
           operator = HashKeyValueOperator.new([0],'foo')
-          operator.to_ruby([],['var0']).should == "var0[\"foo\"]"
+          operator.to_ruby([], scope).should == "var0[\"foo\"]"
         end
 
       end

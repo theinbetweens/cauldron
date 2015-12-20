@@ -67,18 +67,17 @@ class StringAsteriskOperator
     false
   end
 
-  def to_ruby(variables)
-    Sorcerer.source self.to_sexp([], variables)
+  def to_ruby(scope)
+    Sorcerer.source self.to_sexp([], scope)
   end
 
-  def to_sexp(operators, variables)
-    [:binary, [:vcall, [:@ident, variables[@indexes[0]] ]], :*, [:@int, @constant]]
+  def to_sexp(operators, scope)
+    [:binary, [:vcall, [:@ident, scope[@indexes[0]] ]], :*, [:@int, @constant]]
   end
 
   # TODO Get rid of the defined names
-  def build(operators, variables)
-    #[:binary, [:vcall, [:@ident, variables[@indexes[0]] ]], :*, [:@int, @constant]]
-    to_sexp(operators, variables)
+  def build(operators, scope)
+    to_sexp(operators, scope)
   end
 
 end

@@ -20,10 +20,10 @@ module Cauldron::Solution
 
             let(:variables) { Cauldron::Scope.new(['var0']) }
 
-            it 'is "var0.collect {|x| x * 2} "' do
+            it 'is "var0.collect { |var1| var1 * 2 }"' do
               Cauldron::Solution::Composite.new(
                 [array_collect, string_asterisk]
-              ).to_ruby( variables ).should == 'var0.collect { |x| x * 2 }'
+              ).to_ruby( variables ).should == 'var0.collect { |var1| var1 * 2 }'
             end
 
           end
@@ -38,14 +38,14 @@ module Cauldron::Solution
 
         it %q{generates the code} do
           Composite.new(
-            [Cauldron::VarCollectOperator.new([0]), NumericOperator.new([1], 2) ],
-            [Cauldron::VarCollectOperator.new([2]), ToSOperator.new]
+            [Cauldron::VarCollectOperator.new([0]), NumericOperator.new([2], 2) ],
+            [Cauldron::VarCollectOperator.new([1]), ToSOperator.new([4])]
           ).to_ruby( variables ).should == %q{
-var1 = var0.collect do |x|
- x + 2
- end
- var2 = var1.collect do |x|
- x.to_s
+var1 = var0.collect do |var2|
+ var2 + 2
+ end;
+ var3 = var1.collect do |var4|
+ var4.to_s 
 end
 }.strip.gsub(/\n/,'')
         end
@@ -54,16 +54,18 @@ end
 
       context 'with VarCollect' do
 
+        let(:variables) { Cauldron::Scope.new(['var0']) }
+
         it %q{
-var1 = var0.collect do |x|
-  x + 2
+var1 = var0.collect do |var2|
+  var2 * 2
 end
 } do
           Composite.new(
-            [Cauldron::VarCollectOperator.new([0]), StringAsteriskOperator.new([1], 2) ]
-          ).to_ruby(['var0']).should == %q{
-var1 = var0.collect do |x|
- x * 2 
+            [Cauldron::VarCollectOperator.new([0]), StringAsteriskOperator.new([2], 2) ]
+          ).to_ruby( variables ).should == %q{
+var1 = var0.collect do |var2|
+ var2 * 2 
 end
 }.strip.gsub(/\n/,'')
         end
@@ -78,34 +80,39 @@ end
 
         let(:collect_operator) { ArrayCollect.new([0]) }
 
+        let(:scope) { Cauldron::Scope.new(['var0']) }
+
         context 'using second operator "x * 3"' do
 
           let(:string_multiple) { StringAsteriskOperator.new([1],3) }
 
           it 'returns "var0.collect {|x| x + 3}"' do
-            Composite.new([collect_operator, string_multiple]).sexp(['var0']).should == [
-              :program, 
-              [ :method_add_block, 
-                [:call, 
-                  [:vcall, 
-                    [:@ident, "var0"]
+            Composite.new([collect_operator, string_multiple]).sexp(scope).should == [
+              :program,
+              [:stmts_add,
+                [:stmts_new],
+                [ :method_add_block, 
+                  [:call, 
+                    [:vcall, 
+                      [:@ident, "var0"]
+                    ], 
+                    :".", 
+                    [:@ident, "collect"]
                   ], 
-                  :".", 
-                  [:@ident, "collect"]
-                ], 
-                [:brace_block, 
-                  [
-                    :block_var, 
-                    [:params, [[:@ident, "x"]]]
-                  ], 
-                  [
-                    :stmts_add, 
-                    [:stmts_new], 
+                  [:brace_block, 
                     [
-                      :binary, 
-                      [:vcall, [:@ident, "x"]], 
-                      :*, 
-                      [:@int, 3]
+                      :block_var, 
+                      [:params, [[:@ident, "var1"]]]
+                    ], 
+                    [
+                      :stmts_add, 
+                      [:stmts_new], 
+                      [
+                        :binary, 
+                        [:vcall, [:@ident, "var1"]], 
+                        :*, 
+                        [:@int, 3]
+                      ]
                     ]
                   ]
                 ]

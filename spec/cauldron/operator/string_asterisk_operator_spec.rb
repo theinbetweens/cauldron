@@ -33,12 +33,14 @@ module Cauldron
 
         let(:history) { [{:x => "lima"},{:x => "bear"}] }
 
+        let(:scope) { Cauldron::Scope.new(['var0','x']) }
+
         context "and target ['limalima','bearbear']" do
 
           it 'returns "x * 2"' do
             StringAsteriskOperator.instances(
               history, ['limalima','bearbear']
-            ).first.to_ruby(['var0','x']).should == "x * 2"
+            ).first.to_ruby(scope).should == "x * 2"
           end
 
         end
@@ -169,9 +171,11 @@ module Cauldron
 
       context 'constant is 2' do
 
+        let(:scope) { Cauldron::Scope.new(['var0']) }
+
         it 'returns "var0 * 2"' do
           operator = StringAsteriskOperator.new([0],2)
-          operator.to_ruby(['var0']).should == "var0 * 2"
+          operator.to_ruby(scope).should == "var0 * 2"
         end
 
       end

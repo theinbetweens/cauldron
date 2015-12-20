@@ -22,19 +22,21 @@ module Cauldron
 
     describe '#to_ruby' do
 
+      let(:scope) { Cauldron::Scope.new(['var0']) }
+
       it 'returns "var0.collect { |x| x }"' do
         operator = ArrayCollect.new([0])
-        operator.to_ruby([],['var0']).should == "var0.collect { |x| }"
+        operator.to_ruby([],scope).should == "var0.collect { |var1| }"
       end
 
       context 'passed "a * 2"' do
 
-        it 'returns "var0.collect { |x| x * 2}"' do
+        it 'returns "var0.collect { |var1| var1 * 2}"' do
           a_times_2 = StringAsteriskOperator.new([1],2)
           operator = ArrayCollect.new([0])
           operator.to_ruby(
-            [a_times_2], ['var0', 'x'] 
-          ).should == 'var0.collect { |x| x * 2 }'
+            [a_times_2], scope
+          ).should == 'var0.collect { |var1| var1 * 2 }'
         end
 
       end

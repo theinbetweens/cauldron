@@ -23,8 +23,8 @@ class NumericOperator
 
   end
 
-  def to_sexp(variables)
-    [:binary, [:@ident, variables[@indexes[0]] ] , :+, [:@int, @constant.to_s]]
+  def to_sexp(scope)
+    [:binary, [:@ident, scope[@indexes[0]] ] , :+, [:@int, @constant.to_s]]
   end
 
   def to_ruby
@@ -33,22 +33,8 @@ class NumericOperator
     Sorcerer.source self.to_sexp
   end
 
-  def build(operators, variables)
-    # [:method_add_block, 
-    #   [:call, 
-    #     [:vcall, 
-    #       [:@ident, "var0"]], 
-    #       :".", 
-    #       [:@ident, "collect"]
-    #   ], 
-    #   [:brace_block, 
-    #     [:block_var, 
-    #       [:params, [[:@ident, "x"]]]], 
-    #       [:stmts_add, [:stmts_new], operators.first.build('x')
-    #     ]
-    #   ]
-    # ]
-    to_sexp(variables)    
+  def build(operators, scope)
+    to_sexp(scope)    
   end  
 
   # Operator for "x + n" e.g. x + 1

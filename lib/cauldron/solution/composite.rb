@@ -21,32 +21,32 @@ module Cauldron::Solution
       # NOTE: for 2 lines
       # [:stmts_add, [:stmts_add, [:stmts_new], first_call], second_call ]
       
-      test = %w{ a b }
+      # test = %w{ a b }
 
-      [:stmts_add, [:stmts_new], test.shift] 
-      #[:stmts_add, [:stmts_add, [:stmts_new, first_line], second_line ] ]
-      #[:stmts_add, ]
+      # [:stmts_add, [:stmts_new], test.shift]
 
-      first = operators.shift
-      
+      #first = operators.shift
+      first = operators[0]
+
       inner = add_first_statement(first[0].build(first[1...first.length], variables) )
 
-      second = operators.shift
-      results = add_statement(
-                  second[0].build(second[1...second.length], variables),
-                  inner
-                )
+      second = operators[1]
 
-      # results = operators.collect do |x|
-      #   x[0].build(x[1...x.length], variables)
-      # end
+      if second.nil?
+        results = inner
+      else
+        results = add_statement(
+                    second[0].build(second[1...second.length], variables),
+                    inner
+                  )
+      end
       
       # TODO Not sure why this is needed just yet
       [:program, results]
     end
 
-    def to_ruby(variables)
-      Sorcerer.source(sexp(variables))
+    def to_ruby(scope)
+      Sorcerer.source(sexp(scope))
     end
 
     def add_first_statement(statement)

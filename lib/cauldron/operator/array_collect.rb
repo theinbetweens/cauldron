@@ -13,8 +13,7 @@ class ArrayCollect
     #   var0.collect do |x|
     #     record(local_variable)
     #   end
-    # }).parse
-    # puts sexp.inspect    
+    # }).parse  
   end
 
   def to_ruby(operators, variables)
@@ -31,25 +30,26 @@ class ArrayCollect
     true
   end  
 
-  def build(operators, variables = [])
+  def build(operators, scope)
+    scope_var = scope.new_variable!
     [:method_add_block, 
       [:call, 
         [:vcall, 
-          [:@ident, variables[@indexes[0]] ]], 
+          [:@ident, scope[@indexes[0]] ]], 
           :".", 
           [:@ident, "collect"]
       ], 
       unless operators.empty?
         [:brace_block, 
           [:block_var, 
-            [:params, [[:@ident, "x"]]]], 
-            [:stmts_add, [:stmts_new], operators.first.build('x', variables.push('x') )
+            [:params, [[:@ident, scope_var]]]], 
+            [:stmts_add, [:stmts_new], operators.first.build(scope_var, scope )
           ]
         ]
       else
         [:brace_block, 
           [:block_var, 
-            [:params, [[:@ident, "x"]]], 
+            [:params, [[:@ident, scope_var]]], 
             [:stmts_add, [:stmts_new]]
           ]
         ]        

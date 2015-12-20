@@ -75,9 +75,11 @@ module Cauldron
 
       context 'using the constant "bar"' do
 
+        let(:scope) { Cauldron::Scope.new(['var0']) }
+
         it 'returns "var0.concat("bar")"' do
           operator = ConcatOperator.new([0],'bar')
-          operator.to_ruby(['var0']).should == "var0.concat(\"bar\")"
+          operator.to_ruby(scope).should == "var0.concat(\"bar\")"
         end
 
       end

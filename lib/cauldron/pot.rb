@@ -33,7 +33,7 @@ module Cauldron
 
     def chain_operators(problems,operators)
       # TODO Presumes only two operators
-      operators[0].to_ruby(operators[1...operators.length], ['var0'])
+      operators[0].to_ruby(operators[1...operators.length], Cauldron::Scope.new(['var0']) )
     end
 
     def viable_double_operators(problems)

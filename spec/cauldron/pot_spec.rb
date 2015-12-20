@@ -200,7 +200,7 @@ end
         pot.chain_operators(
           collect_and_multiple,
           [ArrayCollect.new([0]), StringAsteriskOperator.new([1], 2)]
-        ).should == "var0.collect { |x| x * 2 }"
+        ).should == "var0.collect { |var1| var1 * 2 }"
       end
 
     end
@@ -229,14 +229,18 @@ end
       #[ArrayCollect, StringAsteriskOperator]
       context 'operators are Array#collect and String#*' do
 
+        let(:scope) do
+          Cauldron::Scope.new(['var0'])
+        end        
+
         it 'is "var0.collect { |x| x * 2 }"' do
           pot = Pot.new
           pot.build_chain_operator(
             [ArrayCollect, StringAsteriskOperator],
             collect_and_multiple
-          ).to_ruby(['var0']).should == Cauldron::Solution::Composite.new(
+          ).to_ruby(scope).should == Cauldron::Solution::Composite.new(
             [ArrayCollect.new([0]),StringAsteriskOperator.new([1],2)]
-          ).to_ruby(['var0'])
+          ).to_ruby(Cauldron::Scope.new(['var0']))
         end
 
       end
