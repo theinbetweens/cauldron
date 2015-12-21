@@ -58,5 +58,9 @@ class NumericOperator
   def self.uses_block?
     false
   end
+
+  def branch?
+    false
+  end
     
 end

@@ -28,3 +28,4 @@ require 'cauldron/operator/var_collect_operator'
 
 require 'cauldron/solution/one'
 require 'cauldron/solution/composite'
+require 'cauldron/builder'

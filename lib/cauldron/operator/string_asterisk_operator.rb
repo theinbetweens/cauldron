@@ -60,7 +60,11 @@ class StringAsteriskOperator
 
   def self.uses_block?
     false
-  end  
+  end
+
+  def branch?
+    false
+  end 
 
   def successful?(problem)
     return true if problem[:arguments].first*@constant == problem[:response]    

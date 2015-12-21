@@ -2,7 +2,11 @@ require 'spec_helper'
 
 module Cauldron
   
-  describe 'StringAsteriskOperator' do
+  describe StringAsteriskOperator do
+
+    it_behaves_like "leaf_operator" do
+      let(:leaf_operator) { StringAsteriskOperator.new([0],2) }
+    end
 
     describe '.history_goals' do
 

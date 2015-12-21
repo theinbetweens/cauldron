@@ -9,23 +9,8 @@ module Cauldron::Solution
     end
 
     def sexp(variables=[])
-      # [ 
-      #   :1, [],
-      #   :2, [],
-      # ]
-      #args = problem[:arguments]
-      #variables = (0...args.length).collect {|x| 'var'+x.to_s}
-
       number_of_lines = operators.length
 
-      # NOTE: for 2 lines
-      # [:stmts_add, [:stmts_add, [:stmts_new], first_call], second_call ]
-      
-      # test = %w{ a b }
-
-      # [:stmts_add, [:stmts_new], test.shift]
-
-      #first = operators.shift
       first = operators[0]
 
       inner = add_first_statement(first[0].build(first[1...first.length], variables) )
@@ -66,28 +51,13 @@ module Cauldron::Solution
       # return true if problem[:arguments].first == problem[:response]    
       # false    
       pt = PryTester.new
-      #pt.eval([self.to_ruby])
 
       args = problem[:arguments]
       variables = (0...args.length).collect {|x| 'var'+x.to_s}
-
-      # result = [
-      #   'def function('+variables.join(',')+')',
-      #   self.to_ruby,
-      #   'end'
-      # ]
-
-
-      #pt.eval(result)
-      #pt.eval(['def function('+variables.join(',')+');'+self.to_ruby+"; end"])
-      
-      # 'def function('+variables.join(',')+');'+self.to_ruby+"; end", 'function('+problem[:arguments][0].to_s+')'
-      # "def function('+variables.join(',')+');'+self.to_ruby+"; end", 'function('+problem[:arguments][0].to_s+')'
       a = [
         'def function('+variables.join(',')+');'+self.to_ruby(variables)+"; end", 
         'function('+problem[:arguments].collect {|x| to_programme(x) }.join(',')+')'
       ]
-      #puts 'def function('+variables.join(',')+');'+self.to_ruby(variables)+"; end", 'function('+problem[:arguments].collect {|x| to_programme(x) }.join(',')+')'
       
       res = pt.eval(
         ['def function('+variables.join(',')+');'+self.to_ruby(variables)+"; end", 'function('+problem[:arguments].collect {|x| to_programme(x) }.join(',')+')']

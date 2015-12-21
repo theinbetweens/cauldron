@@ -28,6 +28,10 @@ class ArrayCollect
 
   def self.uses_block?
     true
+  end
+
+  def branch?
+    true
   end  
 
   def build(operators, scope)
