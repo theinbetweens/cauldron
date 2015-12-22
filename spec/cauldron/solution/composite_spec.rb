@@ -4,6 +4,41 @@ module Cauldron::Solution
   
   describe 'Composite' do
 
+    describe '#insert_tracking' do
+
+      context %{
+        given a composite:
+          def function(params)
+
+          end
+        } do
+
+          # code =  """
+          #         """
+
+        it %q{
+          generates a method:
+            def function(params)
+              record(local_variables)
+            end
+          } do
+            Composite.new([]).insert_tracking([]).should match_code_of( %q{
+def function(var0)
+  record(local_variables)
+end
+})
+#           Sorcerer.source(Composite.new([]).insert_tracking([]), indent: true).strip.should == %q{
+# def function(var0)
+#   record(local_variables)
+# end            
+#           }.strip
+
+        end
+
+      end
+
+    end
+
     describe '#to_ruby' do
 
       context 'first line' do
@@ -170,6 +205,5 @@ end
 
     end
 
-  end
-  
+  end  
 end

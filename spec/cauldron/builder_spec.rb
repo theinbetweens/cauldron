@@ -85,7 +85,59 @@ module Cauldron
             builder.insert_points.should include([1,1])
           end
 
-        end             
+        end
+
+        context 'has line "var2 = 7" at line 2 depth 0' do
+
+          let(:composite) do
+            Cauldron::Solution::Composite.new(
+              [
+                Tree::TreeNode.new('CHILD1', ArrayCollect.new([0]) ),
+                Tree::TreeNode.new('CHILD2', NumericOperator.new([0],6) ),
+                Tree::TreeNode.new('CHILD3', NumericOperator.new([0],7) )
+              ]
+            )
+          end
+
+          it 'has 2' do
+            builder.insert_points.length.should == 2
+          end
+
+          it 'has one point at line 3 depth 0' do
+            builder.insert_points.should include([3,0])
+          end
+
+          it 'has one point at line 1 depth 1' do
+            builder.insert_points.should include([1,1])
+          end                              
+
+        end
+
+      end
+
+    end
+
+    describe '#trace' do
+
+      context 'composite is empty' do
+
+        let(:builder) { Cauldron::Builder.new(composite) }
+
+        let(:composite) { Cauldron::Solution::Composite.new([]) }
+
+        context 'using param ["Sparky", "Kel"]' do
+
+          let(:params) do
+            ['Sparky', 'Kel']
+          end
+
+          it %q{is 
+{:var0 => ['Sparky','Kel']}
+            } do
+              builder.trace(params).should == [ {:var0 => ['Sparky','Kel']} ]
+          end
+
+        end
 
       end
 

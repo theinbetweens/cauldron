@@ -40,3 +40,10 @@ end
 puts sexp.inspect
 pp sexp
 Sorcerer.source(sexp, indent: true)
+
+sexp = Ripper::SexpBuilder.new(%q{
+record(local_variables)
+}).parse
+puts sexp.inspect
+pp sexp
+Sorcerer.source(sexp, indent: true)

@@ -15,11 +15,7 @@ module Cauldron
         child_node = Tree::TreeNode.new('CHILD-'+line_count.to_s)
         root_node << child_node
         line_count += 1
-        #grandchild_node
       end
-      #root_node << Tree::TreeNode.new("CHILD1", "Child1 Content") << Tree::TreeNode.new("GRANDCHILD1", "GrandChild1 Content")
-      #root_node << Tree::TreeNode.new("CHILD2", "Child2 Content")
-      #root_node
     end
 
     def insert_points
@@ -31,17 +27,12 @@ module Cauldron
           results << [1, 1]
         end
       end
-      results      
-      # results = [
-      #   [composite.operators.length,0]
-      # ]
-      # if composite.operators.collect(&:first).count {|x| x.branch? }
-      #   branches = composite.operators.collect(&:first).select {|x| x.branch? }
-      #   branches.each do |x|
-      #     results << [composite.operators.length, 1]
-      #   end
-      # end
-      # results
+      results
+    end
+
+    def trace(params)
+      tracked_composite = composite.insert_tracking(params)
+      tracked_composite.process(params)
     end
 
   end
