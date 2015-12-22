@@ -231,6 +231,15 @@ end
 
         let(:scope) do
           Cauldron::Scope.new(['var0'])
+        end
+
+        let(:tree) do
+          root = Tree::TreeNode.new("ROOT", "Root Content")
+          child = Tree::TreeNode.new("CHILD1", ArrayCollect.new([0])) 
+          grand_child = Tree::TreeNode.new("CHILD2", StringAsteriskOperator.new([1],2))
+          child << grand_child
+          root << child
+          root
         end        
 
         it 'is "var0.collect { |x| x * 2 }"' do
@@ -239,7 +248,7 @@ end
             [ArrayCollect, StringAsteriskOperator],
             collect_and_multiple
           ).to_ruby(scope).should == Cauldron::Solution::Composite.new(
-            [ArrayCollect.new([0]),StringAsteriskOperator.new([1],2)]
+            tree.children #[ArrayCollect.new([0]),StringAsteriskOperator.new([1],2)]
           ).to_ruby(Cauldron::Scope.new(['var0']))
         end
 

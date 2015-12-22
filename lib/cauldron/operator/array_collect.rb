@@ -34,7 +34,7 @@ class ArrayCollect
     true
   end  
 
-  def build(operators, scope)
+  def build(children, scope)
     scope_var = scope.new_variable!
     [:method_add_block, 
       [:call, 
@@ -43,12 +43,15 @@ class ArrayCollect
           :".", 
           [:@ident, "collect"]
       ], 
-      unless operators.empty?
+      unless children.empty?
         [:brace_block, 
           [:block_var, 
             [:params, [[:@ident, scope_var]]]], 
-            [:stmts_add, [:stmts_new], operators.first.build(scope_var, scope )
-          ]
+            [
+              :stmts_add, 
+              [:stmts_new], 
+              children.first.content.build(scope_var, scope )
+            ]
         ]
       else
         [:brace_block, 

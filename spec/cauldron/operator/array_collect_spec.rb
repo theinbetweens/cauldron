@@ -22,7 +22,7 @@ module Cauldron
 
     describe '#to_ruby' do
 
-      let(:scope) { Cauldron::Scope.new(['var0']) }
+      let(:scope) { Cauldron::Scope.new(['var0']) }     
 
       it 'returns "var0.collect { |x| x }"' do
         operator = ArrayCollect.new([0])
@@ -31,11 +31,14 @@ module Cauldron
 
       context 'passed "a * 2"' do
 
+        let(:string_asterisk) do
+          Tree::TreeNode.new("CHILD1", StringAsteriskOperator.new([1],2))
+        end
+
         it 'returns "var0.collect { |var1| var1 * 2}"' do
-          a_times_2 = StringAsteriskOperator.new([1],2)
           operator = ArrayCollect.new([0])
           operator.to_ruby(
-            [a_times_2], scope
+            [string_asterisk], scope
           ).should == 'var0.collect { |var1| var1 * 2 }'
         end
 

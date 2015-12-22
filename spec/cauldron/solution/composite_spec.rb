@@ -12,6 +12,19 @@ module Cauldron::Solution
 
           let(:array_collect) { ArrayCollect.new([0]) }
 
+          let(:tree) do
+            # Tree::TreeNode.new("ROOT", "Root Content").tap do |root|
+            #   root << Tree::TreeNode.new("CHILD1", array_collect)
+            #   root << Tree::TreeNode.new("CHILD2", string_asterisk)
+            # end
+            root = Tree::TreeNode.new("ROOT", "Root Content")
+            child = Tree::TreeNode.new("CHILD1", array_collect) 
+            grand_child = Tree::TreeNode.new("CHILD2", string_asterisk)
+            child << grand_child
+            root << child
+            root
+          end
+
           context 'has operator "String#*"' do
 
             let(:string_asterisk) { StringAsteriskOperator.new([1],2) }
@@ -22,7 +35,7 @@ module Cauldron::Solution
 
             it 'is "var0.collect { |var1| var1 * 2 }"' do
               Cauldron::Solution::Composite.new(
-                [array_collect, string_asterisk]
+                tree.children
               ).to_ruby( variables ).should == 'var0.collect { |var1| var1 * 2 }'
             end
 
@@ -36,10 +49,23 @@ module Cauldron::Solution
 
         let(:variables) { Cauldron::Scope.new(['var0']) }
 
+        let(:tree) do
+          root_node = Tree::TreeNode.new("ROOT", "Root Content")
+          child_node = Tree::TreeNode.new("CHILD1", Cauldron::VarCollectOperator.new([0]) )
+          child_node << Tree::TreeNode.new("GRANDCHILD1", NumericOperator.new([2], 2) ) 
+          root_node << child_node
+          # -- 
+          child_node_2 = Tree::TreeNode.new("CHILD2", Cauldron::VarCollectOperator.new([1]) )
+          child_node_2 << Tree::TreeNode.new("GRAND-CHILD2", ToSOperator.new([4]) )
+          root_node << child_node_2
+          root_node
+        end
+
         it %q{generates the code} do
           Composite.new(
-            [Cauldron::VarCollectOperator.new([0]), NumericOperator.new([2], 2) ],
-            [Cauldron::VarCollectOperator.new([1]), ToSOperator.new([4])]
+            tree.children
+            #[Cauldron::VarCollectOperator.new([0]), NumericOperator.new([2], 2) ],
+            #[Cauldron::VarCollectOperator.new([1]), ToSOperator.new([4])]
           ).to_ruby( variables ).should == %q{
 var1 = var0.collect do |var2|
  var2 + 2
@@ -56,13 +82,22 @@ end
 
         let(:variables) { Cauldron::Scope.new(['var0']) }
 
+        let(:tree) do
+          root_node = Tree::TreeNode.new("ROOT", "Root Content")
+          child_node = Tree::TreeNode.new("CHILD1", Cauldron::VarCollectOperator.new([0]) )
+          child_node_2 = Tree::TreeNode.new("CHILD2", StringAsteriskOperator.new([2], 2) )
+          child_node << child_node_2
+          root_node << child_node
+          root_node
+        end
+
         it %q{
 var1 = var0.collect do |var2|
   var2 * 2
 end
 } do
           Composite.new(
-            [Cauldron::VarCollectOperator.new([0]), StringAsteriskOperator.new([2], 2) ]
+            tree.children
           ).to_ruby( variables ).should == %q{
 var1 = var0.collect do |var2|
  var2 * 2 
@@ -86,8 +121,17 @@ end
 
           let(:string_multiple) { StringAsteriskOperator.new([1],3) }
 
+          let(:tree) do
+            root_node = Tree::TreeNode.new("ROOT", "Root Content")
+            child_node = Tree::TreeNode.new("CHILD1", collect_operator )
+            child_node_2 = Tree::TreeNode.new("CHILD2", string_multiple )
+            child_node << child_node_2
+            root_node << child_node
+            root_node
+          end          
+
           it 'returns "var0.collect {|x| x + 3}"' do
-            Composite.new([collect_operator, string_multiple]).sexp(scope).should == [
+            Composite.new(tree.children).sexp(scope).should == [
               :program,
               [:stmts_add,
                 [:stmts_new],

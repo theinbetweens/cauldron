@@ -19,8 +19,12 @@ group :development, :cucumber, :test do
   gem "aruba", "~>0.4.5"
   #gem 'ruby-debug', '0.10.4'
   #gem 'pry'
-  gem 'pry', '~> 0.10.2'
 end
+
+# http://rubytree.anupamsg.me
+gem 'tree'
+
+gem 'pry', '~> 0.10.2'
 
 gem "ruby2ruby", "~>1.2.5"
 gem 'sorcerer', '~> 1.0.2'

@@ -33,7 +33,13 @@ module Cauldron
 
     def chain_operators(problems,operators)
       # TODO Presumes only two operators
-      operators[0].to_ruby(operators[1...operators.length], Cauldron::Scope.new(['var0']) )
+      #root = Tree::TreeNode.new("ROOT", "Root Content")
+      #child = Tree::TreeNode.new("CHILD1", operators[0]) 
+      #grand_child = Tree::TreeNode.new("CHILD2", string_asterisk)
+
+      operators[0].to_ruby( [
+        Tree::TreeNode.new("CHILD1", operators[1])
+      ], Cauldron::Scope.new(['var0']) )
     end
 
     def viable_double_operators(problems)
@@ -96,7 +102,16 @@ module Cauldron
 
       variations = first_operators.product(second_operators) 
 
-      Cauldron::Solution::Composite.new( variations.first)
+      variation = variations.first
+      
+      root = Tree::TreeNode.new("ROOT", "Root Content")
+      child = Tree::TreeNode.new("CHILD1", variation[0]) 
+      grand_child = Tree::TreeNode.new("CHILD2", variation[1])
+      child << grand_child
+      root << child
+      root
+
+      Cauldron::Solution::Composite.new( root.children )
     end        
 
   protected
@@ -146,7 +161,9 @@ module Cauldron
 
         operators = build_operators(operation_class,problems)
         operators.each do |operator|
-          solutions << Cauldron::Solution::Composite.new( [operator] )
+          root = Tree::TreeNode.new("ROOT", "Root Content")
+          root << Tree::TreeNode.new("CHILD1", operator)
+          solutions << Cauldron::Solution::Composite.new(root.children)
         end
       end
 

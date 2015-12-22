@@ -4,24 +4,30 @@ module Cauldron::Solution
 
     attr_reader :operators
 
-    def initialize(*operators)
-      @operators = operators
+    def initialize(children)
+      @operators = children
     end
 
     def sexp(variables=[])
       number_of_lines = operators.length
-
-      first = operators[0]
-
-      inner = add_first_statement(first[0].build(first[1...first.length], variables) )
+      
+      #first = operators[0]
+      first = operators.first
+      
+      #inner = add_first_statement( first.content.build(first.children.first, variables) )
+      inner = add_first_statement( 
+                first.content.build(
+                  first.children, variables
+                ) 
+              )
 
       second = operators[1]
-
+      
       if second.nil?
         results = inner
       else
         results = add_statement(
-                    second[0].build(second[1...second.length], variables),
+                    second.content.build(second.children, variables),
                     inner
                   )
       end

@@ -10,6 +10,8 @@ require 'sorcerer'
 require 'pry_tester'
 require 'pry'
 
+require 'tree'
+
 require 'core/string'
 
 require 'cauldron/pot'
