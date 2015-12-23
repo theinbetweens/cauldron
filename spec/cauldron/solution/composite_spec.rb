@@ -19,20 +19,14 @@ module Cauldron::Solution
         it %q{
           generates a method:
             def function(params)
-              record(local_variables)
+              record(local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
             end
           } do
-            Composite.new([]).insert_tracking([]).should match_code_of( %q{
+            Composite.new([]).insert_tracking([]).sexp.should match_code_of( %q{
 def function(var0)
-  record(local_variables)
+  record(local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
 end
 })
-#           Sorcerer.source(Composite.new([]).insert_tracking([]), indent: true).strip.should == %q{
-# def function(var0)
-#   record(local_variables)
-# end            
-#           }.strip
-
         end
 
       end

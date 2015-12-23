@@ -128,13 +128,13 @@ module Cauldron
         context 'using param ["Sparky", "Kel"]' do
 
           let(:params) do
-            ['Sparky', 'Kel']
+            ['Sparky']
           end
 
           it %q{is 
-{:var0 => ['Sparky','Kel']}
+{:var0 => ['Sparky']}
             } do
-              builder.trace(params).should == [ {:var0 => ['Sparky','Kel']} ]
+              builder.trace(params).should == [ {:var0 => 'Sparky'} ]
           end
 
         end

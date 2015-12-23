@@ -19,6 +19,7 @@ def function(var0)
   #{Sorcerer.source(tracking_sexp(scope)) }
 end
 }).parse
+      Cauldron::Tracer.new(sexp)
     end
 
     def tracking_sexp(scope)
@@ -80,46 +81,66 @@ end
          [:fcall, [:@ident, "record", [2, 0]]],
          [:arg_paren,
           [:args_add_block,
-           [:args_add, [:args_new], [:vcall, [:@ident, "local_variables", [2, 7]]]],
+           [:args_add,
+            [:args_new],
+            [:method_add_block,
+             [:call,
+              [:method_add_block,
+               [:call,
+                [:vcall, [:@ident, "local_variables", [2, 7]]],
+                :".",
+                [:@ident, "reject", [2, 23]]],
+               [:brace_block,
+                [:block_var,
+                 [:params,
+                  [[:@ident, "foo", [2, 32]]],
+                  nil,
+                  nil,
+                  nil,
+                  nil,
+                  nil,
+                  nil],
+                 false],
+                [:stmts_add,
+                 [:stmts_new],
+                 [:binary,
+                  [:var_ref, [:@ident, "foo", [2, 37]]],
+                  :==,
+                  [:symbol_literal, [:symbol, [:@ident, "_", [2, 45]]]]]]]],
+              :".",
+              [:@ident, "collect", [2, 48]]],
+             [:brace_block,
+              [:block_var,
+               [:params, [[:@ident, "bar", [2, 59]]], nil, nil, nil, nil, nil, nil],
+               false],
+              [:stmts_add,
+               [:stmts_new],
+               [:array,
+                [:args_add,
+                 [:args_add, [:args_new], [:var_ref, [:@ident, "bar", [2, 65]]]],
+                 [:method_add_arg,
+                  [:fcall, [:@ident, "eval", [2, 70]]],
+                  [:arg_paren,
+                   [:args_add_block,
+                    [:args_add,
+                     [:args_new],
+                     [:call,
+                      [:var_ref, [:@ident, "bar", [2, 75]]],
+                      :".",
+                      [:@ident, "to_s", [2, 79]]]],
+                    false]]]]]]]]],
            false]]]]]
+            
+      # [:program,
+      #  [:stmts_add,
+      #   [:stmts_new],
+      #   [:method_add_arg,
+      #    [:fcall, [:@ident, "record", [2, 0]]],
+      #    [:arg_paren,
+      #     [:args_add_block,
+      #      [:args_add, [:args_new], [:vcall, [:@ident, "local_variables", [2, 7]]]],
+      #      false]]]]]
       
-# [:program,
-#  [:stmts_add,
-#   [:stmts_new],
-#   [:def,
-#    [:@ident, "function", [2, 4]],
-#    [:paren,
-#     [:params, [[:@ident, "params", [2, 13]]], nil, nil, nil, nil, nil, nil]],
-#    [:bodystmt,
-#     [:stmts_add,
-#      [:stmts_new],
-#      [:method_add_arg,
-#       [:fcall, [:@ident, "record", [3, 2]]],
-#       [:arg_paren,
-#        [:args_add_block,
-#         [:args_add,
-#          [:args_new],
-#          [:vcall, [:@ident, "local_variables", [3, 9]]]],
-#         false]]]],
-#     nil,
-#     nil,
-#     nil]]]]
-
-      # [
-      #   :method_add_arg,
-      #   [ 
-      #     :fcall, 
-      #     [:@ident, "record"],
-      #     [:arg_paren,
-      #       [:args_add_block,
-      #         [:args_add,
-      #           [:args_new],
-      #           [:vcall, [:@ident, "local_variables"]]
-      #         ]
-      #       ]
-      #     ]
-      #   ]
-      # ]
     end
 
     def successful?(problem)
