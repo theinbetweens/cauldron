@@ -1,5 +1,7 @@
 class ArrayCollect
 
+  attr_reader :indexes
+
   def initialize(indexes)
     @indexes = indexes
   end
@@ -32,7 +34,12 @@ class ArrayCollect
 
   def branch?
     true
-  end  
+  end
+
+  def ==(value)
+    return false unless self.class == value.class
+    self.indexes == value.indexes
+  end
 
   def build(children, scope)
     scope_var = scope.new_variable!
@@ -122,6 +129,21 @@ class ArrayCollect
     # Pry::Code.new(self.to_ruby)
     # ''
     []
+  end
+
+  def self.instances(histories)
+    results = []
+    histories.each do |history|
+      results += instances_for_history(history)
+    end
+    indexes = results.collect {|x| x.to_s.match(/(\d)/)[0] }
+    indexes.collect {|x| ArrayCollect.new([x.to_i])}
+  end
+
+  def self.instances_for_history(history)
+    history.variables.select do |x| 
+      history.values(x).all? {|y| y.kind_of?(Array) }
+    end
   end
 
 end

@@ -33,9 +33,6 @@ module Cauldron
 
     def chain_operators(problems,operators)
       # TODO Presumes only two operators
-      #root = Tree::TreeNode.new("ROOT", "Root Content")
-      #child = Tree::TreeNode.new("CHILD1", operators[0]) 
-      #grand_child = Tree::TreeNode.new("CHILD2", string_asterisk)
 
       operators[0].to_ruby( [
         Tree::TreeNode.new("CHILD1", operators[1])

@@ -35,6 +35,12 @@ module Cauldron
       tracked_composite.process(params)
     end
 
+    def insertable_operators(examples)
+      h = ActualizedComposite.new(composite, examples).histories
+      #[ArrayCollect, StringAsteriskOperator].collect { |x| x.instances(h) }
+      [ArrayCollect].inject([]) { |total,x| total += x.instances(h); total }
+    end
+
   end
 
 end

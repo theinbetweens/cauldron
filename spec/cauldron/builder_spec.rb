@@ -4,6 +4,66 @@ module Cauldron
   
   describe 'Builder' do
 
+    describe '#insertable_operators' do
+
+      context %q{with history "line: 0, depth:0, var0: ['Sparky','Kel'] "} do
+
+        let(:history) do
+          [
+            { :params => [['Sparky', 'Kel']], :solution => ['Spark','Ke'], 
+              :history => [
+                { line: 0, depth: 0, total_line: 0, var0: ['Sparky', 'Kel'] }
+              ]
+            }
+          ]
+        end
+
+        let(:examples) do
+          [ Example.new({ :arguments => [['Sparky', 'Kel']], :response => ['Spark','Ke'] })]
+        end
+
+        let(:composite) { Cauldron::Solution::Composite.new([]) }
+
+        let(:builder) { Cauldron::Builder.new(composite) }
+
+        it 'results include array collect' do
+          builder.insertable_operators(examples).should include_an_instance_of(ArrayCollect)
+        end
+
+        it 'results do not include a string asterisk' do
+          builder.insertable_operators(examples).should_not include_an_instance_of(StringAsteriskOperator)
+        end
+
+      end
+
+      context %q{with history "line: 0, depth:0, var0: 'Sparky' "} do
+
+        let(:history) do
+          [
+            { :params => ['Sparky'], :solution => 'Spark', 
+              :history => [
+                { line: 0, depth: 0, total_line: 0, var0: 'Sparky' }
+              ]
+            }
+          ]
+        end
+
+        let(:examples) do
+          [ Example.new({ :arguments => ['Sparky'], :response => 'Spark' })]
+        end
+
+        let(:composite) { Cauldron::Solution::Composite.new([]) }
+
+        let(:builder) { Cauldron::Builder.new(composite) }
+
+        it 'results do not include array collect' do
+          builder.insertable_operators(examples).should_not include_an_instance_of(ArrayCollect)
+        end        
+
+      end
+
+    end
+
     describe '#insert_points' do
 
       let(:builder) { Cauldron::Builder.new(composite) }
@@ -127,14 +187,14 @@ module Cauldron
 
         context 'using param ["Sparky", "Kel"]' do
 
-          let(:params) do
-            ['Sparky']
-          end
+          let(:example) do
+            Example.new({ :arguments => ['Sparky'], :response => 'Spark' })
+          end          
 
           it %q{is 
 {:var0 => ['Sparky']}
             } do
-              builder.trace(params).should == [ {:var0 => 'Sparky'} ]
+              builder.trace(example).should == [ {:var0 => 'Sparky'} ]
           end
 
         end

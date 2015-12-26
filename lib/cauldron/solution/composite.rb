@@ -8,26 +8,30 @@ module Cauldron::Solution
       @operators = children
     end
 
+    def record(example)
+      # TODO params passed twice - and example not used at all
+      insert_tracking(example.params).process(example)
+    end
+
     def insert_tracking(params)
-      #sexp(['var0'])
       scope = Cauldron::Scope.new(['var0'])
       # sexp = Ripper::SexpBuilder.new(
       #         'def function('+variables.join(',')+');'+relationship.to_ruby(variables)+"; end").parse
       sexp = Ripper::SexpBuilder.new(
 %Q{
 def function(var0)
-  #{Sorcerer.source(tracking_sexp(scope)) }
+  #{Sorcerer.source(tracking_sexp(scope,0,0,0)) }
 end
 }).parse
       Cauldron::Tracer.new(sexp)
     end
 
-    def tracking_sexp(scope)
+    def tracking_sexp(scope, line, depth, total_line)
       #binding.pry
       [:bodystmt,
         [:stmts_add,
           [:stmts_new],
-          tracking
+          tracking(line,depth,total_line)
         ]
       ]
       #[:program, tracking]
@@ -73,7 +77,7 @@ end
       [:stmts_add, inner, statement]
     end
 
-    def tracking
+    def tracking(line, depth, total_line)
       [:program,
        [:stmts_add,
         [:stmts_new],
@@ -82,18 +86,22 @@ end
          [:arg_paren,
           [:args_add_block,
            [:args_add,
-            [:args_new],
+            [:args_add,
+             [:args_add,
+              [:args_add, [:args_new], [:@int, line, [2, 7]]],
+              [:@int, depth, [2, 9]]],
+             [:@int, total_line, [2, 11]]],
             [:method_add_block,
              [:call,
               [:method_add_block,
                [:call,
-                [:vcall, [:@ident, "local_variables", [2, 7]]],
+                [:vcall, [:@ident, "local_variables", [2, 13]]],
                 :".",
-                [:@ident, "reject", [2, 23]]],
+                [:@ident, "reject", [2, 29]]],
                [:brace_block,
                 [:block_var,
                  [:params,
-                  [[:@ident, "foo", [2, 32]]],
+                  [[:@ident, "foo", [2, 38]]],
                   nil,
                   nil,
                   nil,
@@ -104,43 +112,32 @@ end
                 [:stmts_add,
                  [:stmts_new],
                  [:binary,
-                  [:var_ref, [:@ident, "foo", [2, 37]]],
+                  [:var_ref, [:@ident, "foo", [2, 43]]],
                   :==,
-                  [:symbol_literal, [:symbol, [:@ident, "_", [2, 45]]]]]]]],
+                  [:symbol_literal, [:symbol, [:@ident, "_", [2, 51]]]]]]]],
               :".",
-              [:@ident, "collect", [2, 48]]],
+              [:@ident, "collect", [2, 54]]],
              [:brace_block,
               [:block_var,
-               [:params, [[:@ident, "bar", [2, 59]]], nil, nil, nil, nil, nil, nil],
+               [:params, [[:@ident, "bar", [2, 65]]], nil, nil, nil, nil, nil, nil],
                false],
               [:stmts_add,
                [:stmts_new],
                [:array,
                 [:args_add,
-                 [:args_add, [:args_new], [:var_ref, [:@ident, "bar", [2, 65]]]],
+                 [:args_add, [:args_new], [:var_ref, [:@ident, "bar", [2, 71]]]],
                  [:method_add_arg,
-                  [:fcall, [:@ident, "eval", [2, 70]]],
+                  [:fcall, [:@ident, "eval", [2, 76]]],
                   [:arg_paren,
                    [:args_add_block,
                     [:args_add,
                      [:args_new],
                      [:call,
-                      [:var_ref, [:@ident, "bar", [2, 75]]],
+                      [:var_ref, [:@ident, "bar", [2, 81]]],
                       :".",
-                      [:@ident, "to_s", [2, 79]]]],
+                      [:@ident, "to_s", [2, 85]]]],
                     false]]]]]]]]],
            false]]]]]
-            
-      # [:program,
-      #  [:stmts_add,
-      #   [:stmts_new],
-      #   [:method_add_arg,
-      #    [:fcall, [:@ident, "record", [2, 0]]],
-      #    [:arg_paren,
-      #     [:args_add_block,
-      #      [:args_add, [:args_new], [:vcall, [:@ident, "local_variables", [2, 7]]]],
-      #      false]]]]]
-      
     end
 
     def successful?(problem)

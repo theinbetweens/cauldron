@@ -6,7 +6,7 @@ module Cauldron::Solution
 
     describe '#insert_tracking' do
 
-      context %{
+      context %q{
         given a composite:
           def function(params)
 
@@ -19,14 +19,43 @@ module Cauldron::Solution
         it %q{
           generates a method:
             def function(params)
-              record(local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
+              record(0,0,0,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
             end
           } do
             Composite.new([]).insert_tracking([]).sexp.should match_code_of( %q{
 def function(var0)
-  record(local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
+  record(0,0,0,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
 end
 })
+        end
+
+      end
+
+      context %q{
+        given a composite:
+          def function(var0)
+            var0.collect do |var1|
+            end
+          end          
+      } do
+
+        it %q{
+def function(var0)
+  var0.collect do |var1|
+    record(0,1,1,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
+  end
+  record(1,0,1,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
+end          
+        } do
+          Composite.new([]).insert_tracking([]).sexp.should match_code_of( %q{
+def function(var0)
+  var0.collect do |var1|
+    record(0,1,1,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
+  end
+  record(1,0,1,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
+end
+})
+
         end
 
       end

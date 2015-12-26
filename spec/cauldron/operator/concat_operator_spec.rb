@@ -3,6 +3,10 @@ require 'spec_helper'
 module Cauldron
   
   describe ConcatOperator do 
+
+    it_behaves_like "leaf_operator" do
+      let(:leaf_operator) { ConcatOperator.new([0], 'foo') }
+    end    
     
     describe '.viable?' do
 

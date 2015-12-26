@@ -21,7 +21,15 @@ class ConcatOperator
 
   def self.uses_constants?
     true
+  end
+
+  def self.uses_block?
+    false
   end  
+
+  def branch?
+    false
+  end
 
   # Operator for "x.concat("bar")"
   def successful?(problem)

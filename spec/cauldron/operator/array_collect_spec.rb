@@ -2,7 +2,43 @@ require 'spec_helper'
 
 module Cauldron
   
-  describe ArrayCollect do
+  describe ArrayCollect do   
+
+    describe '.instances' do
+
+      context 'histories [[{:var0=>["Sparky", "Kel"], :line=>0, :depth=>0, :total_line=>0}]]' do
+
+        let(:histories) do
+          [
+            History.new(
+              [{:var0=>["Sparky", "Kel"], :line=>0, :depth=>0, :total_line=>0}]
+            )
+          ]
+        end
+
+        it 'returns an instance of ArrayCollect' do
+          ArrayCollect.instances(histories).should include( ArrayCollect.new([0]) )
+        end
+
+      end
+
+      context 'histories [[{:var0=>"Sparky", :line=>0, :depth=>0, :total_line=>0}]]' do
+
+        let(:histories) do
+          [
+            History.new(
+              [{:var0=>"Sparky", :line=>0, :depth=>0, :total_line=>0}]
+            )
+          ]
+        end
+
+        it "doesn't return any instances of ArrayCollect" do
+          ArrayCollect.instances(histories).should be_empty
+        end
+
+      end      
+
+    end
 
     describe '#context_history' do
 
@@ -43,6 +79,26 @@ module Cauldron
         end
 
       end
+
+    end
+
+    describe '#==' do
+
+      describe 'ArrayCollect.new([0]) == ArrayCollect.new([0])' do
+
+        it 'is true' do
+          ArrayCollect.new([0]).should == ArrayCollect.new([0])
+        end        
+
+      end
+
+      describe 'ArrayCollect.new([0]) == ArrayCollect.new([1])' do
+
+        it 'is false' do
+          ArrayCollect.new([0]).should_not == ArrayCollect.new([1])
+        end        
+
+      end      
 
     end
 
