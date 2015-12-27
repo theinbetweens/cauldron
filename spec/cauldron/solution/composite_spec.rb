@@ -39,6 +39,10 @@ end
           end          
       } do
 
+        let(:composite) do
+          Composite.new([Tree::TreeNode.new("CHILD1", ArrayCollect.new([0]) )])
+        end
+
         it %q{
 def function(var0)
   var0.collect do |var1|
@@ -47,7 +51,7 @@ def function(var0)
   record(1,0,1,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
 end          
         } do
-          Composite.new([]).insert_tracking([]).sexp.should match_code_of( %q{
+          composite.insert_tracking([]).sexp.should match_code_of( %q{
 def function(var0)
   var0.collect do |var1|
     record(0,1,1,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })

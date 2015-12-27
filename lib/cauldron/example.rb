@@ -2,7 +2,7 @@ module Cauldron
 
   class Example
 
-    attr_reader :arguments
+    attr_reader :arguments, :response
 
     def initialize(hash)
       @arguments, @response = hash[:arguments], hash[:response]

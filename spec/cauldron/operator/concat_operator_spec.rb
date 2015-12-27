@@ -34,10 +34,13 @@ module Cauldron
 
         context 'response is "foobar"' do
 
+          let(:problems) do
+            Cauldron::ExampleSet.new(
+              [Cauldron::Example.new({ arguments: ['foo'], response: 'foobar'})]
+            )
+          end          
+
           it 'return "[bar]"' do
-            problems = [
-              { arguments: ['foo'], response: 'foobar'}
-            ]
             ConcatOperator.find_constants(problems).should == ['bar']
           end
 
@@ -45,10 +48,13 @@ module Cauldron
 
         context 'response is "barfoo"' do
 
+          let(:problems) do
+            Cauldron::ExampleSet.new(
+              [Cauldron::Example.new({ arguments: ['foo'], response: 'barfoo'})]
+            )
+          end
+
           it 'returns "[]"' do
-            problems = [
-              { arguments: ['foo'], response: 'barfoo'}
-            ]
             ConcatOperator.find_constants(problems).should == []            
           end
 

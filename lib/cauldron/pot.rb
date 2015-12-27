@@ -4,11 +4,15 @@ module Cauldron
 
     def solve(problems)
 
+      example_set = Cauldron::ExampleSet.new(problems.collect {|x| Cauldron::Example.new(x) })
+
       # Identify the relationship
       
       # Pry::Code
       # TODO Change term to solution
-      relationship = find_relationship(problems)
+      puts 'LOOING FOR RELATIONSHIP'
+      relationship = find_relationship(example_set)
+      puts 'RELATIONSHIP FOUND'
 
       # Generate if statements
       result = ''
@@ -23,8 +27,9 @@ module Cauldron
       #       [:bodystmt, [:stmts_add, [:stmts_new], [:binary, [:var_ref, [:@ident, "var0", [2, 2]]], :*, [:@int, "3", [2, 9]]]], nil, nil, nil]]
       #   ]
       # ]
-      args = problems.first[:arguments]
-      variables = (0...args.length).collect {|x| 'var'+x.to_s}
+      #args = problems.first[:arguments]
+      #variables = (0...args.length).collect {|x| 'var'+x.to_s}
+      variables = example_set.variables
       sexp = Ripper::SexpBuilder.new('def function('+variables.join(',')+');'+relationship.to_ruby(variables)+"; end").parse
 
       Sorcerer.source(sexp, indent: true)
@@ -69,7 +74,7 @@ module Cauldron
       operations.each do |operation_class|
 
         # Are all the problems viable for this operation
-        if problems.all? {|x| operation_class.viable?(x[:arguments],x[:response]) }
+        if problems.all? {|x| operation_class.viable?(x.arguments,x.response) }
           viable_option_classes << operation_class
         end
 
@@ -153,6 +158,44 @@ module Cauldron
       end
       return successful_solutions[0] unless successful_solutions.empty?
 
+      # # Create the empty
+      # current_code = Cauldron::ActualizedComposite.new(
+      #   Cauldron::Composite.new([], problems)
+      # )
+      # histories = current_code.process
+      # new_composites = Cauldron::Composite.new([], problems).build_extensions(histories)
+      # if new_composites.any? {|x| x.solution?(problems) }
+      #   return new_composites.select {|x| x.solution?(problems) }
+      # end    
+
+      # # Extend the composites
+      # new_new_composites = []
+      # new_composites.each do |x|
+      #   new_new_composites += x.extend_solution(examples)
+      # end
+      # if new_new_composites.any? {|x| x.solution?(problems) }
+      #   return new_new_composites.select {|x| x.solution?(problems) }
+      # end      
+
+      #operators.each do |new_operator|
+        #composite.build 
+      #end
+      new_composites =  [ 
+                          Cauldron::ActualizedComposite.new(
+                            Cauldron::Solution::Composite.new([]), 
+                            problems
+                          )
+                        ]
+      itterations = 0
+      until itterations == 3
+        new_composites = extended_composites(new_composites)
+        if new_composites.any? {|x| x.solution?(problems) }
+          return new_composites.select {|x| x.solution?(problems) }
+        end
+        itterations += 1
+      end      
+
+
       solutions = []
       single_viable_operators(problems).each do |operation_class|
 
@@ -185,6 +228,12 @@ module Cauldron
       end
       IfRelationShip.new(problems)
     end
+
+    def extended_composites(composites)
+      composites.inject([]) do |total, x|
+        total += x.extend_solution; total
+      end
+    end    
     
   end
   

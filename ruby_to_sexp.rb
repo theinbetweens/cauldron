@@ -41,8 +41,12 @@ puts sexp.inspect
 pp sexp
 Sorcerer.source(sexp, indent: true)
 
+puts '================'
 sexp = Ripper::SexpBuilder.new(%q{
-record(4,5,6,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
+var0.collect do |var1|
+  record(0)
+end
+record(1)
 }).parse
 puts sexp.inspect
 pp sexp

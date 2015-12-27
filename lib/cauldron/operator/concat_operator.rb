@@ -12,9 +12,9 @@ class ConcatOperator
   end
 
   def self.find_constants(problems)
-    problems.inject([]) do |total, x| 
-      result = x[:response].gsub( Regexp.new('^'+x[:arguments].first),'')
-      total << result unless result == x[:response]
+    problems.examples.inject([]) do |total, x| 
+      result = x.response.gsub( Regexp.new('^'+x.arguments.first),'')
+      total << result unless result == x.response
       total
     end.uniq
   end

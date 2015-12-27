@@ -15,8 +15,6 @@ module Cauldron::Solution
 
     def insert_tracking(params)
       scope = Cauldron::Scope.new(['var0'])
-      # sexp = Ripper::SexpBuilder.new(
-      #         'def function('+variables.join(',')+');'+relationship.to_ruby(variables)+"; end").parse
       sexp = Ripper::SexpBuilder.new(
 %Q{
 def function(var0)
@@ -27,13 +25,40 @@ end
     end
 
     def tracking_sexp(scope, line, depth, total_line)
-      #binding.pry
-      [:bodystmt,
-        [:stmts_add,
-          [:stmts_new],
-          tracking(line,depth,total_line)
+      
+      if operators.empty?
+        sexp = [:bodystmt,
+          [:stmts_add,
+            [:stmts_new]
+          ],
+          Cauldron::Tracer.tracking(operators.length,depth,operators.length)
+        ]        
+      else
+        sexp = [:bodystmt,
+          [:stmts_add,
+            [:stmts_new],
+            operators.first.content.to_tracking_sexp(operators.first.children, scope, line, depth+1, total_line),
+            # *operators.collect do |x|
+            #   x.content.to_sexp(x.children, scope)
+            # end,
+          ],
+          Cauldron::Tracer.tracking(operators.length,depth,operators.length)
         ]
-      ]
+      end
+      sexp
+      #pp Sorcerer.source(sexp, indent: true)
+
+
+      # [:bodystmt,
+      #   [:stmts_add,
+      #     [:stmts_new],
+      #     operators.first.content.to_sexp(operators.first.children, scope),
+      #     # *operators.collect do |x|
+      #     #   x.content.to_sexp(x.children, scope)
+      #     # end,
+      #     Cauldron::Tracer.tracking(line,depth,total_line)
+      #   ]
+      # ]
       #[:program, tracking]
     end
 
@@ -77,69 +102,6 @@ end
       [:stmts_add, inner, statement]
     end
 
-    def tracking(line, depth, total_line)
-      [:program,
-       [:stmts_add,
-        [:stmts_new],
-        [:method_add_arg,
-         [:fcall, [:@ident, "record", [2, 0]]],
-         [:arg_paren,
-          [:args_add_block,
-           [:args_add,
-            [:args_add,
-             [:args_add,
-              [:args_add, [:args_new], [:@int, line, [2, 7]]],
-              [:@int, depth, [2, 9]]],
-             [:@int, total_line, [2, 11]]],
-            [:method_add_block,
-             [:call,
-              [:method_add_block,
-               [:call,
-                [:vcall, [:@ident, "local_variables", [2, 13]]],
-                :".",
-                [:@ident, "reject", [2, 29]]],
-               [:brace_block,
-                [:block_var,
-                 [:params,
-                  [[:@ident, "foo", [2, 38]]],
-                  nil,
-                  nil,
-                  nil,
-                  nil,
-                  nil,
-                  nil],
-                 false],
-                [:stmts_add,
-                 [:stmts_new],
-                 [:binary,
-                  [:var_ref, [:@ident, "foo", [2, 43]]],
-                  :==,
-                  [:symbol_literal, [:symbol, [:@ident, "_", [2, 51]]]]]]]],
-              :".",
-              [:@ident, "collect", [2, 54]]],
-             [:brace_block,
-              [:block_var,
-               [:params, [[:@ident, "bar", [2, 65]]], nil, nil, nil, nil, nil, nil],
-               false],
-              [:stmts_add,
-               [:stmts_new],
-               [:array,
-                [:args_add,
-                 [:args_add, [:args_new], [:var_ref, [:@ident, "bar", [2, 71]]]],
-                 [:method_add_arg,
-                  [:fcall, [:@ident, "eval", [2, 76]]],
-                  [:arg_paren,
-                   [:args_add_block,
-                    [:args_add,
-                     [:args_new],
-                     [:call,
-                      [:var_ref, [:@ident, "bar", [2, 81]]],
-                      :".",
-                      [:@ident, "to_s", [2, 85]]]],
-                    false]]]]]]]]],
-           false]]]]]
-    end
-
     def successful?(problem)
 
       # # TODO track the parameters of the operator
@@ -150,19 +112,19 @@ end
       # false    
       pt = PryTester.new
 
-      args = problem[:arguments]
-      variables = (0...args.length).collect {|x| 'var'+x.to_s}
+      args = problem.arguments
+      variables = problem.params #(0...args.length).collect {|x| 'var'+x.to_s}
       a = [
         'def function('+variables.join(',')+');'+self.to_ruby(variables)+"; end", 
-        'function('+problem[:arguments].collect {|x| to_programme(x) }.join(',')+')'
+        'function('+problem.arguments.collect {|x| to_programme(x) }.join(',')+')'
       ]
       
       res = pt.eval(
-        ['def function('+variables.join(',')+');'+self.to_ruby(variables)+"; end", 'function('+problem[:arguments].collect {|x| to_programme(x) }.join(',')+')']
+        ['def function('+variables.join(',')+');'+self.to_ruby(variables)+"; end", 'function('+problem.arguments.collect {|x| to_programme(x) }.join(',')+')']
       )
 
       #problem[:response] == Pry::Code.new(self.to_ruby)
-      problem[:response] == res
+      problem.response == res
     end
 
     def to_programme(value)

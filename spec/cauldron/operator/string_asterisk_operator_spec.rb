@@ -59,10 +59,13 @@ module Cauldron
 
         context 'response string is hellohello' do
 
+          let(:problems) do
+            Cauldron::ExampleSet.new(
+              [Cauldron::Example.new({ arguments: ['hello'], response: 'hellohello' })]
+            )
+          end          
+
           it 'returns [2]' do
-            problems = [
-              { arguments: ['hello'], response: 'hellohello' }
-            ]
             StringAsteriskOperator.find_constants(problems).should == [2]
           end
 
@@ -70,10 +73,13 @@ module Cauldron
 
         context 'response string is "foo"' do
 
+          let(:problems) do
+            Cauldron::ExampleSet.new(
+              [Cauldron::Example.new({ arguments: ['hello'], response: 'foo' })]
+            )
+          end          
+
           it 'returns []' do
-            problems = [
-              { arguments: ['hello'], response: 'foo' }
-            ]
             StringAsteriskOperator.find_constants(problems).should == []  
           end
 
@@ -86,8 +92,10 @@ module Cauldron
         context 'response is ["foofoo", "limalima"]' do
 
           let(:problems) do
-            [{:arguments=>[["foo", "lima"]], :response=>["foofoo", "limalima"]}]
-          end
+            Cauldron::ExampleSet.new(
+              [Cauldron::Example.new({ arguments: [["foo", "lima"]], response: ["foofoo", "limalima"] })]
+            )
+          end          
 
           it 'returns []' do
             StringAsteriskOperator.find_constants(problems).should == []

@@ -11,9 +11,9 @@ module Cauldron::Solution
     end
 
     def successful?(problem)
-      return false unless problem[:arguments].first.kind_of?(Array)
-      return false unless problem[:arguments].first[0] * 2 == problem[:response][0]
-      return false unless problem[:arguments].first[1] * 2 == problem[:response][1]
+      return false unless problem.arguments.first.kind_of?(Array)
+      return false unless problem.arguments.first[0] * 2 == problem.response[0]
+      return false unless problem.arguments.first[1] * 2 == problem.response[1]
       true    
     end
 

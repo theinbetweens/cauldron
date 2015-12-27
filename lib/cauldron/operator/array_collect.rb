@@ -75,6 +75,52 @@ class ArrayCollect
     build(operators, variables)   
   end
 
+  def block_var(variables)
+    [:block_var,
+      [
+        :params, 
+        [[:@ident, variables.first]]
+      ]
+    ]
+  end
+
+   # [:method_add_block,
+   #  [:call,
+   #   [:vcall, [:@ident, "var0", [2, 0]]],
+   #   :".",
+   #   [:@ident, "collect", [2, 5]]],
+   #  [:do_block,
+   #   [:block_var,
+   #    [:params, [[:@ident, "var1", [2, 17]]], nil, nil, nil, nil, nil, nil],
+   #    false],
+   #   [:stmts_add,
+   #    [:stmts_new],
+   #    [:method_add_arg,
+   #     [:fcall, [:@ident, "record", [3, 2]]],
+   #     [:arg_paren,
+   #      [:args_add_block,
+   #       [:args_add, [:args_new], [:@int, "0", [3, 9]]],
+   #       false]]]]]]
+
+  def to_tracking_sexp(operators, scope, line, depth, total_line)
+    total_line += 1
+    scope_var = scope.new_variable!
+    [
+      :method_add_block,
+      [
+        :call,
+        [:vcall, [:@ident, scope[@indexes[0] ]]],
+        :".",
+        [:@ident, "collect"]
+      ],
+      [
+        :do_block,
+        block_var([scope_var]),
+        Cauldron::Tracer.tracking(line, depth, total_line)
+      ]
+    ]
+  end
+
   # Could be blockify_problem
   def self.step_problem(problem)
     result = []
@@ -131,13 +177,19 @@ class ArrayCollect
     []
   end
 
-  def self.instances(histories)
+  def self.instances(histories, composite, examples)
     results = []
     histories.each do |history|
       results += instances_for_history(history)
     end
     indexes = results.collect {|x| x.to_s.match(/(\d)/)[0] }
-    indexes.collect {|x| ArrayCollect.new([x.to_i])}
+    #indexes.collect {|x| ArrayCollect.new([x.to_i])}
+    #indexes.collect {|x| ArrayCollect.new([x.to_i])}
+    indexes.collect do |x|
+      Cauldron::Solution::Composite.new(
+        [ Tree::TreeNode.new("CHILD1", ArrayCollect.new([x.to_i]) )  ]
+      )
+    end
   end
 
   def self.instances_for_history(history)

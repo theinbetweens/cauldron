@@ -16,6 +16,7 @@ require 'core/string'
 
 require 'cauldron/pot'
 require 'cauldron/example'
+require 'cauldron/example_set'
 require 'cauldron/terminal'
 require 'cauldron/scope'
 require 'cauldron/history'

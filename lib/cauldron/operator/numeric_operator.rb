@@ -48,7 +48,7 @@ class NumericOperator
   end
 
   def self.find_constants(problems)
-    problems.collect {|x| x[:response] - x[:arguments].first }.uniq
+    problems.collect {|x| x.response - x.arguments.first }.uniq
   end
 
   def self.uses_constants?
@@ -61,6 +61,15 @@ class NumericOperator
 
   def branch?
     false
+  end
+
+  def self.instances(histories, composite, examples)
+    constant = examples.examples.first.response - histories.first.logs.first[:var0] 
+    [
+      Cauldron::Solution::Composite.new(
+      [ Tree::TreeNode.new("CHILD1", self.new([0],constant) ) ]
+      )
+    ]
   end
     
 end

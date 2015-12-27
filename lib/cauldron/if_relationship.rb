@@ -11,8 +11,8 @@ class IfRelationship < Relationship
     # Add the arguments
     result = ''
     @problems.each_with_index do |x,i|
-      result += '  if '+variables[0].to_s+' == '+quote(x[:arguments][0])+"\n"
-      result += '    return '+quote(x[:response])+"\n"
+      result += '  if '+variables[0].to_s+' == '+quote(x.arguments[0])+"\n"
+      result += '    return '+quote(x.response)+"\n"
       result += '  end'+"\n"
     end    
     result

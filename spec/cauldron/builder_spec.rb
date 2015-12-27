@@ -26,8 +26,8 @@ module Cauldron
 
         let(:builder) { Cauldron::Builder.new(composite) }
 
-        it 'results include array collect' do
-          builder.insertable_operators(examples).should include_an_instance_of(ArrayCollect)
+        it 'results include array Composite' do
+          builder.insertable_operators(examples).should include_an_instance_of(Cauldron::Solution::Composite)
         end
 
         it 'results do not include a string asterisk' do
@@ -194,7 +194,9 @@ module Cauldron
           it %q{is 
 {:var0 => ['Sparky']}
             } do
-              builder.trace(example).should == [ {:var0 => 'Sparky'} ]
+              builder.trace(
+                example
+              ).logs.should == [ {:var0 => 'Sparky', :line=>0, :depth=>0, :total_line=>0} ]
           end
 
         end

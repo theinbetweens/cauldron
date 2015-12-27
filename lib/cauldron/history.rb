@@ -2,6 +2,8 @@ module Cauldron
 
   class History
 
+    attr_reader :logs
+
     def initialize(logs)
       @logs = logs
     end

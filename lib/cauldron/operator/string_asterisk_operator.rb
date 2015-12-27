@@ -44,8 +44,8 @@ class StringAsteriskOperator
   end
 
   def self.find_constants(problems)
-    return [] unless problems.all? { |x| x[:response].kind_of?(String) }
-    problems.collect {|x| x[:response].scan(x[:arguments].first).count }.reject {|x| x == 0}
+    return [] unless problems.all? { |x| x.response.kind_of?(String) }
+    problems.collect {|x| x.response.scan(x.arguments.first).count }.reject {|x| x == 0}
   end
 
   def self.viable?(arguments,output)

@@ -6,6 +6,10 @@ module Cauldron
 
     describe '.instances' do
 
+      let(:composite) do
+        Cauldron::Solution::Composite.new([])
+      end      
+
       context 'histories [[{:var0=>["Sparky", "Kel"], :line=>0, :depth=>0, :total_line=>0}]]' do
 
         let(:histories) do
@@ -16,8 +20,21 @@ module Cauldron
           ]
         end
 
-        it 'returns an instance of ArrayCollect' do
-          ArrayCollect.instances(histories).should include( ArrayCollect.new([0]) )
+        let(:examples) do
+          Cauldron::ExampleSet.new(
+            [
+              Cauldron::Example.new({arguments: [["Sparky", "Kel"]], response: ["Spark", "Ke"]})
+            ]
+          )
+        end
+
+        it 'returns an instance of Composite' do
+          ArrayCollect.instances(histories,composite,examples).first.class == Cauldron::Solution::Composite
+          # ArrayCollect.instances(histories,composite,examples).should include( 
+          #   Cauldron::Solution::Composite.new(
+          #     [ArrayCollect.new([0])]
+          #   ) 
+          # )
         end
 
       end
@@ -32,8 +49,16 @@ module Cauldron
           ]
         end
 
+        let(:examples) do
+          Cauldron::ExampleSet.new(
+            [
+              Cauldron::Example.new({arguments: ["Sparky"], response: ["Spark"]})
+            ]
+          )
+        end        
+
         it "doesn't return any instances of ArrayCollect" do
-          ArrayCollect.instances(histories).should be_empty
+          ArrayCollect.instances(histories,composite,examples).should be_empty
         end
 
       end      
