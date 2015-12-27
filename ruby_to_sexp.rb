@@ -51,3 +51,13 @@ record(1)
 puts sexp.inspect
 pp sexp
 Sorcerer.source(sexp, indent: true)
+
+puts '================'
+sexp = Ripper::SexpBuilder.new(%q{
+def test(var0)
+  var0.bounce
+end
+}).parse
+puts sexp.inspect
+pp sexp
+Sorcerer.source(sexp, indent: true)
