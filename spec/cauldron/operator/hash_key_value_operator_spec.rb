@@ -36,10 +36,13 @@ module Cauldron
 
       context 'hash uses key :foo' do
 
+        let(:problems) do
+          Cauldron::ExampleSet.new(
+            [Cauldron::Example.new({ arguments: [{:foo => 'bar'}], response: 'bar'})]
+          )
+        end         
+
         it 'return ":foo"' do
-          problems = [
-            { arguments: [{:foo => 'bar'}], response: 'bar'}
-          ]
           HashKeyValueOperator.find_constants(problems).should == [:foo]
         end
 
@@ -51,11 +54,16 @@ module Cauldron
 
       context 'both problems return reponse when using the key' do
 
+        let(:problems) do
+          Cauldron::ExampleSet.new(
+            [
+              Cauldron::Example.new({ arguments: [{:foo => 'bar'}], response: 'bar'}),
+              Cauldron::Example.new({ arguments: [{:foo => 'mass', :bar => 'effect'}], response: 'mass'}),
+            ]
+          )
+        end        
+
         it 'is true' do
-          problems = [
-            { arguments: [{:foo => 'bar'}], response: 'bar'},
-            { arguments: [{:foo => 'mass', :bar => 'effect'}], response: 'mass'}
-          ]
           operator = HashKeyValueOperator.new([0],:foo)  
           problems.all? {|x| operator.successful?(x) }.should == true
         end

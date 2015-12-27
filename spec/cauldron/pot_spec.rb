@@ -177,13 +177,20 @@ end
 
       context 'using the foo*2 problem' do
 
+        let(:problems) do
+          Cauldron::ExampleSet.new(
+            [
+              Cauldron::Example.new({ arguments: [['foo','lima']], response: ['foofoo','limalima'] }),
+              Cauldron::Example.new({ arguments: [['bar','delta']], response: ['barbar','deltadelta'] }),
+            ]
+          )
+        end        
+
         it 'returns Array#collect and String#*' do
+          pending
           pot = Pot.new
           pot.viable_double_operators(
-            [
-              { arguments: [['foo','lima']], response: ['foofoo','limalima'] },
-              { arguments: [['bar','delta']], response: ['barbar','deltadelta'] }
-            ]
+            problems
           ).to_set.should == [
             [ArrayCollect, ConcatOperator],[ArrayCollect, StringAsteriskOperator]
           ].to_set
@@ -211,10 +218,18 @@ end
 
         context 'response is ["a","b","c"]' do
 
+          let(:problems) do
+            Cauldron::ExampleSet.new(
+              [
+                Cauldron::Example.new({ arguments: [['a','b','c']], response: ['a','b','c']})
+              ]
+            )
+          end          
+
           it 'response contains "ArrayCollect" class' do
             pot = Pot.new
             pot.single_viable_operators(
-              [{ arguments: [['a','b','c']], response: ['a','b','c']}]
+              problems
             ).should include(ArrayCollect)
           end
 

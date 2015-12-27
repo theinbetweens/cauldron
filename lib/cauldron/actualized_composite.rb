@@ -17,9 +17,13 @@ module Cauldron
 
     def extend_solution
       builder = Builder.new(composite)
-      #binding.pry
       builder.insertable_operators(examples)
     end
+
+    def solution?(problems)
+      # TODO Should not need to 
+      composite.solution?(examples)
+    end    
 
   end
 

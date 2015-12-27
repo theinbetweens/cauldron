@@ -26,8 +26,8 @@ module Cauldron
 
         let(:builder) { Cauldron::Builder.new(composite) }
 
-        it 'results include array Composite' do
-          builder.insertable_operators(examples).should include_an_instance_of(Cauldron::Solution::Composite)
+        it 'results include array ActualizedComposite' do
+          builder.insertable_operators(examples).should include_an_instance_of(Cauldron::ActualizedComposite)
         end
 
         it 'results do not include a string asterisk' do

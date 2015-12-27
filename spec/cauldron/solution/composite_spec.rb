@@ -4,6 +4,29 @@ module Cauldron::Solution
   
   describe 'Composite' do
 
+    describe '#solution?' do
+
+      let(:problems) do
+        Cauldron::ExampleSet.new(
+          [
+            Cauldron::Example.new({ arguments: [["lion", "bear"]], response: ["bear", "lion"]}),
+            Cauldron::Example.new({ arguments: [["foo", "bar"]], response: ["bar", "foo"]})
+          ]
+        )
+      end      
+
+      let(:composite) do
+        Cauldron::Solution::Composite.new(
+          [Tree::TreeNode.new("CHILD1", ArrayCollect.new([0]))]
+        )
+      end
+
+      it 'is false' do
+        composite.solution?(problems).should == false
+      end
+
+    end
+
     describe '#insert_tracking' do
 
       context %q{

@@ -18,11 +18,11 @@ class HashKeyValueOperator
   end
 
   def self.find_constants(problems)
-    problems.collect {|x| x[:arguments].first.keys }.flatten
+    problems.collect {|x| x.arguments.first.keys }.flatten
   end
 
   def successful?(problem)
-    if problem[:arguments].first[@constant] == problem[:response]
+    if problem.arguments.first[@constant] == problem.response
       return true
     end
     return false    

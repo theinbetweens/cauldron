@@ -10,9 +10,7 @@ module Cauldron
       
       # Pry::Code
       # TODO Change term to solution
-      puts 'LOOING FOR RELATIONSHIP'
       relationship = find_relationship(example_set)
-      puts 'RELATIONSHIP FOUND'
 
       # Generate if statements
       result = ''
@@ -52,7 +50,7 @@ module Cauldron
       child_operators.each do |action|
         next unless action.uses_block?
         updated_problems = []
-        problems.each do |problem|
+        problems.examples.each do |problem|
           updated_problems += action.step_problem(problem)
         end
         viable_next_operators = single_viable_operators(updated_problems) 
@@ -213,15 +211,15 @@ module Cauldron
         end
       end
 
-      operator_chains = viable_double_operators(problems)
+      # operator_chains = viable_double_operators(problems)
 
-      operator_chains.each do |operators|
+      # operator_chains.each do |operators|
         
-        code = build_chain_operator(operators,problems)
-        if problems.all? {|x| code.successful?(x) }
-          return code
-        end
-      end
+      #   code = build_chain_operator(operators,problems)
+      #   if problems.all? {|x| code.successful?(x) }
+      #     return code
+      #   end
+      # end
 
       if IfRelationship.match? problems
         return IfRelationship.new(problems)

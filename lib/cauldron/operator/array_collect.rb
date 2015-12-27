@@ -124,7 +124,7 @@ class ArrayCollect
   # Could be blockify_problem
   def self.step_problem(problem)
     result = []
-    problem[:arguments].flatten.zip( problem[:response]) do |argument, response|
+    problem.arguments.flatten.zip( problem.response) do |argument, response|
       result << { arguments: [argument], response: response }
     end
     result
@@ -186,8 +186,11 @@ class ArrayCollect
     #indexes.collect {|x| ArrayCollect.new([x.to_i])}
     #indexes.collect {|x| ArrayCollect.new([x.to_i])}
     indexes.collect do |x|
-      Cauldron::Solution::Composite.new(
-        [ Tree::TreeNode.new("CHILD1", ArrayCollect.new([x.to_i]) )  ]
+      Cauldron::ActualizedComposite.new(
+        Cauldron::Solution::Composite.new(
+          [ Tree::TreeNode.new("CHILD1", ArrayCollect.new([x.to_i]) )  ]
+        ),
+        examples
       )
     end
   end

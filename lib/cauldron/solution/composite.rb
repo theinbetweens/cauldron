@@ -102,6 +102,10 @@ end
       [:stmts_add, inner, statement]
     end
 
+    def solution?(problems)
+      false
+    end
+
     def successful?(problem)
 
       # # TODO track the parameters of the operator

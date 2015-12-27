@@ -170,14 +170,22 @@ module Cauldron
 
       context 'using arguments "["foo","lima"]" and "["bar","delta"]"' do
 
+        let(:problem) do
+          #Cauldron::ExampleSet.new(
+            #[Cauldron::Example.new({ arguments: [['foo','lima']], response: ['foofoo','limalima']})]
+            Cauldron::Example.new({ arguments: [['foo','lima']], response: ['foofoo','limalima']})
+          #)
+        end        
+
         it 'returns arguments "["foo","lima"]" and "["bar","delta"]"' do
           #ArrayCollect.step_problems(
           # Maybe blockify would be more appropriate
           ArrayCollect.step_problem(
             #[
-              { arguments: [['foo','lima']], response: ['foofoo','limalima'] }#,
+              #{ arguments: [['foo','lima']], response: ['foofoo','limalima'] }#,
               #{ arguments: [['bar','delta']], response: ['barbar','deltadelta'] }
-            #]            
+            #]   
+            problem         
           ).should == [
             { arguments: ['foo'], response: 'foofoo' },
             { arguments: ['lima'], response: 'limalima' }
