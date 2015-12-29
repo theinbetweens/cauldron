@@ -2,7 +2,44 @@ require 'spec_helper'
 
 module Cauldron
   
-  describe ArrayCollect do   
+  describe ArrayCollect do
+
+    describe '#to_tracking_sexp' do
+
+      context 'code is:
+               var0.collect do |var1|
+                 var1 * 3 
+               end' do
+
+        let(:array_collect_node) do
+          node = Tree::TreeNode.new("CHILD1", ArrayCollect.new([0]))
+          node << Tree::TreeNode.new("CHILD1", StringAsteriskOperator.new([1],3))
+          node
+        end
+
+        let(:scope) do
+          Cauldron::Scope.new(['var0'])
+        end
+
+        it %q{generates a method:
+          var0.collect do |var1|
+            var1 * 3
+            record(1,1,2,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
+          end
+        } do
+          array_collect_node.content.to_tracking_sexp(
+            array_collect_node.children,scope, Caret.new
+          ).should match_code_of %q{
+            var0.collect do |var1|
+              var1 * 3
+              record(1,1,2,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
+            end
+          }
+        end      
+
+      end
+
+    end
 
     describe '.instances' do
 

@@ -30,10 +30,6 @@ class HashKeyValueOperator
 
   def to_ruby(operators, variables)
     Sorcerer.source build(operators, variables)
-    # if @constant.kind_of?(Symbol)
-    #   return %Q{  #{variables[@indexes[0]]}[:#{@constant}]}+"\n"
-    # end
-    # %Q{  #{variables[@indexes[0]]}['#{@constant}']}+"\n"
   end
 
   def build(operators, scope)

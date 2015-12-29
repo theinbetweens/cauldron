@@ -18,48 +18,45 @@ module Cauldron::Solution
       sexp = Ripper::SexpBuilder.new(
 %Q{
 def function(var0)
-  #{Sorcerer.source(tracking_sexp(scope,0,0,0)) }
+  #{Sorcerer.source(tracking_sexp(scope, Cauldron::Caret.new )) }
 end
 }).parse
       Cauldron::Tracer.new(sexp)
     end
 
-    def tracking_sexp(scope, line, depth, total_line)
-      
+    def tracking_sexp(scope, caret)
       if operators.empty?
         sexp = [:bodystmt,
           [:stmts_add,
             [:stmts_new]
           ],
-          Cauldron::Tracer.tracking(operators.length,depth,operators.length)
+          Cauldron::Tracer.tracking(caret.line, caret.current_depth, caret.total_lines)
         ]        
       else
-        sexp = [:bodystmt,
-          [:stmts_add,
-            [:stmts_new],
-            operators.first.content.to_tracking_sexp(operators.first.children, scope, line, depth+1, total_line),
-            # *operators.collect do |x|
-            #   x.content.to_sexp(x.children, scope)
-            # end,
-          ],
-          Cauldron::Tracer.tracking(operators.length,depth,operators.length)
-        ]
+
+        if operators.length == 1
+          sexp = [
+                  :bodystmt,
+                    [:stmts_add, 
+                      [:stmts_add,
+                        [:stmts_new],
+                        operators.first.content.to_tracking_sexp(
+                          operators.first.children, scope, caret
+                        )
+                      ],
+                      reset_and_track(caret)
+                    ]
+                  ]
+        else
+          raise StandardError.new('Currently only supporting 1')
+        end
       end
       sexp
-      #pp Sorcerer.source(sexp, indent: true)
+    end
 
-
-      # [:bodystmt,
-      #   [:stmts_add,
-      #     [:stmts_new],
-      #     operators.first.content.to_sexp(operators.first.children, scope),
-      #     # *operators.collect do |x|
-      #     #   x.content.to_sexp(x.children, scope)
-      #     # end,
-      #     Cauldron::Tracer.tracking(line,depth,total_line)
-      #   ]
-      # ]
-      #[:program, tracking]
+    def reset_and_track(caret)
+      caret.return_depth(0)
+      Cauldron::Tracer.tracking(caret.line, caret.current_depth, caret.total_lines)
     end
 
     def sexp(variables=[])

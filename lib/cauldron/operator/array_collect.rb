@@ -102,9 +102,11 @@ class ArrayCollect
    #       [:args_add, [:args_new], [:@int, "0", [3, 9]]],
    #       false]]]]]]
 
-  def to_tracking_sexp(operators, scope, line, depth, total_line)
-    total_line += 1
+  def to_tracking_sexp(operators, scope, caret)
+    caret.add_line(0)
+    caret.step_in
     scope_var = scope.new_variable!
+    #[:stmts_add, [:stmts_add, [:stmts_new], yield 1 ], yield 2 ]
     [
       :method_add_block,
       [
@@ -116,9 +118,30 @@ class ArrayCollect
       [
         :do_block,
         block_var([scope_var]),
-        Cauldron::Tracer.tracking(line, depth, total_line)
+        sexp_inserts(
+          scope, operators, caret
+          #operators += [Cauldron::Tracer.tracking(line, depth, total_line)]
+        )
       ]
     ]
+  end
+
+  def sexp_inserts(scope, children, caret)
+    if children.length == 1
+      caret.add_line(1)
+      #[:stmts_add, [:stmts_add, [:stmts_new], yield 1 ], yield 2 ]
+      #[:stmts_add, [:stmts_new], children[0].content.to_sexp(children[0].children, scope) ]
+      #elsif children.length == 2
+      return [
+        :stmts_add, 
+        [:stmts_add, 
+          [:stmts_new], 
+          children[0].content.to_sexp(children[0].children, scope)
+        ], 
+        Cauldron::Tracer.tracking(caret.line, caret.current_depth, caret.total_lines)
+      ]
+    end
+      
   end
 
   # Could be blockify_problem

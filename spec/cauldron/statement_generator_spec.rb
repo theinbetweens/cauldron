@@ -18,7 +18,34 @@ module Cauldron
 
       it 'returns a instance that returns an instance with #build' do
         subject.build('string',[:chop]).first.build([0]).should be_instance_of(DynamicOperator)
-      end      
+      end
+
+      describe 'generating String#chop' do
+
+        let(:operators) { [] }
+        let(:scope) { Cauldron::Scope.new(['var0']) }
+
+        it 'returns a instance that returns sexp with #to_tracking_sexp' do
+          subject.build(
+            'string',[:chop]
+          ).first.to_tracking_sexp(
+            operators, scope, 0, 0, 0
+          ).should be_instance_of(Array)
+        end
+
+        describe '#to_ruby' do
+
+          let(:operator) do
+            subject.build('string',[:chop]).first.build([0])
+          end
+
+          it 'returns the "var0.chop"' do
+            operator.to_ruby(scope).should == 'var0.chop'
+          end
+
+        end
+
+      end
 
     end
 

@@ -54,10 +54,21 @@ Sorcerer.source(sexp, indent: true)
 
 puts '================'
 sexp = Ripper::SexpBuilder.new(%q{
-def test(var0)
-  var0.bounce
+var0.collect do |var1|
+  var1 * 3 
 end
 }).parse
-puts sexp.inspect
+pp sexp
+Sorcerer.source(sexp, indent: true)
+
+puts '================'
+sexp = Ripper::SexpBuilder.new(%q{
+def function(var0)
+  var0.collect do |var1|
+    record(0,1,1,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
+  end
+  record(1,0,1,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
+end
+}).parse
 pp sexp
 Sorcerer.source(sexp, indent: true)

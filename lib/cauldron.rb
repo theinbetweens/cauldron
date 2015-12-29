@@ -15,6 +15,7 @@ require 'tree'
 require 'core/string'
 
 require 'cauldron/pot'
+require 'cauldron/caret'
 require 'cauldron/example'
 require 'cauldron/example_set'
 require 'cauldron/terminal'

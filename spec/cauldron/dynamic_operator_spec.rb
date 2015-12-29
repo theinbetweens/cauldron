@@ -4,6 +4,22 @@ module Cauldron
   
   describe DynamicOperator do
 
+    describe '#build' do
+
+      let(:dynamic_operator) do
+        StatementGenerator.new.build('string',[:chop]).first
+      end      
+
+      it 'returns a instance of DynamicOperator' do
+        dynamic_operator.build([0]).should be_instance_of(DynamicOperator)
+      end
+
+      it 'returned instance responds to #instances' do
+        dynamic_operator.build([0]).respond_to?(:instances).should == true
+      end      
+
+    end
+
     describe '#write_to_file' do
 
       let(:filename) { 'temp.rb' }

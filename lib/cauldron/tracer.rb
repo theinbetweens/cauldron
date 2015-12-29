@@ -12,10 +12,6 @@ module Cauldron
     def process(example)
       object = Tracer.new(sexp)
       object.instance_eval(Sorcerer.source(sexp, indent: true))
-      #object.instance_eval("def foo(x); x +6; end")
-
-      #object.function(params)
-      #object.function(*example.arguments)
       object.function(example.arguments.first)
 
       History.new(object.results)
@@ -34,8 +30,8 @@ module Cauldron
 
    def self.tracking(line, depth, total_line)
       # [:program,
-       [:stmts_add,
-        [:stmts_new],
+       #[:stmts_add,
+        #[:stmts_new],
         [:method_add_arg,
          [:fcall, [:@ident, "record", [2, 0]]],
          [:arg_paren,
@@ -92,7 +88,7 @@ module Cauldron
                       :".",
                       [:@ident, "to_s", [2, 85]]]],
                     false]]]]]]]]],
-           false]]]]
+           false]]]#]
     end
 
   end

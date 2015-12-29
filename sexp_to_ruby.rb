@@ -144,3 +144,7 @@ sexp =  [:program,
 
 pp Sorcerer.source(sexp, indent: true)
 puts Sorcerer.source(sexp, indent: true)
+
+
+sexp = [:call, [:vcall, [:@ident, 'var0']], :".", [:@ident, "chop"]]
+pp Sorcerer.source(sexp, indent: true)
