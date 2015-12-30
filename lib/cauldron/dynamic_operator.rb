@@ -3,9 +3,11 @@ module Cauldron
   class DynamicOperator
 
     attr_reader :indexes
+    attr_accessor :failed_uses
 
     def initialize(information, sexp_methods)
       @information, @sexp_methods = information, sexp_methods
+      @failed_uses = []
       @closed = false
     end
 
@@ -29,6 +31,14 @@ module Cauldron
         file << "\n"
         file << "end"
       end
+    end
+
+    def rip2
+      %Q{
+      def function(var0)
+        #{Sorcerer.source(to_sexp(Cauldron::Scope.new(['var0'])), indent: true)}
+      end
+      }
     end
 
     def rip(composite,examples)

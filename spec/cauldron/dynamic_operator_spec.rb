@@ -4,6 +4,11 @@ module Cauldron
   
   describe DynamicOperator do
 
+    describe '#extend_validation' do
+
+      # PENDING - it should add more tracking as sexp
+    end
+
     describe '#build' do
 
       let(:dynamic_operator) do
@@ -32,7 +37,27 @@ module Cauldron
           Cauldron::Solution::Composite.new(
             [ Tree::TreeNode.new("CHILD1", dynamic_operator.init([0]) ) ]
           )
-        end        
+        end
+
+        describe 'using incompatible variable' do
+
+          context 'when var0 is 8' do
+
+            let(:histories) do
+              Cauldron::Histories.new([Cauldron::History.new([{var0: 8}])])
+            end
+
+            it 'saves the failed example' do
+              expect{
+                dynamic_operator.realizable?(histories)
+              }.to change{
+                dynamic_operator.failed_uses.length
+              }.from(0).to(1)
+            end
+
+          end          
+
+        end     
 
         context 'when var0 is 8' do
 
@@ -46,8 +71,14 @@ module Cauldron
             )
           end
 
+          let(:histories) do
+            Cauldron::Histories.new(
+              [Cauldron::History.new([{var0: 8}])]
+            )
+          end
+
           it 'returns false' do
-            dynamic_operator.should_not be_realizable(composite,examples)
+            dynamic_operator.should_not be_realizable(histories)
           end
 
         end
@@ -62,10 +93,16 @@ module Cauldron
                 Cauldron::Example.new({arguments: ['test'], response: 'sdsas'}),
               ]
             )
-          end          
+          end
+
+          let(:histories) do
+            Cauldron::Histories.new(
+              [Cauldron::History.new([{var0: 'test'}])]
+            )
+          end
 
           it 'returns true' do
-            dynamic_operator.should be_realizable(composite,examples)
+            dynamic_operator.should be_realizable(histories)
           end
 
         end        
@@ -103,7 +140,9 @@ module Cauldron
       end
 
       before(:each) do
-        FileUtils.rm File.join('tmp', 'temp.rb')
+        if File.exists? File.join('tmp', 'temp.rb')
+          FileUtils.rm File.join('tmp', 'temp.rb')
+        end
       end
 
       it 'creates a file "tmp/temp.rb"' do

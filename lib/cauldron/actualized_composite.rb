@@ -10,9 +10,15 @@ module Cauldron
     end
 
     def histories
-      @examples.collect do |example|
-        @composite.record(example)
-      end
+      
+
+      # results = @examples.collect do |example|
+      #             Cauldron::History.new( @composite.record(example) )
+      #           end
+      results = @examples.collect do |example|
+                  @composite.record(example)
+                end                
+      Cauldron::Histories.new(results)
     end
 
     def extend_solution

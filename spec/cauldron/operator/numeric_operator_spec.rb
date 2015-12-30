@@ -2,7 +2,41 @@ require 'spec_helper'
 
 module Cauldron
   
-  describe 'NumericOperator' do 
+  describe 'NumericOperator' do
+
+    describe '#realizable?' do
+
+      let(:subject) { NumericOperator.init([0], 4) }
+
+      context 'histories is [[{:var0 => 8}]]' do
+
+        let(:histories) do 
+          Histories.new([Cauldron::History.new([{:var0 => 8}])])
+        end
+
+        before(:each) { histories.stub(:variable_permutations).and_return [{:var0 => 8}] }
+
+        it 'returns true' do
+          subject.realizable?(histories).should == true
+        end
+
+      end
+
+      context %q{histories is [[{:var0 => 'string'}]]} do
+
+        let(:histories) do 
+          Histories.new([Cauldron::History.new([{:var0 => 'string'}])])
+        end
+
+        before(:each) { histories.stub(:variable_permutations).and_return [{:var0 => 'string'}] }
+
+        it 'returns false' do
+          subject.realizable?(histories).should == false
+        end
+
+      end      
+
+    end
     
     describe '.viable?' do
 
@@ -74,10 +108,11 @@ module Cauldron
       describe 'var0 needs to increase by 1' do
 
         let(:histories) do
-          [
-            Cauldron::History.new([{:var0=>7, :line=>0, :depth=>0, :total_line=>0}]),
-            Cauldron::History.new([{:var0=>10, :line=>0, :depth=>0, :total_line=>0}])
-          ]
+          Cauldron::Histories.new([
+              Cauldron::History.new([{:var0=>7, :line=>0, :depth=>0, :total_line=>0}]),
+              Cauldron::History.new([{:var0=>10, :line=>0, :depth=>0, :total_line=>0}])
+            ]
+          )
         end
 
         let(:examples) do

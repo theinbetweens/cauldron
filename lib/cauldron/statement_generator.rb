@@ -37,11 +37,11 @@ module Cauldron
         def instances(histories, composite, examples) 
           # TEMP
           raise StandardError.new('Examples should be an example') unless examples.class == ExampleSet
-
+          
           res = Cauldron::Solution::Composite.new(
             [ Tree::TreeNode.new("CHILD1", self.init([0]) ) ]
           )
-          unless self.init([0]).realizable?(res, examples)
+          unless self.init([0]).realizable?(histories)
             return []
           end
 
@@ -60,18 +60,23 @@ module Cauldron
           results
         end
 
-        def realizable?(composite, examples)
+        def realize(params)
           o = Object.new
-          composite.to_ruby(examples.scope)
-          sexp = rip(composite,examples) 
-          o.instance_eval(Sorcerer.source(sexp, indent: true))
-          begin
-            o.function(examples.examples.first.arguments.first)
-          rescue NoMethodError
-            # TODO Need to record failing tests here
-            return false
+          o.instance_eval(rip2)
+          o.function(*params.values)
+        end
+
+        def realizable?(histories)
+          parameters = histories.variable_permutations(@indexes.length)
+          parameters.each do |params|
+            begin
+              realize(params)
+            rescue => e
+              failed_uses.push(histories)
+              return false
+            end
           end
-          true
+          true          
         end
 
         def to_tracking_sexp(operators, scope, caret)
@@ -94,3 +99,21 @@ module Cauldron
   end
 
 end
+
+# TODO stacking mulitple rescues does not work
+# realizable?
+
+# def realizable?(composite, examples)
+#   o = Object.new
+#   composite.to_ruby(examples.scope)
+#   sexp = rip(composite,examples) 
+#   o.instance_eval(Sorcerer.source(sexp, indent: true))
+#   begin
+#     o.function(examples.examples.first.arguments.first)
+#   rescue NoMethodError
+#     # TODO Need to record failing tests here
+#     failed_uses << { composite:composite, examples: examples}
+#     return false
+#   end
+#   true
+# end

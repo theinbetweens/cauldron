@@ -44,7 +44,10 @@ module Cauldron
       # 3 - Save the error
       # 4 - Update code
 
-      self.class.available_statement_types.inject([]) do |total,x| 
+      # Get the history
+      # ---------------
+
+      self.class.available_statement_types.inject([]) do |total,x|
         total += x.instances(h, composite, examples)
         total 
       end

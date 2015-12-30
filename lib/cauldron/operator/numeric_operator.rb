@@ -6,6 +6,10 @@ class NumericOperator
     @constant, @indexes = constant, indexes
   end
 
+  def self.init(indexes, constant)
+    self.new(indexes, constant)
+  end
+
   # Is the problem suitable for a numeric operatio?
   # e.g. can the .find_contants call be called without error
   def self.viable?(arguments,output)
@@ -23,14 +27,38 @@ class NumericOperator
 
   end
 
+  def realizable?(histories)
+    parameters = histories.variable_permutations(@indexes.length)
+    parameters.each do |params|
+      begin
+        realize(params)
+      rescue TypeError
+        return false
+      end
+      #   failed_uses << { composite:composite, examples: examples}
+      #   return false        
+      # end
+    end
+    true
+  end
+
+  def realize(params)
+    o = Object.new
+    a = %Q{
+      def function(var0)
+        #{Sorcerer.source(to_sexp(Cauldron::Scope.new(['var0'])), indent: true)}
+      end
+    }
+    o.instance_eval(a)
+    o.function(*params.values)
+  end
+
   def to_sexp(scope)
     [:binary, [:@ident, scope[@indexes[0]] ] , :+, [:@int, @constant.to_s]]
   end
 
-  def to_ruby
-    #'  var0 + '+@constant.to_s+"\n"
-    #[:binary, [:@ident, "var0"], :+, [:@int, @constant.to_s]]
-    Sorcerer.source self.to_sexp
+  def to_ruby(scope)
+    Sorcerer.source self.to_sexp(scope)
   end
 
   def build(operators, scope)

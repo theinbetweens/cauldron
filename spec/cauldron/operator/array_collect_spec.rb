@@ -66,7 +66,9 @@ module Cauldron
         end
 
         it 'returns an instance of Composite' do
-          ArrayCollect.instances(histories,composite,examples).first.class == Cauldron::Solution::Composite
+          ArrayCollect.instances(
+            histories,composite,examples
+          ).first.class == Cauldron::Solution::Composite
           # ArrayCollect.instances(histories,composite,examples).should include( 
           #   Cauldron::Solution::Composite.new(
           #     [ArrayCollect.new([0])]

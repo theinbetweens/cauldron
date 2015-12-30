@@ -23,7 +23,7 @@ module Cauldron
         end
         total
       end
-    end
+    end    
 
   end
 

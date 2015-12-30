@@ -218,9 +218,9 @@ class ArrayCollect
     end
   end
 
-  def self.instances_for_history(history)
-    history.variables.select do |x| 
-      history.values(x).all? {|y| y.kind_of?(Array) }
+  def self.instances_for_history(h)
+    h.variables.select do |x| 
+      h.values(x).all? {|y| y.kind_of?(Array) }
     end
   end
 
