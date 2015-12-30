@@ -26,6 +26,10 @@ module Cauldron
       examples.each_with_index(&block)
     end
 
+    def scope
+      Cauldron::Scope.new(examples.first.params)
+    end    
+
   end
 
 end

@@ -191,8 +191,14 @@ module Cauldron
           return new_composites.select {|x| x.solution?(problems) }
         end
         itterations += 1
-      end      
+      end
 
+
+      # 1. TRY TO FIND SOLUTION via the history
+      # 2. Desired history
+      # 3. Chaing matching history
+
+      # ================== END HERE ===============
 
       solutions = []
       single_viable_operators(problems).each do |operation_class|
@@ -231,7 +237,7 @@ module Cauldron
       composites.inject([]) do |total, x|
         total += x.extend_solution; total
       end
-    end    
+    end 
     
   end
   

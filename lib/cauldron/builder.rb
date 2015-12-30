@@ -37,7 +37,17 @@ module Cauldron
 
     def insertable_operators(examples)
       h = ActualizedComposite.new(composite, examples).histories
-      self.class.available_statement_types.inject([]) { |total,x| total += x.instances(h, composite, examples); total }
+      # TODO - Test the opperates here - and save errors
+
+      # 1. SHOULD IT BE VALID?
+      # 2. IS IT VALID
+      # 3 - Save the error
+      # 4 - Update code
+
+      self.class.available_statement_types.inject([]) do |total,x| 
+        total += x.instances(h, composite, examples)
+        total 
+      end
     end
 
     def self.available_statement_types

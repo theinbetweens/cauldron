@@ -19,7 +19,9 @@ module Cauldron
         end
 
         let(:examples) do
-          [ Example.new({ :arguments => [['Sparky', 'Kel']], :response => ['Spark','Ke'] })]
+          Cauldron::ExampleSet.new(
+            [Example.new({ :arguments => [['Sparky', 'Kel']], :response => ['Spark','Ke'] })]
+          )
         end
 
         let(:composite) { Cauldron::Solution::Composite.new([]) }
@@ -49,7 +51,9 @@ module Cauldron
         end
 
         let(:examples) do
-          [ Example.new({ :arguments => ['Sparky'], :response => 'Spark' })]
+          Cauldron::ExampleSet.new(
+            [ Example.new({ :arguments => ['Sparky'], :response => 'Spark' })]
+          )
         end
 
         let(:composite) { Cauldron::Solution::Composite.new([]) }

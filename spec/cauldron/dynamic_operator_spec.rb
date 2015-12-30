@@ -11,12 +11,66 @@ module Cauldron
       end      
 
       it 'returns a instance of DynamicOperator' do
-        dynamic_operator.build([0]).should be_instance_of(DynamicOperator)
+        dynamic_operator.init([0]).should be_instance_of(DynamicOperator)
       end
 
       it 'returned instance responds to #instances' do
-        dynamic_operator.build([0]).respond_to?(:instances).should == true
+        dynamic_operator.init([0]).respond_to?(:instances).should == true
       end      
+
+    end
+
+    describe '#realizable?' do
+
+      context 'var0.chop' do
+
+        let(:dynamic_operator) do
+          StatementGenerator.new.build('string',[:chop]).first.init([0])
+        end
+
+        let(:composite) do
+          Cauldron::Solution::Composite.new(
+            [ Tree::TreeNode.new("CHILD1", dynamic_operator.init([0]) ) ]
+          )
+        end        
+
+        context 'when var0 is 8' do
+
+          let(:scope) { Cauldron::Scope.new(['var0']) }
+
+          let(:examples) do
+            Cauldron::ExampleSet.new(
+              [
+                Cauldron::Example.new({arguments: [8], response: 8}),
+              ]
+            )
+          end
+
+          it 'returns false' do
+            dynamic_operator.should_not be_realizable(composite,examples)
+          end
+
+        end
+
+        context 'when var0 is "test"' do
+
+          let(:scope) { Cauldron::Scope.new(['var0']) }
+
+          let(:examples) do
+            Cauldron::ExampleSet.new(
+              [
+                Cauldron::Example.new({arguments: ['test'], response: 'sdsas'}),
+              ]
+            )
+          end          
+
+          it 'returns true' do
+            dynamic_operator.should be_realizable(composite,examples)
+          end
+
+        end        
+
+      end
 
     end
 

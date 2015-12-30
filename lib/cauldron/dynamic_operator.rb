@@ -31,6 +31,15 @@ module Cauldron
       end
     end
 
+    def rip(composite,examples)
+      Ripper::SexpBuilder.new(
+        %Q{
+        def function(var0)
+          #{composite.to_ruby(examples.scope)}
+        end
+      }).parse      
+    end
+
   end
 
 end
