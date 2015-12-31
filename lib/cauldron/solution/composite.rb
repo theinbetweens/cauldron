@@ -100,9 +100,31 @@ end
     end
 
     def solution?(problems)
-      false
+      o = Object.new
+      m = %Q{
+        def function(#{problems.variables.join(',')})
+          #{to_ruby(problems.scope)}
+        end
+      }
+      o.instance_eval(m)
+
+
+      #o.function *problems.examples.first.arguments
+      problems.all? do |example|
+        o.function(*example.arguments) == example.response
+      end
+
+      # puts '==================>>>'
+      # puts problems.inspect
+      # puts '==================>>>'
+      # puts to_ruby(problems.scope)
+      # puts '==================>>>>>>>>>>>>>>>>>>>>>'
+      # puts successful?(problems)
+      # puts '-------'
+      #false
     end
 
+    # TODO Drop this method
     def successful?(problem)
 
       # # TODO track the parameters of the operator
@@ -110,7 +132,8 @@ end
 
       # # TODO For now just evalute the code
       # return true if problem[:arguments].first == problem[:response]    
-      # false    
+      # false
+
       pt = PryTester.new
 
       args = problem.arguments
@@ -124,7 +147,6 @@ end
         ['def function('+variables.join(',')+');'+self.to_ruby(variables)+"; end", 'function('+problem.arguments.collect {|x| to_programme(x) }.join(',')+')']
       )
 
-      #problem[:response] == Pry::Code.new(self.to_ruby)
       problem.response == res
     end
 

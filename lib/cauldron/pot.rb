@@ -15,18 +15,6 @@ module Cauldron
       # Generate if statements
       result = ''
 
-      # Add the arguments
-      # [:program, 
-      #   [:stmts_add, 
-      #     [:stmts_new], 
-      #     [:def, 
-      #       [:@ident, "function", [1, 4]], 
-      #       [:paren, [:params, [[:@ident, "var0", [1, 13]]], nil, nil, nil, nil]], 
-      #       [:bodystmt, [:stmts_add, [:stmts_new], [:binary, [:var_ref, [:@ident, "var0", [2, 2]]], :*, [:@int, "3", [2, 9]]]], nil, nil, nil]]
-      #   ]
-      # ]
-      #args = problems.first[:arguments]
-      #variables = (0...args.length).collect {|x| 'var'+x.to_s}
       variables = example_set.variables
       sexp = Ripper::SexpBuilder.new('def function('+variables.join(',')+');'+relationship.to_ruby(variables)+"; end").parse
 
@@ -143,7 +131,7 @@ module Cauldron
       results
     end
 
-    def find_relationship(problems)     
+    def find_relationship(examples)     
 
       # ==== NEW APPROACH ====
 
@@ -152,7 +140,7 @@ module Cauldron
         Cauldron::Solution::One.new
       ]
       successful_solutions = solutions.select do |solution|
-        problems.all? { |problem| solution.successful?(problem) }
+        examples.all? { |problem| solution.successful?(problem) }
       end
       return successful_solutions[0] unless successful_solutions.empty?
 
@@ -181,14 +169,14 @@ module Cauldron
       new_composites =  [ 
                           Cauldron::ActualizedComposite.new(
                             Cauldron::Solution::Composite.new([]), 
-                            problems
+                            examples
                           )
                         ]
       itterations = 0
       until itterations == 3
         new_composites = extended_composites(new_composites)
-        if new_composites.any? {|x| x.solution?(problems) }
-          return new_composites.select {|x| x.solution?(problems) }
+        if new_composites.any? {|x| x.solution?(examples) }
+          return new_composites.select {|x| x.solution?(examples) }.first.composite
         end
         itterations += 1
       end
@@ -201,9 +189,9 @@ module Cauldron
       # ================== END HERE ===============
 
       solutions = []
-      single_viable_operators(problems).each do |operation_class|
+      single_viable_operators(examples).each do |operation_class|
 
-        operators = build_operators(operation_class,problems)
+        operators = build_operators(operation_class,examples)
         operators.each do |operator|
           root = Tree::TreeNode.new("ROOT", "Root Content")
           root << Tree::TreeNode.new("CHILD1", operator)
@@ -212,7 +200,7 @@ module Cauldron
       end
 
       solutions.each do |solution|
-        if problems.all? {|x| solution.successful?(x) }
+        if solution.solution?(examples)
           return solution
         end
       end
@@ -227,10 +215,10 @@ module Cauldron
       #   end
       # end
 
-      if IfRelationship.match? problems
-        return IfRelationship.new(problems)
+      if IfRelationship.match? examples
+        return IfRelationship.new(examples)
       end
-      IfRelationShip.new(problems)
+      IfRelationShip.new(examples)
     end
 
     def extended_composites(composites)

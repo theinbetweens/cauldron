@@ -75,7 +75,7 @@ end
 
       end
 
-      context 'passed ["lion","bear"] and return ["bear","lion"]' do
+      context 'passed ["lion","bear"] and return ["bear","lion"]' do       
 
         it 'returns a reverse function' do
           pot = Pot.new

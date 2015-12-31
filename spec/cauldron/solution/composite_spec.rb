@@ -60,7 +60,7 @@ module Cauldron::Solution
             Cauldron::Example.new({ arguments: [["foo", "bar"]], response: ["bar", "foo"]})
           ]
         )
-      end      
+      end
 
       let(:composite) do
         Cauldron::Solution::Composite.new(
@@ -71,6 +71,33 @@ module Cauldron::Solution
       it 'is false' do
         composite.solution?(problems).should == false
       end
+
+      context "using valid chop example" do
+
+        let(:examples) do
+          Cauldron::ExampleSet.new(
+            [
+              Cauldron::Example.new({ arguments: ["Sparky"], response: 'Spark'}),
+              Cauldron::Example.new({ arguments: ["Kel"], response: 'Ke'})
+            ]
+          )
+        end
+
+        let(:dynamic_operator) do
+          Cauldron::StatementGenerator.new.build('string',[:chop]).first.init([0])
+        end        
+
+        let(:composite) do
+          Cauldron::Solution::Composite.new(
+            [Tree::TreeNode.new("CHILD1", dynamic_operator)]
+          )
+        end
+
+        it 'is true' do
+          composite.solution?(examples).should == true
+        end
+
+      end      
 
     end
 

@@ -10,11 +10,6 @@ module Cauldron
     end
 
     def histories
-      
-
-      # results = @examples.collect do |example|
-      #             Cauldron::History.new( @composite.record(example) )
-      #           end
       results = @examples.collect do |example|
                   @composite.record(example)
                 end                

@@ -105,6 +105,23 @@ module Cauldron
             dynamic_operator.should be_realizable(histories)
           end
 
+          context 'when the history has "Sparky", "Kel"' do
+
+            let(:histories) do
+              Cauldron::Histories.new(
+                [
+                  Cauldron::History.new([{:var0=>"Sparky", :line=>0, :depth=>0, :total_line=>0}]),
+                  Cauldron::History.new([{:var0=>"Kel", :line=>0, :depth=>0, :total_line=>0}])
+                ]
+              )
+            end
+
+            it 'returns true' do
+              dynamic_operator.should be_realizable(histories)
+            end            
+
+          end
+
         end        
 
       end
