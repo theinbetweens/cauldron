@@ -8,6 +8,35 @@ module Cauldron
 
       context 'code is:
                var0.collect do |var1|
+               end' do
+
+        let(:scope) do
+          Cauldron::Scope.new(['var0'])
+        end
+
+        let(:array_collect_node) do
+          node = Tree::TreeNode.new("CHILD1", ArrayCollect.new([0]))
+          node
+        end
+
+        it %q{generates a method:
+          var0.collect do |var1|
+            record(0,1,1,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
+          end
+        } do
+          array_collect_node.content.to_tracking_sexp(
+            array_collect_node.children,scope, Caret.new
+          ).should match_code_of %q{
+            var0.collect do |var1|
+              record(0,1,1,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
+            end
+          }
+        end
+
+      end      
+
+      context 'code is:
+               var0.collect do |var1|
                  var1 * 3 
                end' do
 

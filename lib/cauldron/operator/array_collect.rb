@@ -141,6 +141,10 @@ class ArrayCollect
         Cauldron::Tracer.tracking(caret.line, caret.current_depth, caret.total_lines)
       ]
     end
+
+    if children.length == 0
+      return Cauldron::Tracer.tracking(caret.line, caret.current_depth, caret.total_lines)
+    end
       
   end
 
