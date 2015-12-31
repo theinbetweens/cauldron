@@ -35,16 +35,18 @@ end
       else
 
         if operators.length == 1
+          inner = operators.first.content.to_tracking_sexp(
+                    operators.first.children, scope, caret
+                  ) 
+          sibling = reset_and_track(caret)
           sexp = [
                   :bodystmt,
                     [:stmts_add, 
                       [:stmts_add,
                         [:stmts_new],
-                        operators.first.content.to_tracking_sexp(
-                          operators.first.children, scope, caret
-                        )
+                        inner
                       ],
-                      reset_and_track(caret)
+                      sibling
                     ]
                   ]
         else
