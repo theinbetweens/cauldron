@@ -25,6 +25,32 @@ module Cauldron
 
     end
 
+    describe '#to_sexp' do
+
+      context 'var1 = var0.collect { |var2| var2}' do
+
+        let(:dynamic_operator) do
+          StatementGenerator.new.build(
+            ['00sjack00','RowIAGE', 'iNathalie'],
+            [:collect]
+          ).first.init([0])
+        end
+
+        let(:scope) { Cauldron::Scope.new(['var0']) }
+
+        it 'is var1 = var0.collect { |var2| var2}' do
+          dynamic_operator.to_sexp(scope).should match_code_of(%q{
+                                                                  var1 = var0.collect do |var2|
+                                                                    var2
+                                                                  end
+                                                                }
+          )
+        end     
+
+      end
+
+    end
+
     describe '#realizable?' do
 
       context 'var0.chop' do

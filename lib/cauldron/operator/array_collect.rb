@@ -106,7 +106,6 @@ class ArrayCollect
     caret.add_line(0)
     caret.step_in
     scope_var = scope.new_variable!
-    #[:stmts_add, [:stmts_add, [:stmts_new], yield 1 ], yield 2 ]
     [
       :method_add_block,
       [
