@@ -27,7 +27,8 @@ module Cauldron
     end
 
     def scope
-      Cauldron::Scope.new(examples.first.params)
+      sexp = Ripper::SexpBuilder.new(examples.first.params.to_s).parse
+      Cauldron::Scope.new(eval(Sorcerer.source(sexp)))
     end    
 
   end

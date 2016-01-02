@@ -56,6 +56,33 @@ end
 
       end
 
+      context %{passed ['Pip','Rowe'] and returns ['Pi','Row']} do
+
+        let(:pot) { pot = Pot.new }
+        let(:examples) do
+          [{arguments: [['Pip','Rowe']], response: ['Pi','Row']}]
+        end
+
+        it %q{
+          returns 
+            def function(var0)
+              var2 = var0.collect do |var1|
+                var1.chop
+              end
+            end            
+        } do
+          pot.solve(examples).should == 
+%q{
+def function(var0)
+  var2 = var0.collect do |var1|
+    var1.chop
+  end
+end
+}.lstrip
+        end
+
+      end
+
       context 'passed "foo" and return "foobar"' do
 
         it 'returns a concat function' do

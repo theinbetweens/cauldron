@@ -55,7 +55,11 @@ module Cauldron
 
     def self.available_statement_types
       # TODO Not very effient to regenerate the opperators
-      [ArrayCollect]+Cauldron::StatementGenerator.new.build('string',[:chop])
+      #[ArrayCollect]+Cauldron::StatementGenerator.new.build('string',[:chop])+StatementGenerator.new.build(
+        [ArrayCollect]+StatementGenerator.new.build(
+            ['A','B', 'AC'],
+            [:collect]
+          )
     end
 
   end

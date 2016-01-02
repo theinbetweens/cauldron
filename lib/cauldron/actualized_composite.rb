@@ -24,6 +24,10 @@ module Cauldron
     def solution?(problems)
       # TODO Should not need to 
       composite.solution?(examples)
+    end
+
+    def to_ruby
+      @composite.to_ruby(examples.scope)
     end    
 
   end

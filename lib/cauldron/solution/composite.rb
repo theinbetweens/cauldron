@@ -110,20 +110,11 @@ end
       }
       o.instance_eval(m)
 
-
       #o.function *problems.examples.first.arguments
       problems.all? do |example|
         o.function(*example.arguments) == example.response
       end
 
-      # puts '==================>>>'
-      # puts problems.inspect
-      # puts '==================>>>'
-      # puts to_ruby(problems.scope)
-      # puts '==================>>>>>>>>>>>>>>>>>>>>>'
-      # puts successful?(problems)
-      # puts '-------'
-      #false
     end
 
     # TODO Drop this method

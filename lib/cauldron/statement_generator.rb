@@ -18,7 +18,6 @@ module Cauldron
     end
 
     def method_to_sexp(instance, dynamic_method)
-      #instance.send(dynamic_method).class
       if instance.send(dynamic_method).class == Enumerator
         %Q{
           def to_sexp(scope)

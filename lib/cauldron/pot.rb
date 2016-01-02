@@ -5,7 +5,7 @@ module Cauldron
     def solve(problems)
 
       example_set = Cauldron::ExampleSet.new(problems.collect {|x| Cauldron::Example.new(x) })
-
+      
       # Identify the relationship
       
       # Pry::Code
@@ -163,9 +163,6 @@ module Cauldron
       #   return new_new_composites.select {|x| x.solution?(problems) }
       # end      
 
-      #operators.each do |new_operator|
-        #composite.build 
-      #end
       new_composites =  [ 
                           Cauldron::ActualizedComposite.new(
                             Cauldron::Solution::Composite.new([]), 
@@ -173,8 +170,9 @@ module Cauldron
                           )
                         ]
       itterations = 0
-      until itterations == 3
+      until itterations == 2
         new_composites = extended_composites(new_composites)
+        
         if new_composites.any? {|x| x.solution?(examples) }
           return new_composites.select {|x| x.solution?(examples) }.first.composite
         end
@@ -221,8 +219,8 @@ module Cauldron
       IfRelationShip.new(examples)
     end
 
-    def extended_composites(composites)
-      composites.inject([]) do |total, x|
+    def extended_composites(actualized_composites)
+      actualized_composites.inject([]) do |total, x|
         total += x.extend_solution; total
       end
     end 

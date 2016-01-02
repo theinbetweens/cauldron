@@ -28,6 +28,22 @@ module Cauldron
 
     end
 
+    describe '#scope' do
+
+      let(:example) { Cauldron::Example.new({:arguments => ['Mass'], :response => 'effect'}) }
+
+      let(:example_set) do
+        Cauldron::ExampleSet.new(
+          [ example ]
+        )
+      end
+
+      it 'creates a new variables array' do
+        example_set.scope.variables.object_id.should_not === example.params.object_id
+      end
+
+    end
+
   end
 
 end

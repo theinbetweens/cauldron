@@ -10,6 +10,8 @@ module Cauldron
 
     def params
       @params ||= (0...@arguments.length).collect {|x| 'var'+x.to_s}
+      @params.freeze
+      @params
     end
 
   end
