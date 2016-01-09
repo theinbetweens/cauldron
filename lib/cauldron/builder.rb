@@ -48,7 +48,7 @@ module Cauldron
       # ---------------
 
       self.class.available_statement_types.inject([]) do |total,x|
-        total += x.instances(h, composite, examples)
+        total += x.instances(h, composite, examples, insert_points)
         total 
       end
     end

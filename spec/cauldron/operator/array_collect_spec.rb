@@ -96,7 +96,7 @@ module Cauldron
 
         it 'returns an instance of Composite' do
           ArrayCollect.instances(
-            histories,composite,examples
+            histories,composite,examples, [[0,0]]
           ).first.class == Cauldron::Solution::Composite
           # ArrayCollect.instances(histories,composite,examples).should include( 
           #   Cauldron::Solution::Composite.new(
@@ -126,7 +126,7 @@ module Cauldron
         end        
 
         it "doesn't return any instances of ArrayCollect" do
-          ArrayCollect.instances(histories,composite,examples).should be_empty
+          ArrayCollect.instances(histories,composite,examples, [0,0]).should be_empty
         end
 
       end      

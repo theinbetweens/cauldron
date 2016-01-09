@@ -62,9 +62,7 @@ end
     end
 
     def sexp(variables=[])
-      #number_of_lines = operators.length
-      
-      #first = operators[0]
+
       first = operators.first
       
       #inner = add_first_statement( first.content.build(first.children.first, variables) )
@@ -111,6 +109,10 @@ end
       o.instance_eval(m)
 
       #o.function *problems.examples.first.arguments
+      puts '------ :: ------'
+      puts "#{problems.variables.join(',')}"
+      puts self.class
+      puts "#{to_ruby(problems.scope)}"
       problems.all? do |example|
         o.function(*example.arguments) == example.response
       end

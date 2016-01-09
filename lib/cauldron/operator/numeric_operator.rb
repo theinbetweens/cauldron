@@ -91,7 +91,7 @@ class NumericOperator
     false
   end
 
-  def self.instances(histories, composite, examples)
+  def self.instances(histories, composite, examples, insert_points)
     constant = examples.examples.first.response - histories.first.logs.first[:var0] 
     [
       Cauldron::Solution::Composite.new(

@@ -85,14 +85,17 @@ module Cauldron
 
       context 'no consistent difference between values' do
 
-        it 'is false' do
-          problem = [
+        let(:problem) do
+          [
             {arguments: [7], response: 24},
             {arguments: [10], response: 11}
-          ]          
-          operator = NumericOperator.new([0],17)  
-          #NumericValueRelationship.match?(problem).should be_false
-          problem.all? {|x| operator.successful?(x) }.should be_false
+          ]                    
+        end
+
+        let(:operator) { NumericOperator.new([0],17) }
+
+        it 'is false' do    
+          problem.all? { |x| operator.successful?(x) }.should be_false
         end
 
       end
@@ -125,7 +128,7 @@ module Cauldron
         end
 
         it 'returns 1 composite' do
-          NumericOperator.instances(histories, composite, examples).should have(1).composite
+          NumericOperator.instances(histories, composite, examples, [0,0]).should have(1).composite
         end
 
       end
@@ -150,7 +153,7 @@ module Cauldron
 
         it 'returns 1 composite' do
           NumericOperator.instances(
-            histories, composite, examples
+            histories, composite, examples, [0,0]
           ).should have(1).composite
         end
 
@@ -160,7 +163,7 @@ def function(var0)
 end
         ' do
             NumericOperator.instances(
-              histories, composite, examples
+              histories, composite, examples, [0,0]
             ).first.sexp(examples.variables).should match_code_of(%q{var0+2})
         end
 

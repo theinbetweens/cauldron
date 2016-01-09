@@ -51,12 +51,29 @@ module Cauldron
       end
     end
 
+    def branch_method(instance, dynamic_method)
+      if instance.send(dynamic_method).class == Enumerator
+        return %q{
+          def branch?
+            true
+          end          
+        }
+      end
+      %q{
+        def branch?
+          false
+        end          
+      }
+    end
+
     def build_class(instance, dynamic_method)
       res = %Q{
 
         #{sexp_method_to_ruby(instance, dynamic_method)}
 
         #{method_to_sexp(instance, dynamic_method)}
+
+        #{branch_method(instance, dynamic_method)}
 
         def build(children, scope)
           to_sexp(scope)
@@ -70,15 +87,22 @@ module Cauldron
           o
         end
 
-        def instances(histories, composite, examples) 
+        def instances(histories, composite, examples, insert_points)
+          puts '------------------ instances --------------'
+          puts histories.inspect
+
           # TEMP
-          raise StandardError.new('Examples should be an example') unless examples.class == ExampleSet
+          unless examples.class == ExampleSet
+            raise StandardError.new('Examples should be an example')
+          end
           
-          res = Cauldron::Solution::Composite.new(
-            [ Tree::TreeNode.new("CHILD1", self.init([0]) ) ]
-          )
-          unless self.init([0]).realizable?(histories)
-            return []
+          insert_points.each do |point|
+            res = Cauldron::Solution::Composite.new(
+              [ Tree::TreeNode.new("CHILD1", self.init([0]) ) ]
+            )
+            unless self.init([0]).realizable?(histories, point)
+              return []
+            end
           end
 
           results = [
@@ -102,7 +126,7 @@ module Cauldron
           o.function(*params.values)
         end
 
-        def realizable?(histories)
+        def realizable?(histories, point)
           parameters = histories.variable_permutations(@indexes.length)
           parameters.each do |params|
             begin
@@ -113,6 +137,8 @@ module Cauldron
             end
           end
           true          
+        rescue => e
+          # TODO GENERATE RSPEC TEST with arguments
         end
 
         def to_tracking_sexp(operators, scope, caret)

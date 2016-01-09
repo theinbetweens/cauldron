@@ -203,14 +203,13 @@ class ArrayCollect
     []
   end
 
-  def self.instances(histories, composite, examples)
+  def self.instances(histories, composite, examples, insert_points)
     results = []
     histories.each do |history|
       results += instances_for_history(history)
     end
     indexes = results.collect {|x| x.to_s.match(/(\d)/)[0] }
-    #indexes.collect {|x| ArrayCollect.new([x.to_i])}
-    #indexes.collect {|x| ArrayCollect.new([x.to_i])}
+    
     indexes.collect do |x|
       Cauldron::ActualizedComposite.new(
         Cauldron::Solution::Composite.new(

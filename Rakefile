@@ -20,3 +20,14 @@ Cucumber::Rake::Task.new do |t|
   # t.cucumber_opts = "--format Cucumber::Pro --out cucumber-pro.log" if ENV['CUCUMBER_PRO_TOKEN']
   t.cucumber_opts << "--format pretty"
 end
+
+# https://www.relishapp.com/rspec/rspec-core/docs/command-line/rake-task
+begin
+  require 'rspec/core/rake_task'
+
+  RSpec::Core::RakeTask.new(:spec)
+
+  task :default => :spec
+rescue LoadError
+  # no rspec available
+end

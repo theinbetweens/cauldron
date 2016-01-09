@@ -9,6 +9,37 @@ module Cauldron
       # PENDING - it should add more tracking as sexp
     end
 
+    describe '#branch?' do
+
+      context 'var0.chop' do
+
+        let(:dynamic_operator) do
+          StatementGenerator.new.build('string',[:chop]).first.init([0])
+        end
+
+        it 'is false' do
+          dynamic_operator.branch?.should == false
+        end
+
+      end
+
+      context 'var1 = var0.collect { |var2| var2}' do
+
+        let(:dynamic_operator) do
+          StatementGenerator.new.build(
+            ['00sjack00','RowIAGE', 'iNathalie'],
+            [:collect]
+          ).first.init([0])
+        end
+
+        it 'is true' do
+          dynamic_operator.branch?.should == true
+        end
+
+      end
+
+    end
+
     describe '#build' do
 
       let(:dynamic_operator) do
@@ -68,6 +99,38 @@ module Cauldron
 
     describe '#realizable?' do
 
+      context 'var1 = var0.collect { |var2| var2}' do
+
+        let(:dynamic_operator) do
+          StatementGenerator.new.build(['a','b','c'],[:collect]).first.init([0])
+        end
+
+        context "when var0 only value is ['a','b','c']" do
+
+          let(:histories) do
+            Cauldron::Histories.new([Cauldron::History.new([{var0: ['a','b','c']}])])
+          end        
+
+          it 'is true' do
+            dynamic_operator.realizable?(histories, [0,0]).should == true
+          end
+
+        end
+
+        context 'when var0 only value "string"' do
+
+          let(:histories) do
+            Cauldron::Histories.new([Cauldron::History.new([{var0: "string"}])])
+          end          
+
+          it 'is false' do
+            dynamic_operator.realizable?(histories, [0,0]).should == false
+          end
+
+        end
+
+      end
+
       context 'var0.chop' do
 
         let(:dynamic_operator) do
@@ -90,7 +153,7 @@ module Cauldron
 
             it 'saves the failed example' do
               expect{
-                dynamic_operator.realizable?(histories)
+                dynamic_operator.realizable?(histories, [0,0])
               }.to change{
                 dynamic_operator.failed_uses.length
               }.from(0).to(1)
@@ -119,7 +182,7 @@ module Cauldron
           end
 
           it 'returns false' do
-            dynamic_operator.should_not be_realizable(histories)
+            dynamic_operator.should_not be_realizable(histories, [0,0])
           end
 
         end
@@ -143,7 +206,7 @@ module Cauldron
           end
 
           it 'returns true' do
-            dynamic_operator.should be_realizable(histories)
+            dynamic_operator.should be_realizable(histories,[0,0])
           end
 
           context 'when the history has "Sparky", "Kel"' do
@@ -158,7 +221,7 @@ module Cauldron
             end
 
             it 'returns true' do
-              dynamic_operator.should be_realizable(histories)
+              dynamic_operator.should be_realizable(histories,[0,0])
             end            
 
           end
