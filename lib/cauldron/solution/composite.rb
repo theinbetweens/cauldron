@@ -14,14 +14,60 @@ module Cauldron::Solution
     end
 
     def insert_tracking(params)
-      scope = Cauldron::Scope.new(['var0'])
-      sexp = Ripper::SexpBuilder.new(
-%Q{
-def function(var0)
-  #{Sorcerer.source(tracking_sexp(scope, Cauldron::Caret.new )) }
-end
-}).parse
+      scope = Cauldron::Scope.new(params)
+
+      # TODO Might be useful
+      # trace = TracePoint.new(:call) do |tp|
+      #   p [tp.lineno, tp.event, tp.raised_exception]
+      # end
+
+      
+      # NEW: Implementation
+      m = %Q{
+        def function(#{params.join(',')})
+          #{to_ruby(Cauldron::Scope.new(params))}
+        end
+      }
+      sexp = Ripper::SexpBuilder.new(m).parse
+      rendered_code = Sorcerer.source(sexp, indent: true)
+
+      caret = Cauldron::Caret.new
+
+      tracked_code = []
+      rendered_code.each_line do |line|
+        if line.match /end\s+/
+          tracked_code << Sorcerer.source(Cauldron::Tracer.tracking(caret.line, caret.current_depth, caret.total_lines))
+        end
+        tracked_code << line
+      end
+
+      #puts tracked_code.join("\n")
+      
+      sexp = Ripper::SexpBuilder.new(tracked_code.join("\n")).parse 
+      #puts Sorcerer.source(sexp, indent: true)   
+      
       Cauldron::Tracer.new(sexp)
+      # =================================
+
+
+      #puts Sorcerer.source(sexp, indent: true)
+      #to_ruby(Cauldron::Scope.new(params))
+      # o = Object.new
+      # m = %Q{
+      #   def function(#{params.join(',')})
+      #     #{to_ruby(Cauldron::Scope.new(params))}
+      #   end
+      # }
+      # o.instance_eval(m)
+      #
+
+#       sexp = Ripper::SexpBuilder.new(
+# %Q{
+# def function(#{params.join(',')})
+#   #{Sorcerer.source(tracking_sexp(scope, Cauldron::Caret.new )) }
+# end
+# }).parse
+#       Cauldron::Tracer.new(sexp)
     end
 
     def tracking_sexp(scope, caret)
@@ -61,7 +107,9 @@ end
       Cauldron::Tracer.tracking(caret.line, caret.current_depth, caret.total_lines)
     end
 
-    def sexp(variables=[])
+    def to_sexp(variables=[])
+
+      #return [] if operators.empty?
 
       first = operators.first
       
@@ -88,7 +136,8 @@ end
     end
 
     def to_ruby(scope)
-      Sorcerer.source(sexp(scope))
+      return '' if operators.empty?
+      Sorcerer.source(to_sexp(scope))
     end
 
     def add_first_statement(statement)

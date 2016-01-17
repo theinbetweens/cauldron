@@ -33,6 +33,10 @@ module Cauldron
       @results.first
     end
 
+    def length
+      @results.length
+    end
+
   end
 
 end

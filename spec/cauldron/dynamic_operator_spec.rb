@@ -129,6 +129,57 @@ module Cauldron
 
         end
 
+        context %q{adding statement inside: 
+                    var1 = var0.collect do |var2| 
+                    end
+          } do
+
+            let(:containing_statement) do
+              StatementGenerator.new.build(['a','b','c'],[:collect]).first.init([0])
+            end
+
+            let(:examples) do
+              Cauldron::ExampleSet.new(
+                [Cauldron::Example.new({ arguments: [["lion", "bear"]], response: ["bear", "lion"]})]
+              )
+            end
+
+            let(:composite) do
+              Cauldron::Solution::Composite.new(
+                [Tree::TreeNode.new("CHILD1", containing_statement )]
+              )
+            end
+
+            let(:histories) do
+              Cauldron::ActualizedComposite.new(composite,examples).histories
+            end            
+
+            context 'adding statement "var3 = var2.collect { |var4| var4}"' do
+
+              let(:dynamic_operator) do
+                StatementGenerator.new.build(['a','b','c'],[:collect]).first.init([2])
+              end              
+
+              it 'is false' do
+                dynamic_operator.realizable?(histories, [0,1]).should == false
+              end           
+
+            end
+
+            context 'inserting statement "var3 = var1.collect { |var4| var4}"' do
+
+              let(:dynamic_operator) do
+                StatementGenerator.new.build(['a','b','c'],[:collect]).first.init([1])
+              end              
+
+              it 'is false' do
+                dynamic_operator.realizable?(histories, [0,1]).should == false
+              end           
+
+            end            
+
+        end
+
       end
 
       context 'var0.chop' do
@@ -142,6 +193,55 @@ module Cauldron
             [ Tree::TreeNode.new("CHILD1", dynamic_operator.init([0]) ) ]
           )
         end
+
+        context %q{adding statement inside: 
+                    var1 = var0.collect do |var2| 
+                    end
+          } do
+
+            let(:containing_statement) do
+              StatementGenerator.new.build(['lion','bear'],[:collect]).first.init([0])
+            end
+
+            context %q{var0 is ["lion", "bear"]} do
+
+              let(:examples) do
+                Cauldron::ExampleSet.new(
+                  [Cauldron::Example.new({ arguments: [["lion", "bear"]], response: ["bear", "lion"]})]
+                )
+              end
+
+              let(:examples) do
+                Cauldron::ExampleSet.new(
+                  [Cauldron::Example.new({ arguments: [["lion", "bear"]], response: ["bear", "lion"]})]
+                )
+              end
+
+              let(:composite) do
+                Cauldron::Solution::Composite.new(
+                  [Tree::TreeNode.new("CHILD1", containing_statement )]
+                )
+              end
+
+              let(:histories) do
+                Cauldron::ActualizedComposite.new(composite,examples).histories
+              end          
+
+              context 'inserting statement "var2.chop"' do
+
+                let(:dynamic_operator) do
+                  StatementGenerator.new.build('string',[:chop]).first.init([2])
+                end                
+
+                it 'is false' do
+                  dynamic_operator.realizable?(histories, [0,1]).should == true
+                end                
+
+              end
+
+            end
+
+        end        
 
         describe 'using incompatible variable' do
 

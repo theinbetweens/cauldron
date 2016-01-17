@@ -4,11 +4,69 @@ module Cauldron
 
   describe ActualizedComposite do
 
-    describe '#extend_solution' do
+    let(:empty_composite) do
+      Cauldron::Solution::Composite.new([])
+    end    
 
-      let(:empty_composite) do
-        Cauldron::Solution::Composite.new([])
+    describe '#histories' do
+
+      context %q{there is one example "var0 = ['lion','tiger']"} do
+
+        let(:examples) do
+          Cauldron::ExampleSet.new(
+            [Cauldron::Example.new( {arguments: [['lion','tiger']], response: 8} )]
+          )
+        end
+
+        context 'composite is empty' do
+
+          let(:subject) { Cauldron::ActualizedComposite.new(empty_composite, examples)}
+
+          it 'returns 1 history' do
+            subject.histories.length.should == 1
+          end
+
+          it 'history contains single log' do
+            subject.histories.first.logs.length.should == 1
+          end
+
+        end
+
+        context 'composite is "var0 = var1.collect { |var2|}' do
+
+          let(:containing_statement) do
+            StatementGenerator.new.build(['lion','bear'],[:collect]).first.init([0])
+          end
+
+          let(:composite) do
+            Cauldron::Solution::Composite.new(
+              [Tree::TreeNode.new("CHILD1", containing_statement )]
+            )
+          end
+
+          let(:subject) { Cauldron::ActualizedComposite.new(composite, examples)} 
+
+          log_history = %q{
+            | {line: 0, depth: 1, var0: ['lion', 'bear'], var1: 'lion'} |
+            | {line: 0, depth: 1, var0: ['lion', 'bear'], var1: 'bear'} |
+            | {line: 1, depth: 0, var0: ['lion', 'bear'] } |
+          }
+
+          it 'contains a history with 3 entries' do
+            subject.histories.first.logs.length.should == 3
+          end
+          
+          it %Q{retuns the following history: #{log_history} } do
+            subject.histories.first.to_s.should == log_history
+          end                 
+
+        end
+
       end
+
+    end
+
+    describe '#extend_solution' do
 
       let(:examples) do
         Cauldron::ExampleSet.new(

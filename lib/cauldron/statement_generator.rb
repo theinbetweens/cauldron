@@ -2,6 +2,8 @@ module Cauldron
 
   class StatementGenerator
 
+    # Build appropriate classes that can build appropriate instances - instances must have the constants
+
     def build(instance,dynamic_methods,declare_variable=false)
       dynamic_methods.collect do |x|
         build_class(instance,x)

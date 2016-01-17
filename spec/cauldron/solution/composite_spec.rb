@@ -4,6 +4,36 @@ module Cauldron::Solution
   
   describe 'Composite' do
 
+    describe '#record' do
+
+      context %q{there is one example "var0 = ['lion','tiger']"} do
+
+        let(:example) do 
+          Cauldron::Example.new( {arguments: [['lion','tiger']], response: 8} )
+        end
+
+        context 'composite is "var0 = var1.collect { |var2|}' do
+
+          let(:containing_statement) do
+            Cauldron::StatementGenerator.new.build(['lion','bear'],[:collect]).first.init([0])
+          end
+
+          let(:composite) do
+            Cauldron::Solution::Composite.new(
+              [Tree::TreeNode.new("CHILD1", containing_statement )]
+            )
+          end
+
+          it 'returns a history with 3 log entries' do
+            composite.record(example).logs.length.should == 3
+          end
+
+        end
+
+      end
+
+    end
+
     describe '#tracking_sexp' do
 
       context %q{
@@ -112,6 +142,7 @@ module Cauldron::Solution
 
           # code =  """
           #         """
+        let(:params) { ['var0'] }
 
         it %q{
           generates a method:
@@ -119,7 +150,7 @@ module Cauldron::Solution
               record(0,0,0,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
             end
           } do
-            Composite.new([]).insert_tracking([]).sexp.should match_code_of( %q{
+            Composite.new([]).insert_tracking(params).sexp.should match_code_of( %q{
 def function(var0)
   record(0,0,0,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
 end
@@ -140,6 +171,8 @@ end
           Composite.new([Tree::TreeNode.new("CHILD1", ArrayCollect.new([0]) )])
         end
 
+        let(:params) { ['var0'] }
+
         it %q{
 def function(var0)
   var0.collect do |var1|
@@ -148,7 +181,7 @@ def function(var0)
   record(1,0,1,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
 end          
         } do
-          composite.insert_tracking([]).sexp.should match_code_of( %q{
+          composite.insert_tracking(params).sexp.should match_code_of( %q{
 def function(var0)
   var0.collect do |var1|
     record(0,1,1,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
@@ -164,6 +197,22 @@ end
     end
 
     describe '#to_ruby' do
+
+      context "hasn't any operators" do
+
+        let(:variables) { Cauldron::Scope.new(['var0']) }
+
+        let(:subject) do
+          Cauldron::Solution::Composite.new([])
+        end
+
+        it "doesn't raise an error" do
+          expect{
+            subject.to_ruby( variables )
+          }.not_to raise_error
+        end
+
+      end
 
       context 'first line' do
 
@@ -268,7 +317,7 @@ end
 
     end
 
-    describe '#sexp' do
+    describe '#to_sexp' do
 
       context 'using initial operator "Array#collect"' do
 
@@ -290,7 +339,7 @@ end
           end          
 
           it 'returns "var0.collect {|x| x + 3}"' do
-            Composite.new(tree.children).sexp(scope).should == [
+            Composite.new(tree.children).to_sexp(scope).should == [
               :program,
               [:stmts_add,
                 [:stmts_new],
