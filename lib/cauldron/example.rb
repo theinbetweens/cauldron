@@ -6,6 +6,7 @@ module Cauldron
 
     def initialize(hash)
       @arguments, @response = hash[:arguments], hash[:response]
+      @arguments.freeze
     end
 
     def params

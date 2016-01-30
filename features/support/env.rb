@@ -2,7 +2,7 @@ $LOAD_PATH << File.expand_path('../../../lib',__FILE__)
 
 #require 'ruby-debug'
 require 'cauldron'
-
+require 'pry'
 require 'aruba/cucumber'
 # See https://github.com/cucumber/aruba/blob/master/lib/aruba/cucumber.rb for the available steps
 

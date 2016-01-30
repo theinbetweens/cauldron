@@ -27,8 +27,8 @@ Feature: Cauldron generates single parameter methods
       require 'cauldron'
       cauldron = Cauldron::Pot.new
       puts cauldron.solve [
-        {arguments: ['Sparky', 'Kels'], response: ['Spark', 'Kel']}, 
-        {arguments: ['Pip','Rowe'], response: ['Pi','Row']}
+        {arguments: [['Sparky', 'Kels']], response: ['Spark', 'Kel']}, 
+        {arguments: [['Pip','Rowe']], response: ['Pi','Row']}
       ]
       """   
     When I run `ruby launch.rb` interactively

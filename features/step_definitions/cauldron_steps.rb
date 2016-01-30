@@ -28,4 +28,20 @@ Then /^I should receive a runtime method like this "([^"]*)"$/ do |runtime_metho
   output.messages.should include(runtime_method_statement)
 end
 
+Given(/^I'm using the chop example$/) do
+  #pending # Write code here that turns the phrase above into concrete actions
+  @pot = Cauldron::Pot.new
+  @examples = [
+    {arguments: [['Sparky', 'Kels']], response: ['Spark', 'Kel']}, 
+    {arguments: [['Pip','Rowe']], response: ['Pi','Row']}
+  ]
+end
+
+When(/^I generate a solution$/) do
+  @solution = @pot.solve @examples
+end
+
+Then(/^the solution should include:$/) do |string|
+  @solution.should include(string)
+end
 

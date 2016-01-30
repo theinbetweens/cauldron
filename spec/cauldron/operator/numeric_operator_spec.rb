@@ -164,7 +164,7 @@ end
         ' do
             NumericOperator.instances(
               histories, composite, examples, [0,0]
-            ).first.sexp(examples.variables).should match_code_of(%q{var0+2})
+            ).first.to_sexp(examples.variables).should match_code_of(%q{var0+2})
         end
 
       end      

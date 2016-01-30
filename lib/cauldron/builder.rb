@@ -36,7 +36,10 @@ module Cauldron
     end
 
     def insertable_operators(examples)
-      h = ActualizedComposite.new(composite, examples).histories
+
+      actualized_composite = ActualizedComposite.new(composite, examples)
+
+      h = actualized_composite.histories
       # TODO - Test the opperates here - and save errors
 
       # 1. SHOULD IT BE VALID?
@@ -55,11 +58,15 @@ module Cauldron
 
     def self.available_statement_types
       # TODO Not very effient to regenerate the opperators
-      #[ArrayCollect]+Cauldron::StatementGenerator.new.build('string',[:chop])+StatementGenerator.new.build(
-        [ArrayCollect]+StatementGenerator.new.build(
-            ['A','B', 'AC'],
-            [:collect]
-          )
+      #[ArrayCollect]+StatementGenerator.new.build(
+      StatementGenerator.new.build(
+        ['A','B', 'AC'],
+        [:collect]
+      )+Cauldron::StatementGenerator.new.build('string',[:chop])      
+      # [ArrayCollect]+StatementGenerator.new.build(
+      #     ['A','B', 'AC'],
+      #     [:collect]
+      #   )+Cauldron::StatementGenerator.new.build('string',[:chop])
     end
 
   end

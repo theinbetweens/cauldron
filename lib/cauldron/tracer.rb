@@ -23,10 +23,26 @@ module Cauldron
       h.merge!(:line => line)
       h.merge!(:depth => depth)
       h.merge!(:total_line => total_line)
-      
+      h = h.reject {|key,value| key.to_s.match /^placeholder/ }
       @results << h
       #@results << #entry # TODO Only want the trace to have on result so it should probably be in the initilaize call only
     end
+
+    def self.substitue_tracking
+      %q{
+      record("line", "depth", "total_lines")
+      }
+    end    
+
+    # def self.substitue_tracking
+    #   %q{
+    #   record("line", "depth", "total_lines", local_variables.reject { |foo|
+    #     foo == :_
+    #   }.collect { |bar|
+    #     [bar, eval(bar.to_s)]
+    #   })
+    #   }
+    # end
 
     def self.tracking(line, depth, total_line)
       [:method_add_arg,

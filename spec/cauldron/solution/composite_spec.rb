@@ -6,10 +6,10 @@ module Cauldron::Solution
 
     describe '#record' do
 
-      context %q{there is one example "var0 = ['lion','tiger']"} do
+      context %q{there is one example "var0 = ['lion','bear']"} do
 
         let(:example) do 
-          Cauldron::Example.new( {arguments: [['lion','tiger']], response: 8} )
+          Cauldron::Example.new( {arguments: [['lion','bear']], response: 8} )
         end
 
         context 'composite is "var0 = var1.collect { |var2|}' do

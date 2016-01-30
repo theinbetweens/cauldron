@@ -14,7 +14,7 @@ module Cauldron::Solution
     end
 
     def insert_tracking(params)
-      scope = Cauldron::Scope.new(params)
+      scope = Cauldron::Scope.new(params.clone)
 
       # TODO Might be useful
       # trace = TracePoint.new(:call) do |tp|
@@ -25,49 +25,79 @@ module Cauldron::Solution
       # NEW: Implementation
       m = %Q{
         def function(#{params.join(',')})
-          #{to_ruby(Cauldron::Scope.new(params))}
+          #{to_ruby(Cauldron::Scope.new(params.clone))}
         end
       }
+
       sexp = Ripper::SexpBuilder.new(m).parse
       rendered_code = Sorcerer.source(sexp, indent: true)
 
       caret = Cauldron::Caret.new
 
+
+      # Generate tracking code with pending substitutions
       tracked_code = []
       rendered_code.each_line do |line|
         if line.match /end\s+/
-          tracked_code << Sorcerer.source(Cauldron::Tracer.tracking(caret.line, caret.current_depth, caret.total_lines))
+          tracked_code << Sorcerer.source(Ripper::SexpBuilder.new(Cauldron::Tracer.substitue_tracking).parse) #Sorcerer.source(Cauldron::Tracer.substitue_tracking)
         end
         tracked_code << line
       end
-
-      #puts tracked_code.join("\n")
-      
       sexp = Ripper::SexpBuilder.new(tracked_code.join("\n")).parse 
-      #puts Sorcerer.source(sexp, indent: true)   
+      #puts '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
+      code_tracking  = Sorcerer.source(sexp, indent: true)
+      #puts '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
+
+      #binding.pry
+      code_tracking.split("\n")
+
+      current_line = -1
+      total_lines = 0
+      new_tracked_code = []
+      last_line = nil
+      placeholder = nil
+      code_tracking.split("\n").each do |line|
+        if line.match /record/
+          depth = (line.match(/^(\s+)/)[0].length / 2) -1
+          new_tracked_code << last_line
+          new_tracked_code << Sorcerer.source(
+                                Cauldron::Tracer.tracking(current_line, depth, total_lines)
+                              )
+          new_tracked_code << placeholder
+        else
+          #unless last_line.nil?
+            #if last_line.match /\s+end/
+              #last_line = nil
+            #else
+              placeholder = "#{'placeholder_'+rand(10000000000).to_s}"
+              last_line = "#{placeholder} = "+line
+              
+              if !last_line.match(/\s+end/).nil? || !last_line.match(/function/).nil? # || last_line.match /function/
+                last_line = nil
+                placeholder = nil
+              end
+            #end
+          #end
+          new_tracked_code << line
+          current_line += 1
+        end
+        total_lines += 1
+      end
+
+      # NOTE: Keep this to debug before conversion of S-EXP
+      # # puts '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
+      # new_tracked_code.each do |x|
+      #   puts x
+      # end
+      
+      sexp = Ripper::SexpBuilder.new(new_tracked_code.join("\n")).parse 
+
+      #puts '==========='
+      #puts Sorcerer.source(sexp, indent: true)
+      #puts '==========='
       
       Cauldron::Tracer.new(sexp)
-      # =================================
 
-
-      #puts Sorcerer.source(sexp, indent: true)
-      #to_ruby(Cauldron::Scope.new(params))
-      # o = Object.new
-      # m = %Q{
-      #   def function(#{params.join(',')})
-      #     #{to_ruby(Cauldron::Scope.new(params))}
-      #   end
-      # }
-      # o.instance_eval(m)
-      #
-
-#       sexp = Ripper::SexpBuilder.new(
-# %Q{
-# def function(#{params.join(',')})
-#   #{Sorcerer.source(tracking_sexp(scope, Cauldron::Caret.new )) }
-# end
-# }).parse
-#       Cauldron::Tracer.new(sexp)
     end
 
     def tracking_sexp(scope, caret)
@@ -158,10 +188,6 @@ module Cauldron::Solution
       o.instance_eval(m)
 
       #o.function *problems.examples.first.arguments
-      puts '------ :: ------'
-      puts "#{problems.variables.join(',')}"
-      puts self.class
-      puts "#{to_ruby(problems.scope)}"
       problems.all? do |example|
         o.function(*example.arguments) == example.response
       end

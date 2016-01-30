@@ -144,25 +144,6 @@ module Cauldron
       end
       return successful_solutions[0] unless successful_solutions.empty?
 
-      # # Create the empty
-      # current_code = Cauldron::ActualizedComposite.new(
-      #   Cauldron::Composite.new([], problems)
-      # )
-      # histories = current_code.process
-      # new_composites = Cauldron::Composite.new([], problems).build_extensions(histories)
-      # if new_composites.any? {|x| x.solution?(problems) }
-      #   return new_composites.select {|x| x.solution?(problems) }
-      # end    
-
-      # # Extend the composites
-      # new_new_composites = []
-      # new_composites.each do |x|
-      #   new_new_composites += x.extend_solution(examples)
-      # end
-      # if new_new_composites.any? {|x| x.solution?(problems) }
-      #   return new_new_composites.select {|x| x.solution?(problems) }
-      # end      
-
       new_composites =  [ 
                           Cauldron::ActualizedComposite.new(
                             Cauldron::Solution::Composite.new([]), 
@@ -178,8 +159,7 @@ module Cauldron
         end
         itterations += 1
       end
-
-
+      
       # 1. TRY TO FIND SOLUTION via the history
       # 2. Desired history
       # 3. Chaing matching history
