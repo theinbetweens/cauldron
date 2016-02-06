@@ -2,8 +2,8 @@ module Cauldron
 
   class StatementGenerator
 
-    # Build appropriate classes that can build appropriate instances - instances must have the constants
-
+    # Build appropriate classes that can build appropriate instances - instances 
+    # must have the constants
     def build(instance,dynamic_methods,declare_variable=false)
       dynamic_methods.collect do |x|
         build_class(instance,x)
@@ -130,6 +130,7 @@ module Cauldron
 
         def realizable?(histories, point)
           parameters = histories.variable_permutations(@indexes.length)
+
           parameters.each do |params|
             begin
               realize(params)
@@ -151,15 +152,11 @@ module Cauldron
       
       sexp = Ripper::SexpBuilder.new(res).parse
 
-      information = {
-        constants: false
-      }
+      information = { constants: false }
       
       o = DynamicOperator.new(information, sexp)
       o.instance_eval(Sorcerer.source(sexp, indent: true))
-      #o.instance_eval(Sorcerer.source(sexp_method_to_ruby, indent: true))
       o
-
     end
 
   end

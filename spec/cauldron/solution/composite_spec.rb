@@ -159,41 +159,6 @@ end
 
       end
 
-      context %q{
-        given a composite:
-          def function(var0)
-            var0.collect do |var1|
-            end
-          end          
-      } do
-
-        let(:composite) do
-          Composite.new([Tree::TreeNode.new("CHILD1", ArrayCollect.new([0]) )])
-        end
-
-        let(:params) { ['var0'] }
-
-        it %q{
-def function(var0)
-  var0.collect do |var1|
-    record(0,1,1,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
-  end
-  record(1,0,1,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
-end          
-        } do
-          composite.insert_tracking(params).sexp.should match_code_of( %q{
-def function(var0)
-  var0.collect do |var1|
-    record(0,1,1,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
-  end
-  record(1,0,1,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
-end
-})
-
-        end
-
-      end
-
     end
 
     describe '#to_ruby' do
