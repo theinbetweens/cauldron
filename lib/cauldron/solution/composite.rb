@@ -51,7 +51,7 @@ module Cauldron::Solution
       last_line = nil
       relative_line = 0
       placeholder = nil
-
+      point = [0,0]
       current_depth = 0
 
       code_tracking.split("\n").each do |line|
@@ -63,7 +63,7 @@ module Cauldron::Solution
           current_depth = depth
           new_tracked_code << last_line
           new_tracked_code << Sorcerer.source(
-                                Cauldron::Tracer.tracking(relative_line, depth, total_lines)
+                                Cauldron::Tracer.tracking(relative_line, depth, total_lines, point)
                               )
           new_tracked_code << placeholder
         else
@@ -98,37 +98,37 @@ module Cauldron::Solution
 
     end
 
-    def tracking_sexp(scope, caret)
-      if operators.empty?
-        sexp = [:bodystmt,
-          [:stmts_add,
-            [:stmts_new]
-          ],
-          Cauldron::Tracer.tracking(caret.line, caret.current_depth, caret.total_lines)
-        ]        
-      else
+    # def tracking_sexp(scope, caret)
+    #   if operators.empty?
+    #     sexp = [:bodystmt,
+    #       [:stmts_add,
+    #         [:stmts_new]
+    #       ],
+    #       Cauldron::Tracer.tracking(caret.line, caret.current_depth, caret.total_lines)
+    #     ]        
+    #   else
 
-        if operators.length == 1
-          inner = operators.first.content.to_tracking_sexp(
-                    operators.first.children, scope, caret
-                  ) 
-          sibling = reset_and_track(caret)
-          sexp = [
-                  :bodystmt,
-                    [:stmts_add, 
-                      [:stmts_add,
-                        [:stmts_new],
-                        inner
-                      ],
-                      sibling
-                    ]
-                  ]
-        else
-          raise StandardError.new('Currently only supporting 1')
-        end
-      end
-      sexp
-    end
+    #     if operators.length == 1
+    #       inner = operators.first.content.to_tracking_sexp(
+    #                 operators.first.children, scope, caret
+    #               ) 
+    #       sibling = reset_and_track(caret)
+    #       sexp = [
+    #               :bodystmt,
+    #                 [:stmts_add, 
+    #                   [:stmts_add,
+    #                     [:stmts_new],
+    #                     inner
+    #                   ],
+    #                   sibling
+    #                 ]
+    #               ]
+    #     else
+    #       raise StandardError.new('Currently only supporting 1')
+    #     end
+    #   end
+    #   sexp
+    # end
 
     def reset_and_track(caret)
       caret.return_depth(0)

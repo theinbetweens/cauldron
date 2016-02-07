@@ -102,28 +102,28 @@ class ArrayCollect
    #       [:args_add, [:args_new], [:@int, "0", [3, 9]]],
    #       false]]]]]]
 
-  def to_tracking_sexp(operators, scope, caret)
-    caret.add_line(0)
-    caret.step_in
-    scope_var = scope.new_variable!
-    [
-      :method_add_block,
-      [
-        :call,
-        [:vcall, [:@ident, scope[@indexes[0] ]]],
-        :".",
-        [:@ident, "collect"]
-      ],
-      [
-        :do_block,
-        block_var([scope_var]),
-        sexp_inserts(
-          scope, operators, caret
-          #operators += [Cauldron::Tracer.tracking(line, depth, total_line)]
-        )
-      ]
-    ]
-  end
+  # def to_tracking_sexp(operators, scope, caret)
+  #   caret.add_line(0)
+  #   caret.step_in
+  #   scope_var = scope.new_variable!
+  #   [
+  #     :method_add_block,
+  #     [
+  #       :call,
+  #       [:vcall, [:@ident, scope[@indexes[0] ]]],
+  #       :".",
+  #       [:@ident, "collect"]
+  #     ],
+  #     [
+  #       :do_block,
+  #       block_var([scope_var]),
+  #       sexp_inserts(
+  #         scope, operators, caret
+  #         #operators += [Cauldron::Tracer.tracking(line, depth, total_line)]
+  #       )
+  #     ]
+  #   ]
+  # end
 
   def sexp_inserts(scope, children, caret)
     if children.length == 1

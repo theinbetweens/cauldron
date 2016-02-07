@@ -34,52 +34,52 @@ module Cauldron::Solution
 
     end
 
-    describe '#tracking_sexp' do
+    # describe '#tracking_sexp' do
 
-      context %q{
-        given a composite:
-          def function(var0)
-            var0.collect do |var1|
-              var1 * 3 
-            end
-          end
-        } do
+    #   context %q{
+    #     given a composite:
+    #       def function(var0)
+    #         var0.collect do |var1|
+    #           var1 * 3 
+    #         end
+    #       end
+    #     } do
 
-          let(:array_collect_node) do
-            node = Tree::TreeNode.new("CHILD1", ArrayCollect.new([0]))
-            node << Tree::TreeNode.new("CHILD1", StringAsteriskOperator.new([1],3))
-            node
-          end
+    #       let(:array_collect_node) do
+    #         node = Tree::TreeNode.new("CHILD1", ArrayCollect.new([0]))
+    #         node << Tree::TreeNode.new("CHILD1", StringAsteriskOperator.new([1],3))
+    #         node
+    #       end
 
-          let(:composite) do
-            Cauldron::Solution::Composite.new(
-              [array_collect_node]
-            )
-          end
+    #       let(:composite) do
+    #         Cauldron::Solution::Composite.new(
+    #           [array_collect_node]
+    #         )
+    #       end
 
-          let(:scope) do
-            Cauldron::Scope.new(['var0'])
-          end
+    #       let(:scope) do
+    #         Cauldron::Scope.new(['var0'])
+    #       end
 
-          it %q{generates a method:
-            var0.collect do |var1|
-              var1 * 3
-              record(1,1,2,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
-            end
-            record(1,0,2,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
-          } do
-            composite.tracking_sexp(scope, Cauldron::Caret.new ).should match_code_of %q{
-              var0.collect do |var1|
-                var1 * 3
-                record(1,1,2,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
-              end
-              record(1,0,2,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })              
-            }
-          end
+    #       it %q{generates a method:
+    #         var0.collect do |var1|
+    #           var1 * 3
+    #           record(1,1,2,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
+    #         end
+    #         record(1,0,2,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
+    #       } do
+    #         composite.tracking_sexp(scope, Cauldron::Caret.new ).should match_code_of %q{
+    #           var0.collect do |var1|
+    #             var1 * 3
+    #             record(1,1,2,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
+    #           end
+    #           record(1,0,2,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })              
+    #         }
+    #       end
 
-      end
+    #   end
 
-    end
+    # end
 
     describe '#solution?' do
 
