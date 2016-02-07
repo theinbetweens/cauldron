@@ -46,10 +46,11 @@ module Cauldron
 
           let(:subject) { Cauldron::ActualizedComposite.new(composite, examples)} 
 
+          # TODO total_line is going to be wrong
           log_history = %q{
-            | {line: 0, depth: 1, total_line: 1, point: [0,0], var0: ['lion', 'bear'], var2: 'lion', var1: nil} |
-            | {line: 0, depth: 1, total_line: 1, point: [0,0], var0: ['lion', 'bear'], var2: 'bear', var1: nil} |
-            | {line: 1, depth: 0, total_line: 1, point: [1], var0: ['lion', 'bear'], var1: ['lion', 'bear'] } |
+            | {line: 0, depth: 1, total_line: 3, point: [0,0], var0: ['lion', 'bear'], var2: 'lion', var1: nil} |
+            | {line: 0, depth: 1, total_line: 3, point: [0,0], var0: ['lion', 'bear'], var2: 'bear', var1: nil} |
+            | {line: 0, depth: 0, total_line: 4, point: [1], var0: ['lion', 'bear'], var1: ['lion', 'bear'] } |
           }
 
           it 'contains a history with 3 entries' do

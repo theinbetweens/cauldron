@@ -4,6 +4,117 @@ module Cauldron::Solution
   
   describe 'Composite' do
 
+    describe '#end_points' do
+
+      context 'with empty composite' do
+
+        let(:composite) do
+          Cauldron::Solution::Composite.new([])
+        end
+
+        it 'returns [[0]]' do
+          composite.end_points.should include([0])
+        end
+
+      end
+
+      context %q{it is: 
+        def function(var0)
+          var0.chop
+        end
+      } do
+
+        let(:containing_statement) do
+          Cauldron::StatementGenerator.new.build('lion',[:chop]).first.init([0])
+        end
+
+        let(:composite) do
+          Cauldron::Solution::Composite.new(
+            [Tree::TreeNode.new("CHILD1", containing_statement )]
+          )
+        end        
+
+        it 'returns [[1]]' do
+          composite.end_points.should include([1])
+        end
+
+        it 'has 1 point' do
+          composite.end_points.length.should == 1
+        end
+
+      end
+
+      context %q{it is: 
+        def function(var0)
+          var2 = var0.collect do |var1|
+          end
+        end
+      } do
+
+        let(:containing_statement) do
+          Cauldron::StatementGenerator.new.build(['lion','bear'],[:collect]).first.init([0])
+        end
+
+        let(:composite) do
+          Cauldron::Solution::Composite.new(
+            [Tree::TreeNode.new("CHILD1", containing_statement )]
+          )
+        end  
+
+        it 'has 2 points' do
+          composite.end_points.length.should == 2
+        end
+
+        it 'has point [[1]]' do
+          composite.end_points.should include([1])
+        end
+
+        it 'has point [[0,0]]' do
+          composite.end_points.should include([0,0])
+        end                    
+
+      end
+
+      context %q{it is: 
+        def function(var0)
+          var2 = var0.collect do |var1|
+            var1.chop
+          end
+        end
+      } do
+
+        let(:var1_chop) do
+          Cauldron::StatementGenerator.new.build('lion',[:chop]).first.init([0])
+        end
+
+        let(:containing_statement) do
+          Cauldron::StatementGenerator.new.build(['lion','bear'],[:collect]).first.init([0])
+        end
+
+        let(:composite) do
+          statement = Tree::TreeNode.new("CHILD1", containing_statement )
+          statement << Tree::TreeNode.new("CHILD1", var1_chop )
+          Cauldron::Solution::Composite.new(
+            [statement]#[Tree::TreeNode.new("CHILD1", containing_statement )]
+          )
+        end  
+
+        it 'has 2 points' do
+          composite.end_points.length.should == 2
+        end   
+
+        it 'has point [[1]]' do
+          composite.end_points.should include([1])
+        end             
+
+        it 'has point [[0,1]]' do
+          composite.end_points.should include([0,1])
+        end        
+
+      end
+
+    end
+
     describe '#record' do
 
       context %q{there is one example "var0 = ['lion','bear']"} do
@@ -147,12 +258,12 @@ module Cauldron::Solution
         it %q{
           generates a method:
             def function(params)
-              record(0,0,0,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
+              record(0,0,1,[0],local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
             end
           } do
             Composite.new([]).insert_tracking(params).sexp.should match_code_of( %q{
 def function(var0)
-  record(0,0,0,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
+  record(0,0,1,[0],local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
 end
 })
         end

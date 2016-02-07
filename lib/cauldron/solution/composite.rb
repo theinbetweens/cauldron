@@ -5,12 +5,26 @@ module Cauldron::Solution
     attr_reader :operators
 
     def initialize(children)
+      raise StandardError.new('inital value should be an array') unless children.kind_of?(Array)      
       @operators = children
     end
 
     def record(example)
       # TODO params passed twice - and example not used at all
       insert_tracking(example.params).process(example)
+    end
+
+    def end_points
+      #operators[0].content.branch?
+      #[]
+      #[[0]]
+      results = []
+      operators.each do |x|
+        if x.content.branch?
+          results << [0,x.children.length]
+        end
+      end
+      results << [operators.length]
     end
 
     def insert_tracking(params)
@@ -53,24 +67,35 @@ module Cauldron::Solution
       placeholder = nil
       point = [0,0]
       current_depth = 0
+      caret = Cauldron::Caret.new
+
+      #parent_node = Tree::TreeNode.new("ROOT", "Root Content")
+      #binding.pry
+      points = end_points
 
       code_tracking.split("\n").each do |line|
+
+        #next_node = Tree::TreeNode.new("CHILD1", line)
+        #depth = (line.match(/^(\s+)/)[0].length / 2) -1
+        #parent_node << next_node
+
         if line.match /record/
           depth = (line.match(/^(\s+)/)[0].length / 2) -1
           if depth > current_depth
             relative_line = 0
           end
           current_depth = depth
+
           new_tracked_code << last_line
           new_tracked_code << Sorcerer.source(
-                                Cauldron::Tracer.tracking(relative_line, depth, total_lines, point)
+                                Cauldron::Tracer.tracking(relative_line, depth, total_lines, points.shift)
                               )
           new_tracked_code << placeholder
         else
           total_lines += 1
           placeholder = "#{'placeholder_'+rand(10000000000).to_s}"
           last_line = "#{placeholder} = "+line
-          
+
           if !last_line.match(/\s+end/).nil? || !last_line.match(/function/).nil? # || last_line.match /function/
             last_line = nil
             placeholder = nil

@@ -19,13 +19,14 @@ module Cauldron
       @total_lines += 1
       if @current_depth != depth
         @current_depth = depth
-        #@line = 0
-        #@lines[depth]
       else
-        #@line += 1
         @lines[depth] += 1
       end
 
+    end
+
+    def point
+      
     end
 
     def line
