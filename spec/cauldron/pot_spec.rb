@@ -200,33 +200,6 @@ end
 
     end
 
-    describe '#viable_double_operators' do
-
-      context 'using the foo*2 problem' do
-
-        let(:problems) do
-          Cauldron::ExampleSet.new(
-            [
-              Cauldron::Example.new({ arguments: [['foo','lima']], response: ['foofoo','limalima'] }),
-              Cauldron::Example.new({ arguments: [['bar','delta']], response: ['barbar','deltadelta'] }),
-            ]
-          )
-        end        
-
-        it 'returns Array#collect and String#*' do
-          pending
-          pot = Pot.new
-          pot.viable_double_operators(
-            problems
-          ).to_set.should == [
-            [ArrayCollect, ConcatOperator],[ArrayCollect, StringAsteriskOperator]
-          ].to_set
-        end
-
-      end
-
-    end
-
     describe '#chain_operators' do
 
       it 'returns a solution function' do

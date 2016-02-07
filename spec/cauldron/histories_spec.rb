@@ -4,6 +4,39 @@ module Cauldron
   
   describe Histories do
 
+    describe '#insert_points' do
+
+      context 'has history with point [0]' do
+
+        let(:first_line_history) { Cauldron::History.new([{point: [0]}])}
+
+        let(:subject){
+          Cauldron::Histories.new([first_line_history])          
+        }
+
+        it 'returns [ [0] ]' do
+          subject.insert_points.should == [[0]]
+        end
+
+      end
+
+      context 'has history 2 points [1,0]' do
+
+        let(:first_history) { Cauldron::History.new([{point: [1,0]}])}
+        let(:second_history) { Cauldron::History.new([{point: [1,0]}])}
+
+        let(:subject){
+          Cauldron::Histories.new([first_history,second_history])          
+        }        
+
+        it 'returns 1 insert point' do
+          subject.insert_points.should have(1).insert_point
+        end
+
+      end      
+
+    end
+
     describe '#variable_permutations' do
 
       let(:histories) do

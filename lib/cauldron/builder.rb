@@ -18,17 +18,17 @@ module Cauldron
       end
     end
 
-    def insert_points
-      results = [
-        [composite.operators.length,0]
-      ]
-      composite.operators.each do |x|
-        if x.content.branch?
-          results << [1, 1]
-        end
-      end
-      results
-    end
+    # def insert_points
+    #   results = [
+    #     [composite.operators.length,0]
+    #   ]
+    #   composite.operators.each do |x|
+    #     if x.content.branch?
+    #       results << [1, 1]
+    #     end
+    #   end
+    #   results
+    # end
 
     def trace(params)
       tracked_composite = composite.insert_tracking(params)
@@ -51,7 +51,7 @@ module Cauldron
       # ---------------
 
       self.class.available_statement_types.inject([]) do |total,x|
-        total += x.instances(h, composite, examples, insert_points)
+        total += x.instances(h, composite, examples, h.insert_points)
         total 
       end
     end

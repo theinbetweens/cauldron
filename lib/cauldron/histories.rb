@@ -31,6 +31,10 @@ module Cauldron
       @results.length
     end
 
+    def insert_points
+      @results.inject([]) { |total, x| total += x.insert_points; total }.uniq
+    end
+
   end
 
 end

@@ -10,6 +10,12 @@ module Cauldron
       
       # Pry::Code
       # TODO Change term to solution
+      if find_saved_solution(example_set)
+        variables = example_set.variables
+        solution = find_saved_solution(example_set)
+        sexp = Ripper::SexpBuilder.new('def function('+variables.join(',')+');'+solution.to_ruby(variables)+"; end").parse
+        return Sorcerer.source(sexp, indent: true)        
+      end
       relationship = find_relationship(example_set)
 
       # Generate if statements
@@ -28,24 +34,7 @@ module Cauldron
       operators[0].to_ruby( [
         Tree::TreeNode.new("CHILD1", operators[1])
       ], Cauldron::Scope.new(['var0']) )
-    end
-
-    def viable_double_operators(problems)
-      child_operators = single_viable_operators(problems)
-
-      # Update the arguements operator
-      results = []
-      child_operators.each do |action|
-        next unless action.uses_block?
-        updated_problems = []
-        problems.examples.each do |problem|
-          updated_problems += action.step_problem(problem)
-        end
-        viable_next_operators = single_viable_operators(updated_problems) 
-        results += [action].product(viable_next_operators)
-      end
-      results
-    end   
+    end 
 
     def single_viable_operators(problems)
 
@@ -131,11 +120,8 @@ module Cauldron
       results
     end
 
-    def find_relationship(examples)     
-
-      # ==== NEW APPROACH ====
-
-      # BRUTE FORCE - Loop through all the solutions
+    # BRUTE FORCE - Loop through all the solutions
+    def find_saved_solution examples
       solutions = [
         Cauldron::Solution::One.new
       ]
@@ -143,6 +129,12 @@ module Cauldron
         examples.all? { |problem| solution.successful?(problem) }
       end
       return successful_solutions[0] unless successful_solutions.empty?
+      nil
+    end
+
+    def find_relationship(examples)     
+
+      # ==== NEW APPROACH ====
 
       new_composites =  [ 
                           Cauldron::ActualizedComposite.new(
@@ -153,7 +145,7 @@ module Cauldron
       itterations = 0
       until itterations == 2
         new_composites = extended_composites(new_composites)
-        
+
         if new_composites.any? {|x| x.solution?(examples) }
           return new_composites.select {|x| x.solution?(examples) }.first.composite
         end

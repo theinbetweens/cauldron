@@ -47,9 +47,9 @@ module Cauldron
           let(:subject) { Cauldron::ActualizedComposite.new(composite, examples)} 
 
           log_history = %q{
-            | {line: 2, depth: 1, total_line: 3, var0: ['lion', 'bear'], var2: 'lion', var1: nil} |
-            | {line: 2, depth: 1, total_line: 3, var0: ['lion', 'bear'], var2: 'bear', var1: nil} |
-            | {line: 3, depth: 0, total_line: 5, var0: ['lion', 'bear'], var1: ['lion', 'bear'] } |
+            | {line: 0, depth: 1, total_line: 1, point: [0,0], var0: ['lion', 'bear'], var2: 'lion', var1: nil} |
+            | {line: 0, depth: 1, total_line: 1, point: [0,0], var0: ['lion', 'bear'], var2: 'bear', var1: nil} |
+            | {line: 1, depth: 0, total_line: 1, point: [1], var0: ['lion', 'bear'], var1: ['lion', 'bear'] } |
           }
 
           it 'contains a history with 3 entries' do
@@ -62,6 +62,7 @@ module Cauldron
             #   {line: 0, depth: 1, var0: ['lion', 'bear'], var2: 'bear', var1: nil},
             #   {line: 1, depth: 0, var0: ['lion', 'bear'], var1: ['lion', 'bear'] }           
             # ]
+            #pending
             subject.histories.first.logs.should match_history(log_history)
             #logs.should match_history(log_history)
           end                 

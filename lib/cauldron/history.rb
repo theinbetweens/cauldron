@@ -23,7 +23,11 @@ module Cauldron
         end
         total
       end
-    end    
+    end
+
+    def insert_points
+      logs.collect {|x| x[:point] }.uniq
+    end
 
   end
 

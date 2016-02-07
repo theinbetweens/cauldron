@@ -31,9 +31,7 @@ module Cauldron::Solution
 
       sexp = Ripper::SexpBuilder.new(m).parse
       rendered_code = Sorcerer.source(sexp, indent: true)
-
       caret = Cauldron::Caret.new
-
 
       # Generate tracking code with pending substitutions
       tracked_code = []
@@ -43,52 +41,52 @@ module Cauldron::Solution
         end
         tracked_code << line
       end
-      sexp = Ripper::SexpBuilder.new(tracked_code.join("\n")).parse 
-      #puts '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
+      sexp = Ripper::SexpBuilder.new(tracked_code.join("\n")).parse       
       code_tracking  = Sorcerer.source(sexp, indent: true)
-      #puts '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
-
-      #binding.pry
       code_tracking.split("\n")
 
       current_line = -1
       total_lines = 0
       new_tracked_code = []
       last_line = nil
+      relative_line = 0
       placeholder = nil
+
+      current_depth = 0
+
       code_tracking.split("\n").each do |line|
         if line.match /record/
           depth = (line.match(/^(\s+)/)[0].length / 2) -1
+          if depth > current_depth
+            relative_line = 0
+          end
+          current_depth = depth
           new_tracked_code << last_line
           new_tracked_code << Sorcerer.source(
-                                Cauldron::Tracer.tracking(current_line, depth, total_lines)
+                                Cauldron::Tracer.tracking(relative_line, depth, total_lines)
                               )
           new_tracked_code << placeholder
         else
-          #unless last_line.nil?
-            #if last_line.match /\s+end/
-              #last_line = nil
-            #else
-              placeholder = "#{'placeholder_'+rand(10000000000).to_s}"
-              last_line = "#{placeholder} = "+line
-              
-              if !last_line.match(/\s+end/).nil? || !last_line.match(/function/).nil? # || last_line.match /function/
-                last_line = nil
-                placeholder = nil
-              end
-            #end
-          #end
+          total_lines += 1
+          placeholder = "#{'placeholder_'+rand(10000000000).to_s}"
+          last_line = "#{placeholder} = "+line
+          
+          if !last_line.match(/\s+end/).nil? || !last_line.match(/function/).nil? # || last_line.match /function/
+            last_line = nil
+            placeholder = nil
+          end
+
           new_tracked_code << line
           current_line += 1
         end
-        total_lines += 1
+        #total_lines += 1
       end
 
       # NOTE: Keep this to debug before conversion of S-EXP
-      # # puts '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
-      # new_tracked_code.each do |x|
-      #   puts x
-      # end
+      puts '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
+      new_tracked_code.each do |x|
+        puts x
+      end
       
       sexp = Ripper::SexpBuilder.new(new_tracked_code.join("\n")).parse 
 
