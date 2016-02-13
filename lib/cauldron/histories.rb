@@ -35,6 +35,19 @@ module Cauldron
       @results.inject([]) { |total, x| total += x.insert_points; total }.uniq
     end
 
+    def contexts_at(point)
+      a = []
+      @results.each do |history|
+        a += history.logs.inject([]) do |total,log|
+          if log[:point] == point
+            total << log
+          end
+          total
+        end        
+      end
+      a
+    end    
+
   end
 
 end

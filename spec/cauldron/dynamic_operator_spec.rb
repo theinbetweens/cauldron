@@ -194,6 +194,42 @@ module Cauldron
           )
         end
 
+        describe '#context_instances' do
+
+          context %q{describe using [:var0 => 'asdas', :var1 => '3232']} do
+
+            let(:dynamic_operator_class) { StatementGenerator.new.build('string',[:chop]).first }
+
+            it 'returns 2 instances' do
+              dynamic_operator_class.context_instances(
+                [
+                  {:var0=>["Sparky", "Kels"], :var1=>nil, :line=>0, :depth=>1, :total_line=>3, :point=>[0, 0]},
+                ]
+              ).should have(2).instances   
+            end
+
+          end
+
+        end
+
+        describe '#context_realizable?' do
+
+          let(:dynamic_operator_class) { StatementGenerator.new.build('string',[:chop]).first }
+
+          context 'using var 0' do
+
+            context 'with context "{:var0=>["Sparky", "Kels"], :point=>[0, 0]}"' do
+
+              it 'returns false' do
+                dynamic_operator_class.init([0]).context_realizable?({:var0=>["Sparky", "Kels"], :point=>[0, 0]})
+              end
+
+            end
+
+          end
+
+        end
+
         context %q{adding statement inside: 
                     var1 = var0.collect do |var2| 
                     end

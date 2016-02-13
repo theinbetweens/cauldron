@@ -37,6 +37,44 @@ module Cauldron
 
     end
 
+    describe '#contexts_at' do
+
+    # #<Cauldron::Histories:0x007f7f5c3f38c8
+    #  @results=
+    #   [#<Cauldron::History:0x007f7f5c3f3940
+    #     @logs=
+    #      [{:var2=>"Sparky", :var0=>["Sparky", "Kels"], :var1=>nil, :line=>0, :depth=>1, :total_line=>3, :point=>[0, 0]},
+    #       {:var2=>"Kels", :var0=>["Sparky", "Kels"], :var1=>nil, :line=>0, :depth=>1, :total_line=>3, :point=>[0, 0]},
+    #       {:var0=>["Sparky", "Kels"], :var1=>["Sparky", "Kels"], :line=>0, :depth=>0, :total_line=>4, :point=>[1]}]>]>      
+
+      # point [0,0] => [{:var2=>"Sparky", :var0=>["Sparky", "Kels"], :var1=>nil}]
+      # point [0,0] => [{:var2=>"Kels", :var0=>["Sparky", "Kels"], :var1=>nil}]
+      # point [1] => [{:var2=>"Kels", :var0=>["Sparky", "Kels"], :var1=>nil}]
+
+      let(:histories) do
+        Cauldron::Histories.new(
+          [
+            Cauldron::History.new(
+              [
+                {:var2=>"Sparky", :var0=>["Sparky", "Kels"], :var1=>nil, :line=>0, :depth=>1, :total_line=>3, :point=>[0, 0]},
+                {:var2=>"Kels", :var0=>["Sparky", "Kels"], :var1=>nil, :line=>0, :depth=>1, :total_line=>3, :point=>[0, 0]},
+                {:var0=>["Sparky", "Kels"], :var1=>["Sparky", "Kels"], :line=>0, :depth=>0, :total_line=>4, :point=>[1]}
+              ]
+            )
+          ]
+        )
+      end
+
+      it 'returns 1 context' do
+        histories.contexts_at([1]).should have(1).context
+      end
+
+      it 'returns 2 contexts' do
+        histories.contexts_at([0, 0]).should have(2).contexts
+      end      
+
+    end
+
     describe '#variable_permutations' do
 
       let(:histories) do

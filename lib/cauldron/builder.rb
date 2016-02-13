@@ -35,6 +35,7 @@ module Cauldron
       tracked_composite.process(params)
     end
 
+    # NOTE: returns an array of new actualized composites extending the current composite
     def insertable_operators(examples)
 
       actualized_composite = ActualizedComposite.new(composite, examples)
@@ -49,6 +50,9 @@ module Cauldron
 
       # Get the history
       # ---------------
+      # if composite.operators.length > 0
+      #   binding.pry
+      # end
 
       self.class.available_statement_types.inject([]) do |total,x|
         total += x.instances(h, composite, examples, h.insert_points)

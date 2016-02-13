@@ -63,7 +63,6 @@ module Cauldron
             #   {line: 0, depth: 1, var0: ['lion', 'bear'], var2: 'bear', var1: nil},
             #   {line: 1, depth: 0, var0: ['lion', 'bear'], var1: ['lion', 'bear'] }           
             # ]
-            #pending
             subject.histories.first.logs.should match_history(log_history)
             #logs.should match_history(log_history)
           end                 

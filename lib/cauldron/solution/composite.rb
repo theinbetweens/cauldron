@@ -15,9 +15,6 @@ module Cauldron::Solution
     end
 
     def end_points
-      #operators[0].content.branch?
-      #[]
-      #[[0]]
       results = []
       operators.each do |x|
         if x.content.branch?
@@ -25,6 +22,23 @@ module Cauldron::Solution
         end
       end
       results << [operators.length]
+    end
+
+    def clone_solution
+      self.clone
+    end
+
+    def add_statement_at(statement, point)
+      if point.length == 2
+        container = self.operators[0]
+        return self if container.length > 1 # TODO: Quick hack to get it working
+        container << Tree::TreeNode.new('SASA', statement)
+      elsif point.length == 1
+        operators << Tree::TreeNode.new('SASA', statement)
+      else
+        raise StandardError.new('Have not written code: '+point.inspect)
+      end
+      self
     end
 
     def insert_tracking(params)
@@ -108,10 +122,10 @@ module Cauldron::Solution
       end
 
       # NOTE: Keep this to debug before conversion of S-EXP
-      puts '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
-      new_tracked_code.each do |x|
-        puts x
-      end
+      # puts '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
+      # new_tracked_code.each do |x|
+      #   puts x
+      # end
       
       sexp = Ripper::SexpBuilder.new(new_tracked_code.join("\n")).parse 
 

@@ -90,14 +90,47 @@ module Cauldron
         end
 
         def instances(histories, composite, examples, insert_points)
-          puts '------------------ instances --------------'
-          puts histories.inspect
 
           # TEMP
           unless examples.class == ExampleSet
             raise StandardError.new('Examples should be an example')
           end
-          
+
+          # Print out each insertable statements
+          scope = examples.scope
+
+          # self.init([0]).to_ruby(scope)
+          # - this will print out "var0.chop"
+
+          # Get the variables available at each point
+          results = []
+
+          insert_points.each do |point|
+
+            # Find the variables at a particular point
+            # TODO Change to test
+            contexts = histories.contexts_at(point)
+            composites = self.context_instances(contexts)
+
+            # scopes = scopes_at_point(point)
+
+            composites.each do |x|
+              if contexts.all? do |context|
+                x.context_realizable?(context)
+              end
+                puts '====='
+                #puts point.inspect
+                #puts x.to_ruby(Cauldron::Scope.new(['var0', 'var1', 'var2']))
+                #binding.pry
+                results << extend_actualized_composite(x, composite, examples, point)
+              end
+            end
+
+          end
+          return results
+
+          # ------
+
           insert_points.each do |point|
             res = Cauldron::Solution::Composite.new(
               [ Tree::TreeNode.new("CHILD1", self.init([0]) ) ]

@@ -4,6 +4,12 @@ module Cauldron::Solution
   
   describe 'Composite' do
 
+    describe '#clone_solution' do
+
+      
+
+    end
+
     describe '#end_points' do
 
       context 'with empty composite' do

@@ -18,6 +18,9 @@ module Cauldron
 
     def extend_solution
       builder = Builder.new(composite)
+      # if composite.operators.length > 0
+      #   binding.pry
+      # end
       builder.insertable_operators(examples)
     end
 

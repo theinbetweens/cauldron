@@ -53,7 +53,7 @@ module Cauldron
           [bar, eval(bar.to_s)]
         })
       }   
-      puts a
+      
       Ripper::SexpBuilder.new(a).parse
       #Sorcerer.source(sexp, indent: true)
 
