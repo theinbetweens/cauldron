@@ -24,6 +24,16 @@ module Cauldron
       @closed = true
     end
 
+    def clone_statement
+
+      #pending
+      # TODO Need to clone the sexp methods
+      # o = DynamicOperator.new(@information, @sexp_methods)
+      # o.instance_eval(Sorcerer.source(@sexp_methods, indent: true))
+      # o
+      self.init(@indexes.clone)
+    end
+
     def context_instances(contexts)
       results = []
       contexts.each do |context|
@@ -39,8 +49,6 @@ module Cauldron
       cloned_container.add_statement_at(x, point)
       cloned_container
       Cauldron::ActualizedComposite.new(cloned_container, examples)
-      #binding.pry
-      #composite.operators[0].length
     end
 
     def context_realizable?(context)
@@ -61,7 +69,6 @@ module Cauldron
 
       o = Object.new
       o.instance_eval(a)
-      #binding.pry
 
       begin
         o.function(vars.collect {|x| context[x] })  

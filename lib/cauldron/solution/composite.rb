@@ -25,13 +25,17 @@ module Cauldron::Solution
     end
 
     def clone_solution
-      self.clone
+      #self.clone
+      tree_operators = operators.collect do |node|
+        Tree::TreeNode.new('x', node.content.clone_statement)
+      end
+      Composite.new(tree_operators)
     end
 
     def add_statement_at(statement, point)
       if point.length == 2
         container = self.operators[0]
-        return self if container.length > 1 # TODO: Quick hack to get it working
+        #return self if container.length > 1 # TODO: Quick hack to get it working
         container << Tree::TreeNode.new('SASA', statement)
       elsif point.length == 1
         operators << Tree::TreeNode.new('SASA', statement)
@@ -176,11 +180,18 @@ module Cauldron::Solution
 
     def to_sexp(variables=[])
 
-      #return [] if operators.empty?
+      #binding.pry
+      operators.each do |operator|
+        #binding.pry
+        #operator.content
+        operator.content.to_ruby(variables)
+      end
+
 
       first = operators.first
       
       #inner = add_first_statement( first.content.build(first.children.first, variables) )
+
       inner = add_first_statement( 
                 first.content.build(
                   first.children, variables

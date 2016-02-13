@@ -6,7 +6,35 @@ module Cauldron::Solution
 
     describe '#clone_solution' do
 
-      
+      let(:composite) do
+        Cauldron::Solution::Composite.new([])
+      end   
+
+      it 'creates a new composite' do
+        composite.clone_solution.object_id.should_not == composite.object_id
+      end
+
+      context %q{it is: 
+        def function(var0)
+          var0.chop
+        end
+      } do
+
+        let(:containing_statement) do
+          Cauldron::StatementGenerator.new.build('lion',[:chop]).first.init([0])
+        end
+
+        let(:composite) do
+          Cauldron::Solution::Composite.new(
+            [Tree::TreeNode.new("CHILD1", containing_statement )]
+          )
+        end
+
+        it 'has different operators' do
+          composite.clone_solution.operators.object_id.should_not == composite.operators.object_id
+        end             
+
+      end
 
     end
 

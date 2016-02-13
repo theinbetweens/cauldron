@@ -6,7 +6,45 @@ module Cauldron
 
     let(:empty_composite) do
       Cauldron::Solution::Composite.new([])
-    end    
+    end
+
+    describe '#to_ruby' do
+
+      let(:nested_statement) do
+        Tree::TreeNode.new('x', StatementGenerator.new.build(['lion','bear'],[:collect], true).first.init([0]))
+      end
+
+      let(:composite) do
+        chop = StatementGenerator.new.build('lion',[:chop]).first.init([2])
+        nested_statement << Tree::TreeNode.new('x', chop)
+        Cauldron::Solution::Composite.new([nested_statement])
+      end
+
+      let(:examples) do
+        Cauldron::ExampleSet.new(
+          [ Cauldron::Example.new(
+              { arguments: [["lion", "bear"]], response: ["bea", "lio"]}
+            )
+          ]
+        )        
+      end
+
+      let(:subject) do
+        Cauldron::ActualizedComposite.new(
+          composite, examples
+        )
+      end
+
+      it 'prints the correct statement' do
+        puts subject.to_ruby
+        subject.to_ruby.should == %q{
+var3 = var0.collect do |var2|
+  var2.chop
+end
+        }
+      end
+
+    end
 
     describe '#histories' do
 

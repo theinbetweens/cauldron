@@ -118,10 +118,19 @@ module Cauldron
               if contexts.all? do |context|
                 x.context_realizable?(context)
               end
-                puts '====='
+                puts '=====|||||||||'
                 #puts point.inspect
-                #puts x.to_ruby(Cauldron::Scope.new(['var0', 'var1', 'var2']))
-                #binding.pry
+                puts x.to_ruby(Cauldron::Scope.new(['var0', 'var1', 'var2', 'var3', 'var4']))
+
+                if x.to_ruby(Cauldron::Scope.new(['var0', 'var1', 'var2', 'var3', 'var4'])).match(/chop/)
+                  # pending.pry
+                  # binding.pry
+                  # puts x.to_ruby(Cauldron::Scope.new(['var0', 'var1', 'var2', 'var3', 'var4']))
+                  # composite.operators[0].content.to_ruby(Cauldron::Scope.new(['var0']))
+                  # examples
+                  # point
+                end
+                
                 results << extend_actualized_composite(x, composite, examples, point)
               end
             end
@@ -131,23 +140,23 @@ module Cauldron
 
           # ------
 
-          insert_points.each do |point|
-            res = Cauldron::Solution::Composite.new(
-              [ Tree::TreeNode.new("CHILD1", self.init([0]) ) ]
-            )
-            unless self.init([0]).realizable?(histories, point)
-              return []
-            end
-          end
+          # insert_points.each do |point|
+          #   res = Cauldron::Solution::Composite.new(
+          #     [ Tree::TreeNode.new("CHILD1", self.init([0]) ) ]
+          #   )
+          #   unless self.init([0]).realizable?(histories, point)
+          #     return []
+          #   end
+          # end
 
-          results = [
-            Cauldron::ActualizedComposite.new(
-              Cauldron::Solution::Composite.new(
-                [ Tree::TreeNode.new("CHILD1", self.init([0]) ) ]
-              ),
-              examples
-            )
-          ]
+          # results = [
+          #   Cauldron::ActualizedComposite.new(
+          #     Cauldron::Solution::Composite.new(
+          #       [ Tree::TreeNode.new("CHILD1", self.init([0]) ) ]
+          #     ),
+          #     examples
+          #   )
+          # ]
           
           # TODO Predict the validatity of the instances
           # TODO Validate the prediction
