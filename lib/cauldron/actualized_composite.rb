@@ -30,7 +30,7 @@ module Cauldron
     end
 
     def to_ruby
-      @composite.to_ruby(examples.scope)
+      composite.to_ruby(examples.scope)
     end    
 
   end

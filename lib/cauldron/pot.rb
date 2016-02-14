@@ -22,8 +22,9 @@ module Cauldron
       result = ''
 
       variables = example_set.variables
-      sexp = Ripper::SexpBuilder.new('def function('+variables.join(',')+');'+relationship.to_ruby(variables)+"; end").parse
-
+      #sexp = Ripper::SexpBuilder.new('def function('+variables.join(',')+');'+relationship.to_ruby(variables)+"; end").parse
+      sexp = Ripper::SexpBuilder.new('def function('+variables.join(',')+');'+relationship.to_ruby(example_set.scope)+"; end").parse
+      
       Sorcerer.source(sexp, indent: true)
 
     end
@@ -144,18 +145,43 @@ module Cauldron
                         ]
       itterations = 0
       until itterations == 2
-        puts 'NEW COMPOSITES:'
-        puts new_composites.length
+
+
+        puts "=================== ITTERATION #{itterations} ======================="
+
+        puts 'Using composite: '
+        new_composites.each do |x|
+          x.to_ruby
+          puts '------------'
+        end
+        puts '---------------------------------------------------------------------'
+
+        #puts 'NEW COMPOSITES:'
+        #puts new_composites.length
         new_composites = extended_composites(new_composites)
 
-        puts '=========== itterations: '+itterations.to_s
-
+        #puts '=========== itterations: '+itterations.to_s
+        puts 'Generated composite: ('+new_composites.length.to_s+')'
         new_composites.each do |x|
-          puts '---'
-          puts x.class
-          puts '======>>>>>>>'
-          puts x.to_ruby
+          x.to_ruby
+          puts '------------'
         end
+        puts '---------------------------------------------------------------------'        
+
+        # new_composites.each do |x|
+        #   puts '---'
+        #   puts x.class
+        #   puts '======>>>>>>>'
+        #   puts x.to_ruby
+        # end
+
+        # new_composites.each do |x|
+        #   puts x.to_ruby
+        #   puts '--------'
+        # end
+
+        #binding.pry
+        puts "======================================================================"
 
         if new_composites.any? {|x| x.solution?(examples) }
           return new_composites.select {|x| x.solution?(examples) }.first.composite

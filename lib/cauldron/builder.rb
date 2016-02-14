@@ -35,12 +35,26 @@ module Cauldron
       tracked_composite.process(params)
     end
 
+    $HISTORY_COUNT = 0
+
     # NOTE: returns an array of new actualized composites extending the current composite
     def insertable_operators(examples)
 
-      actualized_composite = ActualizedComposite.new(composite, examples)
+      actualized_composite = ActualizedComposite.new(composite.clone_solution, examples)
+
+      puts '-> Inserting operator into this: '
+      puts '-> '+composite.clone_solution.operators.length.to_s
+      puts '-> '+actualized_composite.composite.operators.length.to_s
+      puts '['+actualized_composite.to_ruby.inspect+']'
+      puts '--->> DONE'
 
       h = actualized_composite.histories
+
+      #puts '--------------------'
+      #puts 'GENERATING HISTORY: '+$HISTORY_COUNT.to_s
+      #$HISTORY_COUNT += 1
+      #puts actualized_composite.to_ruby
+      #puts '--------------------'
       # TODO - Test the opperates here - and save errors
 
       # 1. SHOULD IT BE VALID?
@@ -60,7 +74,28 @@ module Cauldron
       end
     end
 
+    $COUNT = -1
+
     def self.available_statement_types
+
+      $COUNT += 1
+
+      if $COUNT == 0
+        return StatementGenerator.new.build(['A','B', 'AC'],[:collect])
+      end
+
+      if $COUNT == 1
+        return Cauldron::StatementGenerator.new.build('string',[:chop]) 
+        #return StatementGenerator.new.build(['A','B', 'AC'],[:collect])
+      end
+
+      if $COUNT == 2
+        return Cauldron::StatementGenerator.new.build('string',[:chop]) 
+      end
+      #binding.pry      
+
+
+
       # TODO Not very effient to regenerate the opperators
       #[ArrayCollect]+StatementGenerator.new.build(
       StatementGenerator.new.build(

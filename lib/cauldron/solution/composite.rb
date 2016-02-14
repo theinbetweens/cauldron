@@ -65,10 +65,21 @@ module Cauldron::Solution
       rendered_code = Sorcerer.source(sexp, indent: true)
       caret = Cauldron::Caret.new
 
+
+      rendered_code = Sorcerer.source(sexp, indent: true).gsub(/end/,"\nend").split("\n").reject(&:empty?).join("\n")
+      puts '======================:::'
+
+      #rendered_code_lines = Sorcerer.source(sexp, indent: true).split("\n")
+      #rendered_code_lines
+      puts rendered_code
+      
+      puts '======================:::'
+
       # Generate tracking code with pending substitutions
       tracked_code = []
       rendered_code.each_line do |line|
-        if line.match /end\s+/
+        #if line.match /end\s+/
+        if line.match /end/
           tracked_code << Sorcerer.source(Ripper::SexpBuilder.new(Cauldron::Tracer.substitue_tracking).parse) #Sorcerer.source(Cauldron::Tracer.substitue_tracking)
         end
         tracked_code << line
@@ -76,6 +87,11 @@ module Cauldron::Solution
       sexp = Ripper::SexpBuilder.new(tracked_code.join("\n")).parse       
       code_tracking  = Sorcerer.source(sexp, indent: true)
       code_tracking.split("\n")
+
+      puts '&&&&&&&&&&&&&&& CODE TRACKING PART 1 &&&&&&&&&&&&&&&&&&&&&&&&'
+      code_tracking.split("\n").each do |x|
+        puts x
+      end
 
       current_line = -1
       total_lines = 0
@@ -111,12 +127,23 @@ module Cauldron::Solution
           new_tracked_code << placeholder
         else
           total_lines += 1
-          placeholder = "#{'placeholder_'+rand(10000000000).to_s}"
-          last_line = "#{placeholder} = "+line
 
-          if !last_line.match(/\s+end/).nil? || !last_line.match(/function/).nil? # || last_line.match /function/
-            last_line = nil
-            placeholder = nil
+          unless line['=']
+            placeholder = "#{'placeholder_'+rand(10000000000).to_s}"
+            last_line = "#{placeholder} = "+line
+          end
+
+          if last_line
+            if !last_line.match(/\s+end/).nil? || !last_line.match(/function/).nil? # || last_line.match /function/
+              last_line = nil
+              placeholder = nil
+            end
+          end
+
+          if line.match /end$/
+            unless line.strip == 'end'
+              line = line.gsub(/end$/,'')
+            end
           end
 
           new_tracked_code << line
@@ -126,10 +153,10 @@ module Cauldron::Solution
       end
 
       # NOTE: Keep this to debug before conversion of S-EXP
-      # puts '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
-      # new_tracked_code.each do |x|
-      #   puts x
-      # end
+      puts '&&&&&&&&&&&&&&&&&& TRACKING CODE 2 &&&&&&&&&&&&&&&&&&&&&&&&&&&&'
+      new_tracked_code.each do |x|
+        puts x
+      end
       
       sexp = Ripper::SexpBuilder.new(new_tracked_code.join("\n")).parse 
 
@@ -180,37 +207,43 @@ module Cauldron::Solution
 
     def to_sexp(variables=[])
 
+      res = operators.collect do |operator|
+        #begin
+          operator.content.to_ruby(variables, operator.children)  
+        # rescue NoMethodError => e
+        #   binding.pry
+        # end
+        
+      end.join("\n")
+
       #binding.pry
-      operators.each do |operator|
-        #binding.pry
-        #operator.content
-        operator.content.to_ruby(variables)
-      end
+      #binding.pry
+      sexp = Ripper::SexpBuilder.new(res).parse
+      return sexp
 
-
-      first = operators.first
+      # first = operators.first
       
-      #inner = add_first_statement( first.content.build(first.children.first, variables) )
+      # #inner = add_first_statement( first.content.build(first.children.first, variables) )
 
-      inner = add_first_statement( 
-                first.content.build(
-                  first.children, variables
-                ) 
-              )
+      # inner = add_first_statement( 
+      #           first.content.build(
+      #             first.children, variables
+      #           ) 
+      #         )
 
-      second = operators[1]
+      # second = operators[1]
       
-      if second.nil?
-        results = inner
-      else
-        results = add_statement(
-                    second.content.build(second.children, variables),
-                    inner
-                  )
-      end
+      # if second.nil?
+      #   results = inner
+      # else
+      #   results = add_statement(
+      #               second.content.build(second.children, variables),
+      #               inner
+      #             )
+      # end
       
-      # TODO Not sure why this is needed just yet
-      [:program, results]
+      # # TODO Not sure why this is needed just yet
+      # [:program, results]
     end
 
     def to_ruby(scope)
@@ -240,6 +273,9 @@ module Cauldron::Solution
         o.function(*example.arguments) == example.response
       end
 
+    # TODO: Remove this resque - it is just a temp
+    rescue NoMethodError => e
+      return false
     end
 
     # TODO Drop this method

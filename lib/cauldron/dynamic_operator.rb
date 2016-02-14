@@ -63,7 +63,7 @@ module Cauldron
       # } 
       a = %Q{
       def function(var0)
-        #{Sorcerer.source(to_sexp(Cauldron::Scope.new(var_names)), indent: true)}
+        #{Sorcerer.source(to_sexp(Cauldron::Scope.new(var_names), []), indent: true)}
       end
       }       
 

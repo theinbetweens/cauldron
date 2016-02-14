@@ -13,36 +13,31 @@ module Cauldron
     def sexp_method_to_ruby(instance, dynamic_method)
       #Ripper::SexpBuilder.new(%Q{
       %Q{
-        def to_ruby(variables)
-          Sorcerer.source self.to_sexp(variables)
+        def to_ruby(scope, operators)
+          Sorcerer.source self.to_sexp(scope, operators)
         end
       #}
     end
 
     def method_to_sexp(instance, dynamic_method)
       if instance.send(dynamic_method).class == Enumerator
-        %Q{
-          def to_sexp(scope)
+        %Q^
+          def to_sexp(scope, operators)
             scope_var = scope.new_variable!
             scope_var_two = scope.new_variable!
-            [:assign,
-              [:var_field, [:@ident, scope_var]],
-              [:method_add_block,
-              [:call, [:vcall, [:@ident, scope[@indexes[0]] ]], :".", [:@ident, "#{dynamic_method}"]],
-              [:do_block,
-                [:block_var, 
-                  [:params, [[:@ident, scope_var_two]]]
-                ],
-                [:stmts_add, [:stmts_new], [:var_ref, [:@ident, scope_var_two]]]
-              ]
-            ]
-          ]
+            dynamic_method = '#{dynamic_method}'
+            
+            a = "\#{scope_var} = \#{scope[@indexes[0]]}.\#{dynamic_method} do |\#{scope_var_two}|"+"\n"
+            a += operators.collect {|x| x.content.to_ruby(scope, x.children) }.join("\n")
+            a += "\n"+"end"+"\n"
+            puts a
+            Ripper::SexpBuilder.new(a).parse
 
           end
-        }   
+        ^
       else
         %Q{
-          def to_sexp(scope)
+          def to_sexp(scope, operators)
             [:call,
               [:vcall, [:@ident, scope[@indexes[0]] ]],
               :".",
@@ -110,6 +105,7 @@ module Cauldron
             # Find the variables at a particular point
             # TODO Change to test
             contexts = histories.contexts_at(point)
+
             composites = self.context_instances(contexts)
 
             # scopes = scopes_at_point(point)
@@ -118,22 +114,22 @@ module Cauldron
               if contexts.all? do |context|
                 x.context_realizable?(context)
               end
-                puts '=====|||||||||'
-                #puts point.inspect
-                puts x.to_ruby(Cauldron::Scope.new(['var0', 'var1', 'var2', 'var3', 'var4']))
+              puts '=====|||||||||'
+              #puts point.inspect
+              #puts x.to_ruby(Cauldron::Scope.new(['var0', 'var1', 'var2', 'var3', 'var4']))
 
-                if x.to_ruby(Cauldron::Scope.new(['var0', 'var1', 'var2', 'var3', 'var4'])).match(/chop/)
-                  # pending.pry
-                  # binding.pry
-                  # puts x.to_ruby(Cauldron::Scope.new(['var0', 'var1', 'var2', 'var3', 'var4']))
-                  # composite.operators[0].content.to_ruby(Cauldron::Scope.new(['var0']))
-                  # examples
-                  # point
-                end
+              #if x.to_ruby(Cauldron::Scope.new(['var0', 'var1', 'var2', 'var3', 'var4'])).match(/chop/)
+                # pending.pry
+                # binding.pry
+                # puts x.to_ruby(Cauldron::Scope.new(['var0', 'var1', 'var2', 'var3', 'var4']))
+                # composite.operators[0].content.to_ruby(Cauldron::Scope.new(['var0']))
+                # examples
+                # point
+              #end
                 
-                results << extend_actualized_composite(x, composite, examples, point)
-              end
+              results << extend_actualized_composite(x, composite, examples, point)
             end
+          end
 
           end
           return results
@@ -187,7 +183,7 @@ module Cauldron
         end
 
         def to_tracking_sexp(operators, scope, caret)
-          raise StandardError.new('instance closed') unless @closed
+          raise StandardError.new('statement has been instance closed') unless @closed
           to_sexp(scope)
         end
       }
