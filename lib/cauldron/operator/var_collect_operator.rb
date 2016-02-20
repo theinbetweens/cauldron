@@ -10,7 +10,7 @@ module Cauldron
       Sorcerer.source self.to_sexp( contents ,variables)
     end
 
-    def to_sexp(operators, scope)
+    def to_sexp(scope, operators)
       scope_var = scope.new_variable!
       second_scope_var = scope.new_variable!
       if operators.empty?
@@ -20,9 +20,9 @@ module Cauldron
       end
     end
 
-    def build(operators, scope)
-      to_sexp(operators, scope)
-    end    
+    def build(children, scope)
+      to_sexp(scope, children)
+    end   
 
   end
 

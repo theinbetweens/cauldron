@@ -19,7 +19,7 @@ var1 = var0.collect do |var2|
   var2
 end        
 } do
-        operator.to_ruby([], scope).should == %{
+        operator.to_ruby(scope,[]).should == %{
 var1 = var0.collect do |var2| var2 end          
 }.strip
       end

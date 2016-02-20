@@ -205,11 +205,11 @@ module Cauldron::Solution
       Cauldron::Tracer.tracking(caret.line, caret.current_depth, caret.total_lines)
     end
 
-    def to_sexp(variables=[])
+    def to_sexp(scope=Cauldron::Scope.new)
 
       res = operators.collect do |operator|
         #begin
-          operator.content.to_ruby(variables, operator.children)  
+          operator.content.to_ruby(scope, operator.children)  
         # rescue NoMethodError => e
         #   binding.pry
         # end

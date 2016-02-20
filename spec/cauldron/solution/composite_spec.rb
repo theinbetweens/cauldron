@@ -347,14 +347,12 @@ end
 
             let(:string_asterisk) { StringAsteriskOperator.new([1],2) }
 
-            let(:composite) { Composite.new() }
-
-            let(:variables) { Cauldron::Scope.new(['var0']) }
+            let(:scope) { Cauldron::Scope.new(['var0']) }
 
             it 'is "var0.collect { |var1| var1 * 2 }"' do
               Cauldron::Solution::Composite.new(
                 tree.children
-              ).to_ruby( variables ).should == 'var0.collect { |var1| var1 * 2 }'
+              ).to_ruby( scope ).should == 'var0.collect { |var1| var1 * 2 }'
             end
 
           end
@@ -365,7 +363,7 @@ end
 
       context %q{with the operators} do 
 
-        let(:variables) { Cauldron::Scope.new(['var0']) }
+        let(:scope) { Cauldron::Scope.new(['var0']) }
 
         let(:tree) do
           root_node = Tree::TreeNode.new("ROOT", "Root Content")
@@ -384,7 +382,7 @@ end
             tree.children
             #[Cauldron::VarCollectOperator.new([0]), NumericOperator.new([2], 2) ],
             #[Cauldron::VarCollectOperator.new([1]), ToSOperator.new([4])]
-          ).to_ruby( variables ).should == %q{
+          ).to_ruby( scope ).should == %q{
 var1 = var0.collect do |var2|
  var2 + 2
  end;
@@ -448,38 +446,14 @@ end
             root_node
           end          
 
-          it 'returns "var0.collect {|x| x + 3}"' do
-            Composite.new(tree.children).to_sexp(scope).should == [
-              :program,
-              [:stmts_add,
-                [:stmts_new],
-                [ :method_add_block, 
-                  [:call, 
-                    [:vcall, 
-                      [:@ident, "var0"]
-                    ], 
-                    :".", 
-                    [:@ident, "collect"]
-                  ], 
-                  [:brace_block, 
-                    [
-                      :block_var, 
-                      [:params, [[:@ident, "var1"]]]
-                    ], 
-                    [
-                      :stmts_add, 
-                      [:stmts_new], 
-                      [
-                        :binary, 
-                        [:vcall, [:@ident, "var1"]], 
-                        :*, 
-                        [:@int, 3]
-                      ]
-                    ]
-                  ]
-                ]
-              ]
-            ]
+          it 'returns "var0.collect {|x| x * 3}"' do
+            Composite.new(tree.children).to_sexp(scope).should match_code_of(
+              %q{
+                var0.collect { |var1| 
+                  var1 * 3
+                }
+              }
+            )
           end
 
         end

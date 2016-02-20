@@ -18,8 +18,8 @@ class ArrayCollect
     # }).parse  
   end
 
-  def to_ruby(operators, variables)
-    Sorcerer.source build(operators, variables)
+  def to_ruby(scope, operators)
+    Sorcerer.source self.to_sexp(scope, operators)
   end
 
   def self.viable?(arguments,output)
@@ -71,8 +71,8 @@ class ArrayCollect
     ]    
   end
 
-  def to_sexp(operators, variables)
-    build(operators, variables)   
+  def to_sexp(scope, operators)
+    build(operators, scope)   
   end
 
   def block_var(variables)
