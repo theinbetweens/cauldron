@@ -39,15 +39,15 @@ class ConcatOperator
     return false
   end
 
-  def to_ruby(variables)
-    Sorcerer.source self.to_sexp(variables)
-  end
+  def to_ruby(scope, operators)
+    Sorcerer.source self.to_sexp(scope, operators)
+  end  
 
   def build(operators, scope)
     to_sexp(scope)
   end
 
-  def to_sexp(scope)
+  def to_sexp(scope, operators)
     [:program,
      [:stmts_add,
       [:stmts_new],

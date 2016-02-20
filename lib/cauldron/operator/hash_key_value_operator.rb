@@ -28,15 +28,11 @@ class HashKeyValueOperator
     return false    
   end
 
-  def to_ruby(operators, variables)
-    Sorcerer.source build(operators, variables)
+  def to_ruby(scope, operators)
+    Sorcerer.source self.to_sexp(scope, operators)
   end
 
-  def build(operators, scope)
-    to_sexp(scope)
-  end
-
-  def to_sexp(scope)
+  def to_sexp(scope, operators)
     [:aref,
       [:vcall, 
         [:@ident, scope[0]]

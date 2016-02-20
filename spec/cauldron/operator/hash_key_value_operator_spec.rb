@@ -2,7 +2,13 @@ require 'spec_helper'
 
 module Cauldron
   
-  describe 'HashKeyValueOperator' do 
+  describe HashKeyValueOperator do 
+
+    it_behaves_like "operator" do
+      let(:operator) { HashKeyValueOperator.new([0], :foo) }
+      let(:initial_scope) { Cauldron::Scope.new(['var0']) }
+      let(:initial_operators) { [] }
+    end      
     
     describe '.viable?' do
 
@@ -80,7 +86,7 @@ module Cauldron
 
         it 'returns "var0[:foo]"' do
           operator = HashKeyValueOperator.new([0],:foo)
-          operator.to_ruby([],scope).should == 'var0[:foo]'
+          operator.to_ruby(scope,[]).should == 'var0[:foo]'
         end
 
       end
@@ -89,17 +95,11 @@ module Cauldron
 
         it "returns 'var0['foo']" do
           operator = HashKeyValueOperator.new([0],'foo')
-          operator.to_ruby([], scope).should == "var0[\"foo\"]"
+          operator.to_ruby(scope,[]).should == "var0[\"foo\"]"
         end
 
       end
 
-    end
-
-    describe '#build' do
-
-      
-      
     end
 
   end

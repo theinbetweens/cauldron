@@ -11,7 +11,6 @@ module Cauldron
     end
 
     def sexp_method_to_ruby(instance, dynamic_method)
-      #Ripper::SexpBuilder.new(%Q{
       %Q{
         def to_ruby(scope, operators)
           Sorcerer.source self.to_sexp(scope, operators)
@@ -106,7 +105,7 @@ module Cauldron
             # TODO Change to test
             contexts = histories.contexts_at(point)
 
-            composites = self.context_instances(contexts)
+            composites = context_instances(contexts)
 
             # scopes = scopes_at_point(point)
 
@@ -185,7 +184,7 @@ module Cauldron
         def to_tracking_sexp(operators, scope, caret)
           raise StandardError.new('statement has been instance closed') unless @closed
           to_sexp(scope)
-        end
+        end      
       }
       
       sexp = Ripper::SexpBuilder.new(res).parse
@@ -194,6 +193,20 @@ module Cauldron
       
       o = DynamicOperator.new(information, sexp)
       o.instance_eval(Sorcerer.source(sexp, indent: true))
+      # o.instance_eval do 
+      #   #"include Cauldron::Operator"
+      #   %q{
+      #     def context_instances(contexts)
+      #       results = []
+      #       contexts.each do |context|
+      #         results << context.keys.collect(&:to_s).select {|x| x.match(/var\d/) }
+      #       end
+      #       results = results.flatten.uniq
+      #       variable_numbers = results.collect { |x| x.match(/var(\d+)/)[1] }
+      #       variable_numbers.collect { |x| init([x.to_i])}
+      #     end            
+      #   }
+      # end
       o
     end
 

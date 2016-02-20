@@ -4,6 +4,7 @@ class ArrayCollect
 
   def initialize(indexes)
     @indexes = indexes
+    # TODO Should use a different method to better mirror the DynamicOperator - instances
   end
 
   # NOTE #history is used by Pry

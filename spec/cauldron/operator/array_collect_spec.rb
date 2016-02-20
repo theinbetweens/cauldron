@@ -4,71 +4,11 @@ module Cauldron
   
   describe ArrayCollect do
 
-    # describe '#to_tracking_sexp' do
-
-    #   context 'code is:
-    #            var0.collect do |var1|
-    #            end' do
-
-    #     let(:scope) do
-    #       Cauldron::Scope.new(['var0'])
-    #     end
-
-    #     let(:array_collect_node) do
-    #       node = Tree::TreeNode.new("CHILD1", ArrayCollect.new([0]))
-    #       node
-    #     end
-
-    #     it %q{generates a method:
-    #       var0.collect do |var1|
-    #         record(0,1,1,[0],local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
-    #       end
-    #     } do
-    #       array_collect_node.content.to_tracking_sexp(
-    #         array_collect_node.children,scope, Caret.new
-    #       ).should match_code_of %q{
-    #         var0.collect do |var1|
-    #           record(0,1,1,[0],local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
-    #         end
-    #       }
-    #     end
-
-    #   end      
-
-    #   context 'code is:
-    #            var0.collect do |var1|
-    #              var1 * 3 
-    #            end' do
-
-    #     let(:array_collect_node) do
-    #       node = Tree::TreeNode.new("CHILD1", ArrayCollect.new([0]))
-    #       node << Tree::TreeNode.new("CHILD1", StringAsteriskOperator.new([1],3))
-    #       node
-    #     end
-
-    #     let(:scope) do
-    #       Cauldron::Scope.new(['var0'])
-    #     end
-
-    #     it %q{generates a method:
-    #       var0.collect do |var1|
-    #         var1 * 3
-    #         record(1,1,2,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
-    #       end
-    #     } do
-    #       array_collect_node.content.to_tracking_sexp(
-    #         array_collect_node.children,scope, Caret.new
-    #       ).should match_code_of %q{
-    #         var0.collect do |var1|
-    #           var1 * 3
-    #           record(1,1,2,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
-    #         end
-    #       }
-    #     end      
-
-    #   end
-
-    # end
+    it_behaves_like "operator" do
+      let(:operator) { ArrayCollect.new([0]) }
+      let(:initial_scope) { Cauldron::Scope.new(['var0']) }
+      let(:initial_operators) { [] }
+    end    
 
     describe '.instances' do
 
@@ -98,11 +38,6 @@ module Cauldron
           ArrayCollect.instances(
             histories,composite,examples, [[0,0]]
           ).first.class == Cauldron::Solution::Composite
-          # ArrayCollect.instances(histories,composite,examples).should include( 
-          #   Cauldron::Solution::Composite.new(
-          #     [ArrayCollect.new([0])]
-          #   ) 
-          # )
         end
 
       end
@@ -155,7 +90,7 @@ module Cauldron
 
       it 'returns "var0.collect { |x| x }"' do
         operator = ArrayCollect.new([0])
-        operator.to_ruby([],scope).should == "var0.collect { |var1| }"
+        operator.to_ruby(scope,[]).should == "var0.collect { |var1| }"
       end
 
       context 'passed "a * 2"' do
@@ -167,7 +102,7 @@ module Cauldron
         it 'returns "var0.collect { |var1| var1 * 2}"' do
           operator = ArrayCollect.new([0])
           operator.to_ruby(
-            [string_asterisk], scope
+            scope, [string_asterisk]
           ).should == 'var0.collect { |var1| var1 * 2 }'
         end
 

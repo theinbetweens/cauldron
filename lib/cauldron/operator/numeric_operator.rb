@@ -1,4 +1,6 @@
-class NumericOperator
+class NumericOperator 
+
+  include Cauldron::Operator
 
   # Maybe NumericOperation
 
@@ -35,9 +37,6 @@ class NumericOperator
       rescue TypeError
         return false
       end
-      #   failed_uses << { composite:composite, examples: examples}
-      #   return false        
-      # end
     end
     true
   end
@@ -46,19 +45,19 @@ class NumericOperator
     o = Object.new
     a = %Q{
       def function(var0)
-        #{Sorcerer.source(to_sexp(Cauldron::Scope.new(['var0'])), indent: true)}
+        #{Sorcerer.source(to_sexp(Cauldron::Scope.new(['var0']),[]), indent: true)}
       end
     }
     o.instance_eval(a)
     o.function(*params.values)
   end
 
-  def to_sexp(scope)
+  def to_sexp(scope, operators)
     [:binary, [:@ident, scope[@indexes[0]] ] , :+, [:@int, @constant.to_s]]
   end
 
-  def to_ruby(scope)
-    Sorcerer.source self.to_sexp(scope)
+  def to_ruby(scope, operators)
+    Sorcerer.source self.to_sexp(scope, operators)
   end
 
   def build(operators, scope)
@@ -91,11 +90,26 @@ class NumericOperator
     false
   end
 
-  def self.instances(histories, composite, examples, insert_points)
+  def instances(histories, composite, examples, insert_points)
+
+    # TEMP
+    unless examples.class == Cauldron::ExampleSet
+      raise StandardError.new('Examples should be an example')
+    end
+    scope = examples.scope
+
+    # Get the variables available at each point
+    results = []
+
+    insert_points.each do |point|
+      contexts = histories.contexts_at(point)
+      composites = self.context_instances(contexts)
+    end
+
     constant = examples.examples.first.response - histories.first.logs.first[:var0] 
     [
       Cauldron::Solution::Composite.new(
-      [ Tree::TreeNode.new("CHILD1", self.new([0],constant) ) ]
+        [ Tree::TreeNode.new("CHILD1", self.new([0],constant) ) ]
       )
     ]
   end

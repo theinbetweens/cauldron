@@ -216,8 +216,6 @@ module Cauldron::Solution
         
       end.join("\n")
 
-      #binding.pry
-      #binding.pry
       sexp = Ripper::SexpBuilder.new(res).parse
       return sexp
 
@@ -275,6 +273,8 @@ module Cauldron::Solution
 
     # TODO: Remove this resque - it is just a temp
     rescue NoMethodError => e
+      return false
+    rescue NameError => e
       return false
     end
 

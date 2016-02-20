@@ -4,6 +4,12 @@ module Cauldron
   
   describe 'ArrayReverseOperator' do
 
+    it_behaves_like "operator" do
+      let(:operator) { ArrayReverseOperator.new([0]) }
+      let(:initial_scope) { Cauldron::Scope.new(['var0']) }
+      let(:initial_operators) { [] }
+    end    
+
     describe '.viable?' do
 
       context 'the arguments are not arrays' do
@@ -55,13 +61,6 @@ module Cauldron
         end
         
       end
-
-    end
-
-    describe '#to_ruby' do
-
-      it '' do
-      end     
 
     end
 

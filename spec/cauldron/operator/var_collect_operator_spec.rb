@@ -4,6 +4,12 @@ module Cauldron
   
   describe VarCollectOperator do
 
+    it_behaves_like "operator" do
+      let(:operator) { VarCollectOperator.new([0]) }
+      let(:initial_scope) { Cauldron::Scope.new(['var0']) }
+      let(:initial_operators) { [] }
+    end    
+
     let(:operator) do
       VarCollectOperator.new([0])
     end

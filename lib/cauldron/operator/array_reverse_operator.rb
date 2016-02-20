@@ -1,6 +1,7 @@
 class ArrayReverseOperator
 
   def initialize(indexes)
+    raise StandardError.new('Need at least one item') if indexes.empty?
     @indexes = indexes
   end  
 

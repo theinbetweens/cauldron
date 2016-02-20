@@ -83,9 +83,9 @@ module Cauldron
           let(:scope) { Cauldron::Scope.new(['var0', 'var1']) }
 
           it 'is var1 = var0.collect { |var2| var2}' do
-            dynamic_operator.to_sexp(scope).should match_code_of(%q{
+            dynamic_operator.to_sexp(scope,[]).should match_code_of(%q{
                                                                     var2 = var0.collect do |var3|
-                                                                      var3
+                                                                      
                                                                     end
                                                                   }
             )

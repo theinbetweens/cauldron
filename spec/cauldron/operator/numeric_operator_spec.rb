@@ -4,6 +4,12 @@ module Cauldron
   
   describe 'NumericOperator' do
 
+    it_behaves_like "operator" do
+      let(:operator) { NumericOperator.new([0], 4) }
+      let(:initial_scope) { Cauldron::Scope.new(['var0']) }
+      let(:initial_operators) { [] }
+    end    
+
     describe '#realizable?' do
 
       let(:subject) { NumericOperator.init([0], 4) }
@@ -136,10 +142,12 @@ module Cauldron
       describe 'var0 needs to increase by 2' do
 
         let(:histories) do
-          [
-            Cauldron::History.new([{:var0=>7, :line=>0, :depth=>0, :total_line=>0}]),
-            Cauldron::History.new([{:var0=>10, :line=>0, :depth=>0, :total_line=>0}])
-          ]
+          Cauldron::Histories.new(
+            [
+              Cauldron::History.new([{:var0=>7, :line=>0, :depth=>0, :total_line=>0, :point => [0] }]),
+              Cauldron::History.new([{:var0=>10, :line=>0, :depth=>0, :total_line=>0, :point => [0]}])
+            ]            
+          )
         end
 
         let(:examples) do
@@ -164,7 +172,7 @@ end
         ' do
             NumericOperator.instances(
               histories, composite, examples, [0,0]
-            ).first.to_sexp(examples.variables).should match_code_of(%q{var0+2})
+            ).first.to_sexp(examples.variables, []).should match_code_of(%q{var0+2})
         end
 
       end      

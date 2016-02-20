@@ -6,7 +6,13 @@ module Cauldron
 
     it_behaves_like "leaf_operator" do
       let(:leaf_operator) { ConcatOperator.new([0], 'foo') }
-    end    
+    end
+
+    it_behaves_like "operator" do
+      let(:operator) { ConcatOperator.new([0], 'foo') }
+      let(:initial_scope) { Cauldron::Scope.new(['var0']) }
+      let(:initial_operators) { [] }
+    end        
     
     describe '.viable?' do
 
@@ -89,7 +95,7 @@ module Cauldron
 
         it 'returns "var0.concat("bar")"' do
           operator = ConcatOperator.new([0],'bar')
-          operator.to_ruby(scope).should == "var0.concat(\"bar\")"
+          operator.to_ruby(scope,[]).should == "var0.concat(\"bar\")"
         end
 
       end

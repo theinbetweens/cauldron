@@ -8,6 +8,12 @@ module Cauldron
       let(:leaf_operator) { StringAsteriskOperator.new([0],2) }
     end
 
+    it_behaves_like "operator" do
+      let(:operator) { StringAsteriskOperator.new([0], 2) }
+      let(:initial_scope) { Cauldron::Scope.new(['var0']) }
+      let(:initial_operators) { [] }
+    end    
+
     describe '.history_goals' do
 
       context 'with the history [{:x => "lima"},{:x => "bear"}]' do
