@@ -39,6 +39,7 @@ require 'cauldron/operator/string_asterisk_operator'
 require 'cauldron/operator/array_collect'
 require 'cauldron/operator/to_s_operator'
 require 'cauldron/operator/var_collect_operator'
+require 'cauldron/dynamic_operator_module'
 
 require 'cauldron/solution/one'
 require 'cauldron/actualized_composite'
