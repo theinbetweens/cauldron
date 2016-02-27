@@ -138,12 +138,6 @@ module Cauldron
           
           results
         end
-
-        def realize(params)
-          o = Object.new
-          o.instance_eval(rip2)
-          o.function(*params.values)
-        end
      
       }
       
@@ -154,35 +148,11 @@ module Cauldron
       o = DynamicOperator.new(information, sexp)
       o.instance_eval(Sorcerer.source(sexp, indent: true))
 
-
-      puts 'Creating class'
-      
-      # puts '----------------------'
-      # a = puts(instance.class)
-      # puts a
-      # puts dynamic_method
-
-      # ios = IO.new STDOUT.fileno
-      # ios.write "ZetCode\n"
-      # ios.close
-
       # http://ruby-doc.org/core-2.3.0/Class.html
       dynamic_name = ('Dynamic'+'_'+instance.class.to_s+'_'+dynamic_method.to_s).camelize
       
       # http://stackoverflow.com/questions/4113479/dynamic-class-definition-with-a-class-name
       unless Object.const_defined? dynamic_name
-        # c = Object.const_set(
-        #       dynamic_name, 
-        #       Class.new do 
-
-        #         include Cauldron::Operator
-
-        #         def method1() 
-        #           42 
-        #         end            
-
-        #       end
-        # )
         c = Object.const_set(
               dynamic_name, 
               #DynamicOperator.new(information, sexp) do 
@@ -211,10 +181,7 @@ module Cauldron
                 # end                            
 
               end
-        )
-        
-        #binding.pry
-
+            )
 
         # c.class_eval %q{
         #   def self.context_instances(contexts)

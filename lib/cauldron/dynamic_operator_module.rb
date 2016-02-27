@@ -124,7 +124,13 @@ module Cauldron
       true          
     rescue => e
       # TODO GENERATE RSPEC TEST with arguments
-    end        
+    end
+
+    def realize(params)
+      o = Object.new
+      o.instance_eval(rip2)
+      o.function(*params.values)
+    end    
 
   end
 
