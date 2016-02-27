@@ -2,6 +2,8 @@ module Cauldron
 
   class DynamicOperator
 
+    include Cauldron::Operator
+
     attr_reader :indexes
     attr_accessor :failed_uses
 
@@ -25,8 +27,6 @@ module Cauldron
     end
 
     def clone_statement
-
-      #pending
       # TODO Need to clone the sexp methods
       # o = DynamicOperator.new(@information, @sexp_methods)
       # o.instance_eval(Sorcerer.source(@sexp_methods, indent: true))
@@ -34,15 +34,15 @@ module Cauldron
       self.init(@indexes.clone)
     end
 
-    def context_instances(contexts)
-      results = []
-      contexts.each do |context|
-        results << context.keys.collect(&:to_s).select {|x| x.match(/var\d/) }
-      end
-      results = results.flatten.uniq
-      variable_numbers = results.collect { |x| x.match(/var(\d+)/)[1] }
-      variable_numbers.collect { |x| init([x.to_i])}
-    end
+    # def context_instances(contexts)
+    #   results = []
+    #   contexts.each do |context|
+    #     results << context.keys.collect(&:to_s).select {|x| x.match(/var\d/) }
+    #   end
+    #   results = results.flatten.uniq
+    #   variable_numbers = results.collect { |x| x.match(/var(\d+)/)[1] }
+    #   variable_numbers.collect { |x| init([x.to_i])}
+    # end
 
     def extend_actualized_composite(x, container, examples, point)
       cloned_container = container.clone_solution

@@ -166,44 +166,6 @@ class ArrayCollect
     false    
   end
 
-  def trace(problem)
-
-    #CodeRay.scan("[1]", :ruby).term
-    # PryTester.new(*args).tap do |t|
-    #   (class << t; self; end).class_eval(&block) if block
-    # end    
-    #
-    # pt = PryTester.new
-    # pt.eval([self.to_ruby])
-
-    # pt = PryTester.new
-    # #pt.eval([self.to_ruby])
-
-    # args = problem[:arguments]
-    # variables = (0...args.length).collect {|x| 'var'+x.to_s}
-
-    # result = [
-    #   'def function('+variables.join(',')+')',
-    #   self.to_ruby,
-    #   'end'
-    # ]
-
-    # #pt.eval(result)
-    # #pt.eval(['def function('+variables.join(',')+');'+self.to_ruby+"; end"])
-
-    # # 'def function('+variables.join(',')+');'+self.to_ruby+"; end", 'function('+problem[:arguments][0].to_s+')'
-    # # "def function('+variables.join(',')+');'+self.to_ruby+"; end", 'function('+problem[:arguments][0].to_s+')'
-    # a = 'def function('+variables.join(',')+');'+self.to_ruby+"; end", 'function('+problem[:arguments][0].to_s+')'
-
-    # pt.eval(
-    #   ['def function('+variables.join(',')+');'+self.to_ruby+"; end", 'function('+problem[:arguments].collect(&:to_s).join(',')+')']
-    # )
-
-    # Pry::Code.new(self.to_ruby)
-    # ''
-    []
-  end
-
   def self.instances(histories, composite, examples, insert_points)
     results = []
     histories.each do |history|

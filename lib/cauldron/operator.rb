@@ -2,6 +2,7 @@ module Cauldron
 
   module Operator
 
+    # TODO This is a class method
     def context_instances(contexts)
       results = []
       contexts.each do |context|

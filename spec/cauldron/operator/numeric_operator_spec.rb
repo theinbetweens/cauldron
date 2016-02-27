@@ -108,7 +108,7 @@ module Cauldron
 
     end
 
-    describe '.instances' do
+    describe '#instances' do
 
       let(:composite) do
         Cauldron::Solution::Composite.new([])

@@ -78,10 +78,14 @@ module Cauldron
         def init(indexes)
           o = self.class.new(@information,@sexp_methods)
           o.indexes = indexes
+          # TODO Include this module
+          # o.instance_eval do
+          #   include Cauldron::Operator
+          # end
           o.instance_eval(Sorcerer.source(@sexp_methods, indent: true))
           o.close
           o
-        end
+        end        
 
         def instances(histories, composite, examples, insert_points)
 
@@ -193,6 +197,13 @@ module Cauldron
       
       o = DynamicOperator.new(information, sexp)
       o.instance_eval(Sorcerer.source(sexp, indent: true))
+
+      # Alternativly: 
+      # http://stackoverflow.com/questions/4113479/dynamic-class-definition-with-a-class-name
+      # dynamic_name = "ClassName"
+      # Object.const_set(dynamic_name, Class.new { def method1() 42 end })
+      # ClassName.new.method1 #=> 42
+
       # o.instance_eval do 
       #   #"include Cauldron::Operator"
       #   %q{
