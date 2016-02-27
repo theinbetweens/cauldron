@@ -198,6 +198,87 @@ module Cauldron
       o = DynamicOperator.new(information, sexp)
       o.instance_eval(Sorcerer.source(sexp, indent: true))
 
+
+      puts 'Creating class'
+      #
+      # puts '----------------------'
+      # a = puts(instance.class)
+      # puts a
+      # puts dynamic_method
+
+      # ios = IO.new STDOUT.fileno
+      # ios.write "ZetCode\n"
+      # ios.close
+
+      # http://ruby-doc.org/core-2.3.0/Class.html
+      dynamic_name = ('Dynamic'+'_'+instance.class.to_s+'_'+dynamic_method.to_s).camelize
+      
+      # http://stackoverflow.com/questions/4113479/dynamic-class-definition-with-a-class-name
+      unless Object.const_defined? dynamic_name
+        # c = Object.const_set(
+        #       dynamic_name, 
+        #       Class.new do 
+
+        #         include Cauldron::Operator
+
+        #         def method1() 
+        #           42 
+        #         end            
+
+        #       end
+        # )
+        c = Object.const_set(
+              dynamic_name, 
+              DynamicOperator.new(information, sexp) do 
+
+                include Cauldron::Operator
+
+                def method1() 
+                  42 
+                end            
+
+              end
+        )        
+
+
+        c.class_eval %q{
+                def self.context_instances(contexts)
+                  results = []
+                  contexts.each do |context|
+                    results << context.keys.collect(&:to_s).select {|x| x.match(/var\d/) }
+                  end
+                  results = results.flatten.uniq
+                  variable_numbers = results.collect { |x| x.match(/var(\d+)/)[1] }
+                  variable_numbers.collect { |x| init([x.to_i])}
+                end            
+        }
+
+        #a = Object.const_set(dynamic_name, Cauldron::DynamicOperator.new(information, sexp) { def method1() 42 end })
+        #o.instance_eval(Sorcerer.source(sexp, indent: true))
+        #binding.pry
+        #binding.pry
+        #c.new(information, sexp)
+        #a = c.new
+        #a.instance_eval(Sorcerer.source(sexp, indent: true))
+        #return a
+        c.instance_eval(Sorcerer.source(sexp, indent: true))
+        return c
+        # ClassName.new.method1 #=> 42        
+      else
+        a = eval(dynamic_name)
+        a.instance_eval(Sorcerer.source(sexp, indent: true))
+        return a
+        #return o
+        #return dynamic_name.new(information, sexp)
+        #binding.pry
+        #dynamic_name+rand(100000).to_s
+        #raise StandardError.new(dynamic_name+' class has already been defined')
+      end
+
+      return a
+      #puts dynamic_name.camelize   
+      #puts '----------------------'
+
       # Alternativly: 
       # http://stackoverflow.com/questions/4113479/dynamic-class-definition-with-a-class-name
       # dynamic_name = "ClassName"

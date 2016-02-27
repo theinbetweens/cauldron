@@ -4,6 +4,26 @@ module Cauldron
 
   describe StatementGenerator do
 
+    describe '#build_class' do
+
+      let(:subject) { StatementGenerator.new}
+
+      context 'with string instance "string"' do
+
+        context 'with method "chop"' do
+
+          it "doesn't raise an error" do
+            expect{
+              subject.build_class('string', 'chop')
+            }.not_to raise_error
+          end
+
+        end
+
+      end
+
+    end
+
     describe '#build' do
 
       let(:subject) { StatementGenerator.new}

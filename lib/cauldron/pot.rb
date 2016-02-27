@@ -156,8 +156,6 @@ module Cauldron
         end
         puts '---------------------------------------------------------------------'
 
-        #puts 'NEW COMPOSITES:'
-        #puts new_composites.length
         new_composites = extended_composites(new_composites)
 
         #puts '=========== itterations: '+itterations.to_s

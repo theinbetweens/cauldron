@@ -10,6 +10,9 @@ require 'sorcerer'
 require 'pry_tester'
 require 'pry'
 
+# http://stackoverflow.com/questions/18732338/trying-to-require-active-support-in-gem
+require "active_support/all"
+
 require 'tree'
 
 require 'core/string'

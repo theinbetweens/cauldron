@@ -7,6 +7,8 @@ source "http://rubygems.org"
 #require 'rubygems'
 #require 'lib/cauldron'
 
+gem 'activesupport'
+
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
 group :development, :cucumber, :test do
