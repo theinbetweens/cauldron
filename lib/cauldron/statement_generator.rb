@@ -135,31 +135,7 @@ module Cauldron
           end
 
           end
-          return results
-
-          # ------
-
-          # insert_points.each do |point|
-          #   res = Cauldron::Solution::Composite.new(
-          #     [ Tree::TreeNode.new("CHILD1", self.init([0]) ) ]
-          #   )
-          #   unless self.init([0]).realizable?(histories, point)
-          #     return []
-          #   end
-          # end
-
-          # results = [
-          #   Cauldron::ActualizedComposite.new(
-          #     Cauldron::Solution::Composite.new(
-          #       [ Tree::TreeNode.new("CHILD1", self.init([0]) ) ]
-          #     ),
-          #     examples
-          #   )
-          # ]
           
-          # TODO Predict the validatity of the instances
-          # TODO Validate the prediction
-          # TODO Update code to better predict
           results
         end
 
@@ -168,27 +144,7 @@ module Cauldron
           o.instance_eval(rip2)
           o.function(*params.values)
         end
-
-        def realizable?(histories, point)
-          parameters = histories.variable_permutations(@indexes.length)
-
-          parameters.each do |params|
-            begin
-              realize(params)
-            rescue => e
-              failed_uses.push(histories)
-              return false
-            end
-          end
-          true          
-        rescue => e
-          # TODO GENERATE RSPEC TEST with arguments
-        end
-
-        def to_tracking_sexp(operators, scope, caret)
-          raise StandardError.new('statement has been instance closed') unless @closed
-          to_sexp(scope)
-        end      
+     
       }
       
       sexp = Ripper::SexpBuilder.new(res).parse

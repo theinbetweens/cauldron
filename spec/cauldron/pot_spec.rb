@@ -74,8 +74,8 @@ end
           pot.solve(examples).should == 
 %q{
 def function(var0)
-  var2 = var0.collect do |var1|
-    var1.chop
+  var1 = var0.collect do |var2|
+    var2.chop
   end
 end
 }.lstrip

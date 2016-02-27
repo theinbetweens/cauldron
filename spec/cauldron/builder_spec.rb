@@ -181,34 +181,6 @@ module Cauldron
 
     # end
 
-    describe '#trace' do
-
-      context 'composite is empty' do
-
-        let(:builder) { Cauldron::Builder.new(composite) }
-
-        let(:composite) { Cauldron::Solution::Composite.new([]) }
-
-        context 'using param ["Sparky", "Kel"]' do
-
-          let(:example) do
-            Example.new({ :arguments => ['Sparky'], :response => 'Spark' })
-          end          
-
-          it %q{is 
-{:var0 => ['Sparky']}
-            } do
-              builder.trace(
-                example
-              ).logs.should == [ {:var0 => 'Sparky', :line=>0, :depth=>0, :total_line=>0} ]
-          end
-
-        end
-
-      end
-
-    end
-
   end
 
 end

@@ -18,10 +18,10 @@ module Cauldron
       end
     end
 
-    def trace(params)
-      tracked_composite = composite.insert_tracking(params)
-      tracked_composite.process(params)
-    end
+    # def trace(params)
+    #   tracked_composite = composite.insert_tracking(params)
+    #   tracked_composite.process(params)
+    # end
 
     $HISTORY_COUNT = 0
 

@@ -105,6 +105,27 @@ module Cauldron
       }).parse      
     end
 
+    def to_tracking_sexp(operators, scope, caret)
+      raise StandardError.new('statement has been instance closed') unless @closed
+      to_sexp(scope)
+    end
+
+    def realizable?(histories, point)
+      parameters = histories.variable_permutations(@indexes.length)
+
+      parameters.each do |params|
+        begin
+          realize(params)
+        rescue => e
+          failed_uses.push(histories)
+          return false
+        end
+      end
+      true          
+    rescue => e
+      # TODO GENERATE RSPEC TEST with arguments
+    end        
+
   end
 
 end
