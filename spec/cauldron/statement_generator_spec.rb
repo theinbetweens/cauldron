@@ -4,6 +4,30 @@ module Cauldron
 
   describe StatementGenerator do
 
+    describe '#method_to_sexp' do
+
+      let(:subject) { StatementGenerator.new}
+
+      context 'instance is "3"' do
+
+        let(:instance) { 3 } 
+
+        context 'dynamic_method is ":+"' do
+
+          let(:dynamic_method) { :+ } 
+
+          it "doesn't raise an error" do
+            expect{
+              subject.method_to_sexp(instance, dynamic_method)
+            }.not_to raise_error
+          end
+
+        end
+
+      end
+
+    end
+
     describe '#build_class' do
 
       let(:subject) { StatementGenerator.new}

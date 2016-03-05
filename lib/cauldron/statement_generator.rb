@@ -19,6 +19,21 @@ module Cauldron
     end
 
     def method_to_sexp(instance, dynamic_method)
+
+      # Does it expect arguments?
+      begin
+        instance.send(dynamic_method)
+      rescue ArgumentError => e
+        
+        number_of_arguments = e.message.match(/(\d+)\)/)[1].to_i
+        to_sexp_method = %Q^
+          def to_sexp(scope, operators)
+            Ripper::SexpBuilder.new("\#{scope[@indexes[0]]} + \#{constant}").parse 
+          end
+        ^
+        return to_sexp_method
+      end
+
       if instance.send(dynamic_method).class == Enumerator
         %Q^
           def to_sexp(scope, operators)
@@ -117,10 +132,6 @@ module Cauldron
               if contexts.all? do |context|
                 x.context_realizable?(context)
               end
-              puts '=====|||||||||'
-              #puts point.inspect
-              #puts x.to_ruby(Cauldron::Scope.new(['var0', 'var1', 'var2', 'var3', 'var4']))
-                
               results << extend_actualized_composite(x, composite, examples, point)
             end
           end
@@ -180,30 +191,6 @@ module Cauldron
       end
 
       return a
-      #puts dynamic_name.camelize   
-      #puts '----------------------'
-
-      # Alternativly: 
-      # http://stackoverflow.com/questions/4113479/dynamic-class-definition-with-a-class-name
-      # dynamic_name = "ClassName"
-      # Object.const_set(dynamic_name, Class.new { def method1() 42 end })
-      # ClassName.new.method1 #=> 42
-
-      # o.instance_eval do 
-      #   #"include Cauldron::Operator"
-      #   %q{
-      #     def context_instances(contexts)
-      #       results = []
-      #       contexts.each do |context|
-      #         results << context.keys.collect(&:to_s).select {|x| x.match(/var\d/) }
-      #       end
-      #       results = results.flatten.uniq
-      #       variable_numbers = results.collect { |x| x.match(/var(\d+)/)[1] }
-      #       variable_numbers.collect { |x| init([x.to_i])}
-      #     end            
-      #   }
-      # end
-      o
     end
 
   end
