@@ -40,7 +40,7 @@ module Cauldron
       StatementGenerator.new.build(
         ['A','B', 'AC'],
         [:collect]
-      )+Cauldron::StatementGenerator.new.build('string',[:chop])
+      )+Cauldron::StatementGenerator.new.build('string',[:chop])+[ArrayReverseOperator]
     end
 
   end

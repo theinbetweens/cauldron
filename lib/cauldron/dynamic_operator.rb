@@ -79,15 +79,6 @@ module Cauldron
       end
       return true
       
-
-
-      #o.function(*params.values)
-
-      # a = %Q{
-      # def function(var0)
-      #   #{Sorcerer.source(to_sexp(Cauldron::Scope.new(['var0'])), indent: true)}
-      # end
-      # }      
     end
 
     def write_to_file(filename)

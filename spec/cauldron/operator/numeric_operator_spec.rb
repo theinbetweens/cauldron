@@ -53,7 +53,6 @@ module Cauldron
             {arguments: [7], response: 8},
             {arguments: [10], response: 11}
           ]
-          #NumericOperator.viable?(problem).should be_true
           problem.all? {|x| NumericOperator.viable?(x[:arguments], x[:response]) }.should be_true
         end
 
@@ -113,6 +112,8 @@ module Cauldron
       let(:composite) do
         Cauldron::Solution::Composite.new([])
       end
+
+      let(:subject) { NumericOperator.new([0],17) }
 
       describe 'var0 needs to increase by 1' do
 

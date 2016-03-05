@@ -53,7 +53,7 @@ class ArrayReverseOperator
     to_sexp(operators, scope)
   end
 
-  def to_sexp(operators, scope)
+  def to_sexp(scope, operators)
     [:call, 
       [:vcall, 
         [:@ident, scope[@indexes[0]] ]
@@ -62,5 +62,109 @@ class ArrayReverseOperator
       [:@ident, "reverse"]
     ]    
   end
+
+  def branch?
+    false
+  end
+
+  def self.init(indexes)
+    self.new(indexes)
+  end
+
+  def self.instances(histories, composite, examples, insert_points)
+
+    # TEMP
+    unless examples.class == Cauldron::ExampleSet
+      raise StandardError.new('Examples should be an example')
+    end
+
+    # Print out each insertable statements
+    scope = examples.scope
+
+    # self.init([0]).to_ruby(scope)
+    # - this will print out "var0.chop"
+
+    # Get the variables available at each point
+    results = []
+
+    insert_points.each do |point|
+
+      # Find the variables at a particular point
+      # TODO Change to test
+      contexts = histories.contexts_at(point)
+
+      composites = context_instances(contexts)
+
+      # scopes = scopes_at_point(point)
+
+      composites.each do |x|
+        if contexts.all? do |context|
+          x.context_realizable?(context)
+        end
+        puts '=====|||||||||'
+        #puts point.inspect
+        #puts x.to_ruby(Cauldron::Scope.new(['var0', 'var1', 'var2', 'var3', 'var4']))
+          
+        results << extend_actualized_composite(x, composite, examples, point)
+      end
+    end
+
+    end
+    
+    results
+  end  
+
+  def self.extend_actualized_composite(x, container, examples, point)
+    cloned_container = container.clone_solution
+    cloned_container.add_statement_at(x, point)
+    cloned_container
+    Cauldron::ActualizedComposite.new(cloned_container, examples)
+  end  
+
+  def clone_statement
+    self.class.init(@indexes.clone)
+  end  
+
+  def context_realizable?(context)
+    
+    vars = context.keys.select {|x| x.match(/var\d/) }
+    var_names = vars.collect(&:to_s)
+    # binding.pry
+    # a = %Q{
+    # def function(var0)
+    #   #{Sorcerer.source(to_sexp(var_names), indent: true)}
+    # end
+    # } 
+
+
+    a = %Q{
+    def function(var0)
+      #{Sorcerer.source(to_sexp(Cauldron::Scope.new(var_names), []), indent: true)}
+    end
+    }       
+
+    o = Object.new
+    o.instance_eval(a)
+
+    begin
+      o.function(vars.collect {|x| context[x] })  
+    rescue NoMethodError => e
+      return false
+    rescue StandardError => e
+      puts e
+    end
+    return true
+    
+  end  
+
+  def self.context_instances(contexts)
+    results = []
+    contexts.each do |context|
+      results << context.keys.collect(&:to_s).select {|x| x.match(/var\d/) }
+    end
+    results = results.flatten.uniq
+    variable_numbers = results.collect { |x| x.match(/var(\d+)/)[1] }
+    variable_numbers.collect { |x| init([x.to_i])}
+  end  
 
 end

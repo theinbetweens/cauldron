@@ -120,15 +120,6 @@ module Cauldron
               puts '=====|||||||||'
               #puts point.inspect
               #puts x.to_ruby(Cauldron::Scope.new(['var0', 'var1', 'var2', 'var3', 'var4']))
-
-              #if x.to_ruby(Cauldron::Scope.new(['var0', 'var1', 'var2', 'var3', 'var4'])).match(/chop/)
-                # pending.pry
-                # binding.pry
-                # puts x.to_ruby(Cauldron::Scope.new(['var0', 'var1', 'var2', 'var3', 'var4']))
-                # composite.operators[0].content.to_ruby(Cauldron::Scope.new(['var0']))
-                # examples
-                # point
-              #end
                 
               results << extend_actualized_composite(x, composite, examples, point)
             end
@@ -172,37 +163,11 @@ module Cauldron
 
                 def method1() 
                   42 
-                end
-
-                # def initialize(information, sexp_methods)
-                #   @information, @sexp_methods = information, sexp_methods
-                #   @failed_uses = []
-                #   @closed = false
-                # end                            
+                end                      
 
               end
             )
 
-        # c.class_eval %q{
-        #   def self.context_instances(contexts)
-        #     results = []
-        #     contexts.each do |context|
-        #       results << context.keys.collect(&:to_s).select {|x| x.match(/var\d/) }
-        #     end
-        #     results = results.flatten.uniq
-        #     variable_numbers = results.collect { |x| x.match(/var(\d+)/)[1] }
-        #     variable_numbers.collect { |x| init([x.to_i])}
-        #   end
-        # }
-
-        #a = Object.const_set(dynamic_name, Cauldron::DynamicOperator.new(information, sexp) { def method1() 42 end })
-        #o.instance_eval(Sorcerer.source(sexp, indent: true))
-        #binding.pry
-        
-        #c.new(information, sexp)
-        #a = c.new
-        #a.instance_eval(Sorcerer.source(sexp, indent: true))
-        #return a
         a = c.new(information, sexp)
         a.instance_eval(Sorcerer.source(sexp, indent: true))
         #c.instance_eval(Sorcerer.source(sexp, indent: true))
