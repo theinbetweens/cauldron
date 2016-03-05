@@ -126,8 +126,6 @@ module Cauldron
 
             composites = context_instances(contexts)
 
-            # scopes = scopes_at_point(point)
-
             composites.each do |x|
               if contexts.all? do |context|
                 x.context_realizable?(context)
@@ -146,24 +144,22 @@ module Cauldron
       sexp = Ripper::SexpBuilder.new(res).parse
 
       information = { constants: false }
-      
-      o = DynamicOperator.new(information, sexp)
-      o.instance_eval(Sorcerer.source(sexp, indent: true))
 
       # http://ruby-doc.org/core-2.3.0/Class.html
       dynamic_name = ('Dynamic'+'_'+instance.class.to_s+'_'+dynamic_method.to_s).camelize
+      dynamic_template_name = dynamic_name+'Template'
       
       # http://stackoverflow.com/questions/4113479/dynamic-class-definition-with-a-class-name
-      unless Object.const_defined? dynamic_name
+      unless Object.const_defined? dynamic_template_name
         c = Object.const_set(
-              dynamic_name, 
+              dynamic_template_name, 
               #DynamicOperator.new(information, sexp) do 
               Class.new do
 
                 include Cauldron::Operator
                 include Cauldron::DynamicOperatorModule
 
-                attr_reader :indexes
+                attr_reader :indexes, :dynamic_name
                 attr_accessor :failed_uses                
 
                 def initialize(information, sexp_methods)
@@ -174,18 +170,39 @@ module Cauldron
 
                 def method1() 
                   42 
-                end                      
+                end     
+
+                def statement_classes
+                  [
+                    c = Object.const_set(
+                      self.class.to_s+rand(4000000).to_s,
+                      Class.new do
+
+                        def initialize(indexes)
+                          puts 'WHO WOULD HAVE THOUGHT IT'
+                        end
+
+                        def method_embed
+                          'askdlsadksla'
+                        end
+
+                      end
+                    )
+                  ]
+                end                 
 
               end
             )
-
+        
         a = c.new(information, sexp)
         a.instance_eval(Sorcerer.source(sexp, indent: true))
+
+        #binding.pry
         #c.instance_eval(Sorcerer.source(sexp, indent: true))
         return a
         # ClassName.new.method1 #=> 42        
       else
-        a = eval(dynamic_name).new(information, sexp)
+        a = eval(dynamic_template_name).new(information, sexp)
         a.instance_eval(Sorcerer.source(sexp, indent: true))
         return a
       end

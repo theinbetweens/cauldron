@@ -88,14 +88,6 @@ module Cauldron
       end
     end
 
-    def rip2
-      %Q{
-      def function(var0)
-        #{Sorcerer.source(to_sexp(Cauldron::Scope.new(['var0'])), indent: true)}
-      end
-      }
-    end
-
     def rip(composite,examples)
       Ripper::SexpBuilder.new(
         %Q{
