@@ -100,9 +100,9 @@ module Cauldron
           o.instance_eval(Sorcerer.source(@sexp_methods, indent: true))
           o.close
           o
-        end        
+        end       
 
-        def instances(histories, composite, examples, insert_points)
+        def self.instances(histories, composite, examples, insert_points)
 
           # TEMP
           unless examples.class == ExampleSet
@@ -123,7 +123,6 @@ module Cauldron
             # Find the variables at a particular point
             # TODO Change to test
             contexts = histories.contexts_at(point)
-
             composites = context_instances(contexts)
 
             composites.each do |x|
@@ -156,10 +155,7 @@ module Cauldron
               #DynamicOperator.new(information, sexp) do 
               Class.new do
 
-                include Cauldron::Operator
-                include Cauldron::DynamicOperatorModule
-
-                attr_reader :indexes, :dynamic_name
+                attr_reader :indexes, :dynamic_name, :sexp_methods
                 attr_accessor :failed_uses                
 
                 def initialize(information, sexp_methods)
@@ -172,42 +168,85 @@ module Cauldron
                   42 
                 end     
 
+                # NOTE: These theses classes define the constants
                 def statement_classes
-                  [
-                    c = Object.const_set(
-                      self.class.to_s+rand(4000000).to_s,
-                      Class.new do
+                  c = Object.const_set(
+                    self.class.to_s+rand(4000000).to_s,
+                    Class.new do
 
-                        def initialize(indexes)
-                          puts 'WHO WOULD HAVE THOUGHT IT'
-                        end
+                      include Cauldron::Operator
+                      include Cauldron::DynamicOperatorModule   
 
-                        def method_embed
-                          'askdlsadksla'
-                        end
+                      attr_reader :indexes              
 
+                      @@sexp_template_methods = []       
+
+                      def initialize(indexes)
+                        #puts 'WHO WOULD HAVE THOUGHT IT'
+                        @indexes = indexes
+                        #binding.pry
+                        #self.instance_eval(Sorcerer.source(self.class.sexp_methods, indent: true))
+                        #self.instance_eval(Sorcerer.source(@@sexp_template_methods, indent: true))
                       end
-                    )
-                  ]
+
+                      def method_embed
+                        'askdlsadksla'
+                      end
+
+                      # def self.sexp_template_methods=(x)
+                      #   @@sexp_template_methods = x
+                      # end
+
+                      # def self.sexp_template_methods
+                      #   @sexp_template_methods
+                      # end
+
+                      # TODO This is a class method
+                      def self.context_instances(contexts)
+                        temp = []
+                        contexts.each do |context|
+                          temp << context.keys.collect(&:to_s).select {|x| x.match(/var\d/) }
+                        end
+                        results = temp.flatten.uniq
+                        
+                        variable_numbers = results.collect { |x| x.match(/var(\d+)/)[1] }
+                        variable_numbers.collect { |x| new([x.to_i])}
+                      end 
+
+                      def self.extend_actualized_composite(x, container, examples, point)
+                        cloned_container = container.clone_solution
+                        cloned_container.add_statement_at(x, point)
+                        cloned_container
+                        Cauldron::ActualizedComposite.new(cloned_container, examples)
+                      end                                               
+
+                    end
+                  )
+                  #binding.pry
+                  #c.instance_eval(Sorcerer.source(sexp_methods, indent: true))
+                  c.class_eval(Sorcerer.source(sexp_methods, indent: true))
+                  #binding.pry
+                  #c.sexp_template_methods = sexp_methods
+                  [c]
                 end                 
 
               end
             )
         
-        a = c.new(information, sexp)
-        a.instance_eval(Sorcerer.source(sexp, indent: true))
+        a = c.new(information, sexp.clone)
+        a.instance_eval(Sorcerer.source(sexp.clone, indent: true))
 
         #binding.pry
         #c.instance_eval(Sorcerer.source(sexp, indent: true))
-        return a
+        return a.statement_classes.first
         # ClassName.new.method1 #=> 42        
       else
-        a = eval(dynamic_template_name).new(information, sexp)
+        a = eval(dynamic_template_name).new(information, sexp.clone)
         a.instance_eval(Sorcerer.source(sexp, indent: true))
-        return a
+        return a.statement_classes.first
       end
 
-      return a
+      raise StandardError.new('Should not get here')
     end
 
   end

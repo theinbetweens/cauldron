@@ -10,4 +10,4 @@ Feature: Using dynamic method
           var1 + 5
         end
       end
-      """    
+      """ 

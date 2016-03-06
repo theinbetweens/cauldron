@@ -10,4 +10,14 @@ Feature: Using String#chop
           var2.chop
         end
       end
-      """    
+      """                
+
+  Scenario: Using simple chop example
+    Given I'm using the simple chop example
+    When I generate a solution
+    Then the solution should include:
+      """
+      def function(var0)
+        var0.chop
+      end
+      """      

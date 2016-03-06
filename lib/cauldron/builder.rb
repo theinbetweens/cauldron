@@ -36,11 +36,16 @@ module Cauldron
     end
 
     def self.available_statement_types
-      # TODO Not very effient to regenerate the opperators
+      #Cauldron::StatementGenerator.new.build('string',[:chop])
       StatementGenerator.new.build(
         ['A','B', 'AC'],
         [:collect]
-      )+Cauldron::StatementGenerator.new.build('string',[:chop])+[ArrayReverseOperator]#+[StatementGenerator.new.build(3,[:+])]
+      )+Cauldron::StatementGenerator.new.build('string',[:chop])
+      # TODO Not very effient to regenerate the opperators
+      # StatementGenerator.new.build(
+      #   ['A','B', 'AC'],
+      #   [:collect]
+      # )+Cauldron::StatementGenerator.new.build('string',[:chop])+[ArrayReverseOperator]+[StatementGenerator.new.build(3,[:+])]
     end
 
   end

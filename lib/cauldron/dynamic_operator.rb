@@ -26,13 +26,13 @@ module Cauldron
       @closed = true
     end
 
-    def clone_statement
-      # TODO Need to clone the sexp methods
-      # o = DynamicOperator.new(@information, @sexp_methods)
-      # o.instance_eval(Sorcerer.source(@sexp_methods, indent: true))
-      # o
-      self.init(@indexes.clone)
-    end
+    # def clone_statement
+    #   # TODO Need to clone the sexp methods
+    #   # o = DynamicOperator.new(@information, @sexp_methods)
+    #   # o.instance_eval(Sorcerer.source(@sexp_methods, indent: true))
+    #   # o
+    #   self.init(@indexes.clone)
+    # end
 
     # def context_instances(contexts)
     #   results = []

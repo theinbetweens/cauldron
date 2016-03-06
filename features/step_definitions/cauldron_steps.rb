@@ -37,6 +37,14 @@ Given(/^I'm using the chop example$/) do
   ]
 end
 
+Given(/^I'm using the simple chop example$/) do
+  @pot = Cauldron::Pot.new
+  @examples = [
+    {arguments: ['Andy'], response: 'And'}, 
+    {arguments: ['Kels'], response: 'Kel'}
+  ]
+end
+
 Given(/^I'm using the reverse example$/) do
   @pot = Cauldron::Pot.new
   @examples = [

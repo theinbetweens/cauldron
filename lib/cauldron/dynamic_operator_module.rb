@@ -20,7 +20,7 @@ module Cauldron
       # o = DynamicOperator.new(@information, @sexp_methods)
       # o.instance_eval(Sorcerer.source(@sexp_methods, indent: true))
       # o
-      self.init(@indexes.clone)
+      self.class.new(@indexes.clone)
     end
 
     # def context_instances(contexts)
@@ -33,18 +33,18 @@ module Cauldron
     #   variable_numbers.collect { |x| init([x.to_i])}
     # end
 
-    def extend_actualized_composite(x, container, examples, point)
-      cloned_container = container.clone_solution
-      cloned_container.add_statement_at(x, point)
-      cloned_container
-      Cauldron::ActualizedComposite.new(cloned_container, examples)
-    end
+    # def extend_actualized_composite(x, container, examples, point)
+    #   cloned_container = container.clone_solution
+    #   cloned_container.add_statement_at(x, point)
+    #   cloned_container
+    #   Cauldron::ActualizedComposite.new(cloned_container, examples)
+    # end
 
     def context_realizable?(context)
       
       vars = context.keys.select {|x| x.match(/var\d/) }
       var_names = vars.collect(&:to_s)
-      # binding.pry
+      
       # a = %Q{
       # def function(var0)
       #   #{Sorcerer.source(to_sexp(var_names), indent: true)}
@@ -60,7 +60,7 @@ module Cauldron
       o.instance_eval(a)
 
       begin
-        o.function(vars.collect {|x| context[x] })  
+        o.function(*vars.collect {|x| context[x] })  
       rescue NoMethodError => e
         return false
       rescue StandardError => e

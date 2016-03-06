@@ -8,4 +8,4 @@ Feature: Using Array#reverse
       def function(var0)
         var0.reverse
       end
-      """    
+      """

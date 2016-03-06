@@ -30,7 +30,7 @@ module Cauldron
 
     describe '#build_class' do
 
-      let(:subject) { StatementGenerator.new}
+      let(:subject) { StatementGenerator.new }
 
       context 'with string instance "string"' do
 
