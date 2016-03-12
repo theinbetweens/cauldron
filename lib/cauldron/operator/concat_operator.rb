@@ -1,7 +1,9 @@
 class ConcatOperator
 
-  def initialize(indexes, constant)
-    @indexes, @constant = indexes, constant
+  include Cauldron::Operator
+
+  def initialize(indexes)
+    @indexes = indexes
   end
 
   def self.viable?(arguments, response)

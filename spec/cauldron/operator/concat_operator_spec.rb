@@ -5,11 +5,11 @@ module Cauldron
   describe ConcatOperator do 
 
     it_behaves_like "leaf_operator" do
-      let(:leaf_operator) { ConcatOperator.new([0], 'foo') }
+      let(:leaf_operator) { ConcatOperator.new([0]) }
     end
 
     it_behaves_like "operator" do
-      let(:operator) { ConcatOperator.new([0], 'foo') }
+      let(:operator) { ConcatOperator.new([0]) }
       let(:initial_scope) { Cauldron::Scope.new(['var0']) }
       let(:initial_operators) { [] }
     end        
@@ -79,7 +79,7 @@ module Cauldron
             {arguments: ['foo'], response: 'foobar'},
             {arguments: ['goo'], response: 'goobar'}
           ]          
-          operator = ConcatOperator.new([],'bar')  
+          operator = ConcatOperator.new([])  
           problems.all? {|x| operator.successful?(x) }.should == true
         end
 
@@ -94,7 +94,7 @@ module Cauldron
         let(:scope) { Cauldron::Scope.new(['var0']) }
 
         it 'returns "var0.concat("bar")"' do
-          operator = ConcatOperator.new([0],'bar')
+          operator = ConcatOperator.new([0])
           operator.to_ruby(scope,[]).should == "var0.concat(\"bar\")"
         end
 

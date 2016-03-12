@@ -101,9 +101,6 @@ class ArrayReverseOperator
         if contexts.all? do |context|
           x.context_realizable?(context)
         end
-        puts '=====|||||||||'
-        #puts point.inspect
-        #puts x.to_ruby(Cauldron::Scope.new(['var0', 'var1', 'var2', 'var3', 'var4']))
           
         results << extend_actualized_composite(x, composite, examples, point)
       end

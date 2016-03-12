@@ -8,12 +8,12 @@ RSpec.shared_examples "operator" do
     #to_sexp(scope, operators)
   end
 
-  describe '#respond_to?' do
+  describe '.respond_to?' do
 
     context 'passing "instances"' do
 
       it "doesn't raise an error" do
-        operator.respond_to?(:instances).should == true
+        operator.class.respond_to?(:instances).should == true
       end
 
     end

@@ -87,7 +87,7 @@ module Cauldron
         #{branch_method(instance, dynamic_method)}
 
         def build(children, scope)
-          to_sexp(scope)
+          to_sexp(scope, children)
         end
 
         def init(indexes)
@@ -182,26 +182,9 @@ module Cauldron
                       @@sexp_template_methods = []       
 
                       def initialize(indexes)
-                        #puts 'WHO WOULD HAVE THOUGHT IT'
                         @indexes = indexes
-                        #binding.pry
-                        #self.instance_eval(Sorcerer.source(self.class.sexp_methods, indent: true))
-                        #self.instance_eval(Sorcerer.source(@@sexp_template_methods, indent: true))
                       end
 
-                      def method_embed
-                        'askdlsadksla'
-                      end
-
-                      # def self.sexp_template_methods=(x)
-                      #   @@sexp_template_methods = x
-                      # end
-
-                      # def self.sexp_template_methods
-                      #   @sexp_template_methods
-                      # end
-
-                      # TODO This is a class method
                       def self.context_instances(contexts)
                         temp = []
                         contexts.each do |context|

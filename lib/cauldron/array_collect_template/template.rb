@@ -1,14 +1,10 @@
 module Cauldron
 
-  module Operator   
-    
-    def self.included(base)
-      base.extend ClassMethods
-    end
+  module ArrayCollectTemplate
 
-    module ClassMethods
+    class Template
 
-      def instances(histories, composite, examples, insert_points)
+      def self.instances(histories, composite, examples, insert_points)
 
         # TEMP
         unless examples.class == ExampleSet
@@ -32,19 +28,18 @@ module Cauldron
           composites = context_instances(contexts)
 
           composites.each do |x|
-            if contexts.all? do |context|
-              x.context_realizable?(context)
+            if contexts.all? { |context| x.context_realizable?(context) }
+              #binding.pry
+              results << extend_actualized_composite(x, composite, examples, point)
             end
-            results << extend_actualized_composite(x, composite, examples, point)
+            #results << extend_actualized_composite(x, composite, examples, point)
           end
         end
 
-        end
-        
         results
       end
 
-      def context_instances(contexts)
+      def self.context_instances(contexts)
         temp = []
         contexts.each do |context|
           temp << context.keys.collect(&:to_s).select {|x| x.match(/var\d/) }
@@ -52,7 +47,14 @@ module Cauldron
         results = temp.flatten.uniq
         
         variable_numbers = results.collect { |x| x.match(/var(\d+)/)[1] }
-        variable_numbers.collect { |x| new([x.to_i])}
+        variable_numbers.collect { |x| Cauldron::ArrayCollectTemplate::Default.new([x.to_i])}
+      end
+
+      def self.extend_actualized_composite(x, container, examples, point)
+        cloned_container = container.clone_solution
+        cloned_container.add_statement_at(x, point)
+        cloned_container
+        Cauldron::ActualizedComposite.new(cloned_container, examples)
       end      
 
     end
