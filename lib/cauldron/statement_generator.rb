@@ -40,8 +40,10 @@ module Cauldron
             scope_var = scope.new_variable!
             scope_var_two = scope.new_variable!
             dynamic_method = '#{dynamic_method}'
+
+            first_variable = 'var'+@indexes[0].to_s
             
-            a = "\#{scope_var} = \#{scope[@indexes[0]]}.\#{dynamic_method} do |\#{scope_var_two}|"+"\n"
+            a = "\#{scope_var} = \#{first_variable}.\#{dynamic_method} do |\#{scope_var_two}|"+"\n"
             a += operators.collect {|x| x.content.to_ruby(scope, x.children) }.join("\n")
             a += "\n"+"end"+"\n"
             puts a
@@ -52,8 +54,9 @@ module Cauldron
       else
         %Q{
           def to_sexp(scope, operators)
+            first_variable = 'var'+@indexes[0].to_s
             [:call,
-              [:vcall, [:@ident, scope[@indexes[0]] ]],
+              [:vcall, [:@ident, first_variable ]],
               :".",
               [:@ident, "#{dynamic_method}"]
             ]
@@ -165,12 +168,14 @@ module Cauldron
                       include Cauldron::Operator
                       include Cauldron::DynamicOperatorModule   
 
-                      attr_reader :indexes              
+                      attr_reader :indexes        
+                      attr_accessor :failed_uses      
 
                       @@sexp_template_methods = []       
 
                       def initialize(indexes)
                         @indexes = indexes
+                        @failed_uses = []
                       end
 
                       def self.context_instances(contexts)
@@ -189,7 +194,15 @@ module Cauldron
                         cloned_container.add_statement_at(x, point)
                         cloned_container
                         Cauldron::ActualizedComposite.new(cloned_container, examples)
-                      end                                               
+                      end  
+
+                      def rip2
+                        %Q{
+                        def function(var0)
+                          #{Sorcerer.source(to_sexp(Cauldron::Scope.new(['var0']),[]), indent: true)}
+                        end
+                        }
+                      end
 
                     end
                   )

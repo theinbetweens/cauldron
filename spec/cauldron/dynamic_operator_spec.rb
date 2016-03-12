@@ -14,7 +14,7 @@ module Cauldron
       context 'var0.chop' do
 
         let(:dynamic_operator) do
-          StatementGenerator.new.build('string',[:chop]).first.init([0])
+          StatementGenerator.new.build('string',[:chop]).first.new([0])
         end
 
         it 'is false' do
@@ -29,7 +29,7 @@ module Cauldron
           StatementGenerator.new.build(
             ['00sjack00','RowIAGE', 'iNathalie'],
             [:collect]
-          ).first.init([0])
+          ).first.new([0])
         end
 
         it 'is true' do
@@ -37,22 +37,6 @@ module Cauldron
         end
 
       end
-
-    end
-
-    describe '#build' do
-
-      let(:dynamic_operator) do
-        StatementGenerator.new.build('string',[:chop]).first
-      end      
-
-      it 'returns a instance of DynamicOperator' do
-        dynamic_operator.init([0]).should be_instance_of(DynamicOperator)
-      end
-
-      it 'returned instance responds to #instances' do
-        dynamic_operator.init([0]).respond_to?(:instances).should == true
-      end      
 
     end
 
@@ -64,15 +48,14 @@ module Cauldron
           StatementGenerator.new.build(
             ['00sjack00','RowIAGE', 'iNathalie'],
             [:collect]
-          ).first.init([0])
+          ).first.new([0])
         end
 
         let(:scope) { Cauldron::Scope.new(['var0']) }
 
         it 'is var1 = var0.collect { |var2| var2}' do
-          dynamic_operator.to_sexp(scope).should match_code_of(%q{
+          dynamic_operator.to_sexp(scope,[]).should match_code_of(%q{
                                                                   var1 = var0.collect do |var2|
-                                                                    var2
                                                                   end
                                                                 }
           )
@@ -102,7 +85,7 @@ module Cauldron
       context 'var1 = var0.collect { |var2| var2}' do
 
         let(:dynamic_operator) do
-          StatementGenerator.new.build(['a','b','c'],[:collect]).first.init([0])
+          StatementGenerator.new.build(['a','b','c'],[:collect]).first.new([0])
         end
 
         context "when var0 only value is ['a','b','c']" do
@@ -135,7 +118,7 @@ module Cauldron
           } do
 
             let(:containing_statement) do
-              StatementGenerator.new.build(['a','b','c'],[:collect]).first.init([0])
+              StatementGenerator.new.build(['a','b','c'],[:collect]).first.new([0])
             end
 
             let(:examples) do
@@ -157,7 +140,7 @@ module Cauldron
             context 'adding statement "var3 = var2.collect { |var4| var4}"' do
 
               let(:dynamic_operator) do
-                StatementGenerator.new.build(['a','b','c'],[:collect]).first.init([2])
+                StatementGenerator.new.build(['a','b','c'],[:collect]).first.new([2])
               end              
 
               it 'is false' do
@@ -169,7 +152,7 @@ module Cauldron
             context 'inserting statement "var3 = var1.collect { |var4| var4}"' do
 
               let(:dynamic_operator) do
-                StatementGenerator.new.build(['a','b','c'],[:collect]).first.init([1])
+                StatementGenerator.new.build(['a','b','c'],[:collect]).first.new([1])
               end              
 
               it 'is false' do
@@ -185,12 +168,12 @@ module Cauldron
       context 'var0.chop' do
 
         let(:dynamic_operator) do
-          StatementGenerator.new.build('string',[:chop]).first.init([0])
+          StatementGenerator.new.build('string',[:chop]).first.new([0])
         end
 
         let(:composite) do
           Cauldron::Solution::Composite.new(
-            [ Tree::TreeNode.new("CHILD1", dynamic_operator.init([0]) ) ]
+            [ Tree::TreeNode.new("CHILD1", dynamic_operator.new([0]) ) ]
           )
         end
 
@@ -220,13 +203,41 @@ module Cauldron
 
             context 'with context "{:var0=>["Sparky", "Kels"], :point=>[0, 0]}"' do
 
+              let(:context) do
+                {:var0=>["Sparky", "Kels"], :point=>[0, 0]}
+              end              
+
               it 'returns false' do
-                dynamic_operator_class.init([0]).context_realizable?({:var0=>["Sparky", "Kels"], :point=>[0, 0]})
+                dynamic_operator_class.new([0]).context_realizable?(context).should be_false
               end
 
             end
 
           end
+
+          context 'var2 is "Sparky"' do
+
+            let(:context) do
+              {:var2=>"Sparky", :var0=>["Sparky", "Kels"], :var1=>nil, :line=>0, :depth=>1, :total_line=>2, :point=>[0, 0]}
+            end
+
+            context 'using the index "2"' do
+
+              it 'returns true' do
+                dynamic_operator_class.new([2]).context_realizable?(context).should be_true
+              end  
+
+            end
+
+            context 'using the index "0"' do
+
+              it 'returns true' do
+                dynamic_operator_class.new([0]).context_realizable?(context).should be_false
+              end  
+
+            end            
+
+          end          
 
         end
 
@@ -236,7 +247,7 @@ module Cauldron
           } do
 
             let(:containing_statement) do
-              StatementGenerator.new.build(['lion','bear'],[:collect]).first.init([0])
+              StatementGenerator.new.build(['lion','bear'],[:collect]).first.new([0])
             end
 
             context %q{var0 is ["lion", "bear"]} do
@@ -266,7 +277,7 @@ module Cauldron
               context 'inserting statement "var2.chop"' do
 
                 let(:dynamic_operator) do
-                  StatementGenerator.new.build('string',[:chop]).first.init([2])
+                  StatementGenerator.new.build('string',[:chop]).first.new([2])
                 end                
 
                 it 'is false' do

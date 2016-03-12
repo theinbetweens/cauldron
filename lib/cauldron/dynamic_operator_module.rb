@@ -44,23 +44,31 @@ module Cauldron
       
       vars = context.keys.select {|x| x.match(/var\d/) }
       var_names = vars.collect(&:to_s)
+
+      first_variable = 'var'+@indexes[0].to_s
       
       # a = %Q{
       # def function(var0)
       #   #{Sorcerer.source(to_sexp(var_names), indent: true)}
       # end
       # } 
+      # a = %Q{
+      # def function(var0)
+      #   #{Sorcerer.source(to_sexp(Cauldron::Scope.new(var_names), []), indent: true)}
+      # end
+      # }     
       a = %Q{
-      def function(var0)
+      def function(#{first_variable})
         #{Sorcerer.source(to_sexp(Cauldron::Scope.new(var_names), []), indent: true)}
       end
-      }       
+      }        
 
       o = Object.new
       o.instance_eval(a)
 
       begin
-        o.function(*vars.collect {|x| context[x] })  
+        #o.function(*vars.collect {|x| context[x] })  
+        o.function context[first_variable.to_sym]
       rescue NoMethodError => e
         return false
       rescue StandardError => e
@@ -104,17 +112,19 @@ module Cauldron
 
     def realizable?(histories, point)
       parameters = histories.variable_permutations(@indexes.length)
-
       parameters.each do |params|
         begin
           realize(params)
         rescue => e
+          puts e
           failed_uses.push(histories)
           return false
         end
       end
       true          
     rescue => e
+      puts e
+      puts e.backtrace
       # TODO GENERATE RSPEC TEST with arguments
     end
 
