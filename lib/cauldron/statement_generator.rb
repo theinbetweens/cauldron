@@ -88,19 +88,7 @@ module Cauldron
 
         def build(children, scope)
           to_sexp(scope, children)
-        end
-
-        def init(indexes)
-          o = self.class.new(@information,@sexp_methods)
-          o.indexes = indexes
-          # TODO Include this module
-          # o.instance_eval do
-          #   include Cauldron::Operator
-          # end
-          o.instance_eval(Sorcerer.source(@sexp_methods, indent: true))
-          o.close
-          o
-        end       
+        end 
 
         def self.instances(histories, composite, examples, insert_points)
 
@@ -129,9 +117,9 @@ module Cauldron
               if contexts.all? do |context|
                 x.context_realizable?(context)
               end
-              results << extend_actualized_composite(x, composite, examples, point)
+                results << extend_actualized_composite(x, composite, examples, point)
+              end
             end
-          end
 
           end
           
