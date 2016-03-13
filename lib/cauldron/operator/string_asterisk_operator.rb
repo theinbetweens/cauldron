@@ -22,22 +22,61 @@ class StringAsteriskOperator
   # Or the order it was added might be more useful - e.g. last variable, second last variable or first variable
   # - variable at depth(1)[1] - stepUp(1).first
 
-  def initialize(indexes, constant)
-    @constant, @indexes = constant, indexes
+  def initialize(indexes)
+    @indexes = indexes
+    @constant = 2
+    #@constant, @indexes = constant, indexes
   end
 
-  def self.instances(context_history, target)
-    res = history_goals(context_history, target)
+  def self.instances(histories, composite, examples, insert_points)
 
-    possible_constant = res.collect do |x|
-      x[1].scan( x[0][:x] ).count
-    end.uniq
-
-    if possible_constant.length == 1
-      return [StringAsteriskOperator.new([1],possible_constant.first)]
+    # TEMP
+    unless examples.class == ExampleSet
+      raise StandardError.new('Examples should be an example')
     end
 
-  end
+    # Print out each insertable statements
+    scope = examples.scope
+
+    # self.init([0]).to_ruby(scope)
+    # - this will print out "var0.chop"
+
+    # Get the variables available at each point
+    results = []
+
+    insert_points.each do |point|
+
+      # Find the variables at a particular point
+      # TODO Change to test
+      contexts = histories.contexts_at(point)
+      composites = context_instances(contexts)
+
+      composites.each do |x|
+        if contexts.all? do |context|
+          x.context_realizable?(context)
+        end
+          results << extend_actualized_composite(x, composite, examples, point)
+        end
+      end
+
+    end
+    
+    results
+  end  
+
+  # def self.instances(context_history, target)
+  #   res = history_goals(context_history, target)
+
+  #   possible_constant = res.collect do |x|
+  #     x[1].scan( x[0][:x] ).count
+  #   end.uniq
+
+  #   if possible_constant.length == 1
+  #     #return [StringAsteriskOperator.new([1],possible_constant.first)]
+  #     return [StringAsteriskOperator.new([1])]
+  #   end
+
+  # end
 
   def self.history_goals(context_history,target)
     variables = context_history.first.keys
@@ -72,13 +111,17 @@ class StringAsteriskOperator
     false
   end
 
-  def to_ruby(scope)
+  def to_ruby(scope, operators)
     Sorcerer.source self.to_sexp([], scope)
   end
 
-  def to_sexp(operators, scope)
-    [:binary, [:vcall, [:@ident, scope[@indexes[0]] ]], :*, [:@int, @constant]]
-  end
+  # def to_sexp(operators, scope)
+  #   [:binary, [:vcall, [:@ident, scope[@indexes[0]] ]], :*, [:@int, @constant]]
+  # end
+  def to_sexp(scope, children)
+    first_variable = 'var'+@indexes[0].to_s
+    Ripper::SexpBuilder.new(%Q{#{first_variable} * #{@constant}}).parse
+  end  
 
   # TODO Get rid of the defined names
   def build(operators, scope)

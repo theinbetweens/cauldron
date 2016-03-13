@@ -2,7 +2,7 @@ Feature: Cauldron generates single parameter methods
 
   Cauldron can generate runtime methods that accepts one parameters
 
-  @announce @slow_process
+  @announce @slow_process @wip
   Scenario: Using statements that require a constant
     Given a file named "launch.rb" with:
       """

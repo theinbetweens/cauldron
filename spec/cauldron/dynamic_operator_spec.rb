@@ -274,18 +274,6 @@ module Cauldron
                 Cauldron::ActualizedComposite.new(composite,examples).histories
               end          
 
-              context 'inserting statement "var2.chop"' do
-
-                let(:dynamic_operator) do
-                  StatementGenerator.new.build('string',[:chop]).first.new([2])
-                end                
-
-                it 'is false' do
-                  dynamic_operator.realizable?(histories, [0,1]).should == true
-                end                
-
-              end
-
             end
 
         end        

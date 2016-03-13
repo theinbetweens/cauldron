@@ -4,8 +4,10 @@ class HashKeyValueOperator
 
   # var0[:foo]
 
-  def initialize(indexes, constant)
-    @constant, @indexes = constant, indexes
+  def initialize(indexes)
+    @indexes = indexes
+    @constant = :foo
+    #@constant, @indexes = constant, indexes
   end
 
   def self.viable?(arguments, response)

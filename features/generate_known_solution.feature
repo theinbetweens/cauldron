@@ -19,7 +19,7 @@ Feature: Cauldron generates single parameter methods
       end
       """
 
-  @announce @slow_process
+  @announce @slow_process @wip
   Scenario: Chop the last character off a string
     Given a file named "launch.rb" with:
       """

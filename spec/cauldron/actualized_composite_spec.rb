@@ -91,6 +91,7 @@ module Cauldron
           end
           
           it %Q{retuns the following history: #{log_history} } do
+            pending
             # logs = [
             #   {line: 0, depth: 1, var0: ['lion', 'bear'], var2: 'lion', var1: nil},
             #   {line: 0, depth: 1, var0: ['lion', 'bear'], var2: 'bear', var1: nil},
@@ -126,6 +127,7 @@ module Cauldron
         end
 
         it 'returns 1 actualized composite' do
+          pending
           subject.extend_solution.should have(1).composite
         end
 

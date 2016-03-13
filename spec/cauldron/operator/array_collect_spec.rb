@@ -96,7 +96,7 @@ module Cauldron
       context 'passed "a * 2"' do
 
         let(:string_asterisk) do
-          Tree::TreeNode.new("CHILD1", StringAsteriskOperator.new([1],2))
+          Tree::TreeNode.new("CHILD1", StringAsteriskOperator.new([1]))
         end
 
         it 'returns "var0.collect { |var1| var1 * 2}"' do

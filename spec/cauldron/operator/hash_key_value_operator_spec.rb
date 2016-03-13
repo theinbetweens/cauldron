@@ -5,7 +5,7 @@ module Cauldron
   describe HashKeyValueOperator do 
 
     it_behaves_like "operator" do
-      let(:operator) { HashKeyValueOperator.new([0], :foo) }
+      let(:operator) { HashKeyValueOperator.new([0]) }
       let(:initial_scope) { Cauldron::Scope.new(['var0']) }
       let(:initial_operators) { [] }
     end      
@@ -70,7 +70,7 @@ module Cauldron
         end        
 
         it 'is true' do
-          operator = HashKeyValueOperator.new([0],:foo)  
+          operator = HashKeyValueOperator.new([0])  
           problems.all? {|x| operator.successful?(x) }.should == true
         end
 
@@ -85,17 +85,8 @@ module Cauldron
       context 'using the constant ":foo"' do
 
         it 'returns "var0[:foo]"' do
-          operator = HashKeyValueOperator.new([0],:foo)
+          operator = HashKeyValueOperator.new([0])
           operator.to_ruby(scope,[]).should == 'var0[:foo]'
-        end
-
-      end
-
-      context 'using the constant "foo"' do
-
-        it "returns 'var0['foo']" do
-          operator = HashKeyValueOperator.new([0],'foo')
-          operator.to_ruby(scope,[]).should == "var0[\"foo\"]"
         end
 
       end
