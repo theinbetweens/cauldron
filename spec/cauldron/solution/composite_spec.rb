@@ -21,7 +21,7 @@ module Cauldron::Solution
       } do
 
         let(:containing_statement) do
-          Cauldron::StatementGenerator.new.build('lion',[:chop]).first.init([0])
+          Cauldron::StatementGenerator.new.build('lion',[:chop]).first.new([0])
         end
 
         let(:composite) do
@@ -59,7 +59,7 @@ module Cauldron::Solution
       } do
 
         let(:containing_statement) do
-          Cauldron::StatementGenerator.new.build('lion',[:chop]).first.init([0])
+          Cauldron::StatementGenerator.new.build('lion',[:chop]).first.new([0])
         end
 
         let(:composite) do
@@ -86,7 +86,7 @@ module Cauldron::Solution
       } do
 
         let(:containing_statement) do
-          Cauldron::StatementGenerator.new.build(['lion','bear'],[:collect]).first.init([0])
+          Cauldron::StatementGenerator.new.build(['lion','bear'],[:collect]).first.new([0])
         end
 
         let(:composite) do
@@ -118,11 +118,11 @@ module Cauldron::Solution
       } do
 
         let(:var1_chop) do
-          Cauldron::StatementGenerator.new.build('lion',[:chop]).first.init([0])
+          Cauldron::StatementGenerator.new.build('lion',[:chop]).first.new([0])
         end
 
         let(:containing_statement) do
-          Cauldron::StatementGenerator.new.build(['lion','bear'],[:collect]).first.init([0])
+          Cauldron::StatementGenerator.new.build(['lion','bear'],[:collect]).first.new([0])
         end
 
         let(:composite) do
@@ -160,7 +160,7 @@ module Cauldron::Solution
         context 'composite is "var0 = var1.collect { |var2|}' do
 
           let(:containing_statement) do
-            Cauldron::StatementGenerator.new.build(['lion','bear'],[:collect]).first.init([0])
+            Cauldron::StatementGenerator.new.build(['lion','bear'],[:collect]).first.new([0])
           end
 
           let(:composite) do
@@ -259,7 +259,7 @@ module Cauldron::Solution
         end
 
         let(:dynamic_operator) do
-          Cauldron::StatementGenerator.new.build('string',[:chop]).first.init([0])
+          Cauldron::StatementGenerator.new.build('string',[:chop]).first.new([0])
         end        
 
         let(:composite) do

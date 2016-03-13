@@ -1,4 +1,4 @@
-class IfRelationship < Relationship
+class IfRelationship #< Relationship
 
   # TODO Need to change to IfSolution probably
 

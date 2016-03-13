@@ -2,7 +2,7 @@ module Cauldron
 
   module ArrayCollectTemplate
 
-    class Template
+    class Template < Cauldron::TemplateBase
 
       def self.instances(histories, composite, examples, insert_points)
 
@@ -48,13 +48,6 @@ module Cauldron
         
         variable_numbers = results.collect { |x| x.match(/var(\d+)/)[1] }
         variable_numbers.collect { |x| Cauldron::ArrayCollectTemplate::Default.new([x.to_i])}
-      end
-
-      def self.extend_actualized_composite(x, container, examples, point)
-        cloned_container = container.clone_solution
-        cloned_container.add_statement_at(x, point)
-        cloned_container
-        Cauldron::ActualizedComposite.new(cloned_container, examples)
       end      
 
     end

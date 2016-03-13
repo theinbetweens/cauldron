@@ -152,7 +152,6 @@ module Cauldron
                 def initialize(information, sexp_methods)
                   @information, @sexp_methods = information, sexp_methods
                   @failed_uses = []
-                  @closed = false
                 end
 
                 def method1() 
@@ -206,11 +205,7 @@ module Cauldron
 
                     end
                   )
-                  #binding.pry
-                  #c.instance_eval(Sorcerer.source(sexp_methods, indent: true))
                   c.class_eval(Sorcerer.source(sexp_methods, indent: true))
-                  #binding.pry
-                  #c.sexp_template_methods = sexp_methods
                   [c]
                 end                 
 

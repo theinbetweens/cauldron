@@ -106,10 +106,10 @@ module Cauldron
       }).parse      
     end
 
-    def to_tracking_sexp(operators, scope, caret)
-      raise StandardError.new('statement has been instance closed') unless @closed
-      to_sexp(scope)
-    end
+    # def to_tracking_sexp(operators, scope, caret)
+    #   raise StandardError.new('statement has been instance closed') unless @closed
+    #   to_sexp(scope)
+    # end
 
     def realizable?(histories, point)
       parameters = histories.variable_permutations(@indexes.length)

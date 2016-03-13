@@ -18,13 +18,6 @@ module Cauldron
       end
     end
 
-    # def trace(params)
-    #   tracked_composite = composite.insert_tracking(params)
-    #   tracked_composite.process(params)
-    # end
-
-    $HISTORY_COUNT = 0
-
     # NOTE: returns an array of new actualized composites extending the current composite
     def insertable_operators(examples)
       actualized_composite = ActualizedComposite.new(composite.clone_solution, examples)

@@ -108,7 +108,8 @@ module Cauldron
         possible_constants = operation_class.find_constants(problems)
 
         possible_constants.each do |constant|
-          operator = operation_class.new([0],constant)
+          #operator = operation_class.new([0],constant)
+          operator = operation_class.new([0])
           results << operator
         end
       else
