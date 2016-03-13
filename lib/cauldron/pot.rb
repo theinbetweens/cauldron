@@ -146,40 +146,7 @@ module Cauldron
       itterations = 0
       until itterations == 2
 
-
-        puts "=================== ITTERATION #{itterations} ======================="
-
-        puts 'Using composite: '
-        new_composites.each do |x|
-          x.to_ruby
-          puts '------------'
-        end
-        puts '---------------------------------------------------------------------'
-
         new_composites = extended_composites(new_composites)
-
-        #puts '=========== itterations: '+itterations.to_s
-        puts 'Generated composite: ('+new_composites.length.to_s+')'
-        new_composites.each do |x|
-          x.to_ruby
-          puts '------------'
-        end
-        puts '---------------------------------------------------------------------'        
-
-        # new_composites.each do |x|
-        #   puts '---'
-        #   puts x.class
-        #   puts '======>>>>>>>'
-        #   puts x.to_ruby
-        # end
-
-        # new_composites.each do |x|
-        #   puts x.to_ruby
-        #   puts '--------'
-        # end
-
-        #binding.pry
-        puts "======================================================================"
 
         if new_composites.any? {|x| x.solution?(examples) }
           return new_composites.select {|x| x.solution?(examples) }.first.composite

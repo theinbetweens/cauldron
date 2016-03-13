@@ -12,7 +12,7 @@ module Cauldron
 
     describe '#realizable?' do
 
-      let(:subject) { NumericOperator.init([0], 4) }
+      let(:subject) { NumericOperator.new([0]) }
 
       context 'histories is [[{:var0 => 8}]]' do
 
@@ -97,7 +97,7 @@ module Cauldron
           ]                    
         end
 
-        let(:operator) { NumericOperator.new([0],17) }
+        let(:operator) { NumericOperator.new([0]) }
 
         it 'is false' do    
           problem.all? { |x| operator.successful?(x) }.should be_false
@@ -105,80 +105,7 @@ module Cauldron
 
       end
 
-    end
-
-    describe '#instances' do
-
-      let(:composite) do
-        Cauldron::Solution::Composite.new([])
-      end
-
-      let(:subject) { NumericOperator.new([0],17) }
-
-      describe 'var0 needs to increase by 1' do
-
-        let(:histories) do
-          Cauldron::Histories.new([
-              Cauldron::History.new([{:var0=>7, :line=>0, :depth=>0, :total_line=>0}]),
-              Cauldron::History.new([{:var0=>10, :line=>0, :depth=>0, :total_line=>0}])
-            ]
-          )
-        end
-
-        let(:examples) do
-          Cauldron::ExampleSet.new(
-            [
-              Cauldron::Example.new({arguments: [7], response: 8}),
-              Cauldron::Example.new({arguments: [10], response: 11})
-            ]
-          )
-        end
-
-        it 'returns 1 composite' do
-          NumericOperator.instances(histories, composite, examples, [0,0]).should have(1).composite
-        end
-
-      end
-
-      describe 'var0 needs to increase by 2' do
-
-        let(:histories) do
-          Cauldron::Histories.new(
-            [
-              Cauldron::History.new([{:var0=>7, :line=>0, :depth=>0, :total_line=>0, :point => [0] }]),
-              Cauldron::History.new([{:var0=>10, :line=>0, :depth=>0, :total_line=>0, :point => [0]}])
-            ]            
-          )
-        end
-
-        let(:examples) do
-          Cauldron::ExampleSet.new(
-            [
-              Cauldron::Example.new({arguments: [7], response: 9}),
-              Cauldron::Example.new({arguments: [10], response: 12})
-            ]
-          )
-        end
-
-        it 'returns 1 composite' do
-          NumericOperator.instances(
-            histories, composite, examples, [0,0]
-          ).should have(1).composite
-        end
-
-        it 'looks like this:
-def function(var0)
-  var1 = var0+2
-end
-        ' do
-            NumericOperator.instances(
-              histories, composite, examples, [0,0]
-            ).first.to_sexp(examples.variables, []).should match_code_of(%q{var0+2})
-        end
-
-      end      
-
-    end
+    end     
 
   end
   
