@@ -94,7 +94,7 @@ module Cauldron
         describe '#to_ruby' do
 
           let(:operator) do
-            subject.build('string',[:chop]).first.init([0])
+            subject.build('string',[:chop]).first.new([0])
           end
 
           it 'returns the "var0.chop"' do
@@ -180,7 +180,7 @@ module Cauldron
         describe '#to_tracking_sexp' do
 
           let(:operator) do
-            subject.build('string',[:chop]).first.init([0])
+            subject.build('string',[:chop]).first.new([0])
           end
 
           it "doesn't raise an error" do

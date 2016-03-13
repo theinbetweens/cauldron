@@ -5,7 +5,7 @@ module Cauldron
   describe 'NumericOperator' do
 
     it_behaves_like "operator" do
-      let(:operator) { NumericOperator.new([0], 4) }
+      let(:operator) { NumericOperator.new([0]) }
       let(:initial_scope) { Cauldron::Scope.new(['var0']) }
       let(:initial_operators) { [] }
     end    
