@@ -56,7 +56,8 @@ module Cauldron
                 [
                   :stmts_add, 
                   [:stmts_new], 
-                  children.first.content.build(scope_var, scope )
+                  # TODO Shouild probably be passing the children through here
+                  children.first.content.to_sexp(scope, [])
                 ]
             ]
           else

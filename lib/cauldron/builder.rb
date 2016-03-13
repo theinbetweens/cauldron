@@ -29,25 +29,27 @@ module Cauldron
     def insertable_operators(examples)
       actualized_composite = ActualizedComposite.new(composite.clone_solution, examples)
       h = actualized_composite.histories
-      self.class.available_statement_types.inject([]) do |total,x|
+      results = self.class.available_statement_types.inject([]) do |total,x|
         total += x.instances(h, composite, examples, h.insert_points)
         total 
       end
+      #binding.pry
+      results
     end
 
     def self.available_statement_types
       
       # CURRENT
-      StatementGenerator.new.build(
-        ['A','B', 'AC'],
-        [:collect]
-      )+Cauldron::StatementGenerator.new.build('string',[:chop])
-
-      # TRYING
       # StatementGenerator.new.build(
       #   ['A','B', 'AC'],
       #   [:collect]
-      # )+Cauldron::StatementGenerator.new.build('string',[:chop])+[Cauldron::ArrayCollectTemplate::Template]      
+      # )+Cauldron::StatementGenerator.new.build('string',[:chop])
+
+      # TRYING
+      StatementGenerator.new.build(
+        ['A','B', 'AC'],
+        [:collect]
+      )+Cauldron::StatementGenerator.new.build('string',[:chop])+[Cauldron::ArrayCollectTemplate::Template]      
 
       # TODO Not very effient to regenerate the opperators
       # StatementGenerator.new.build(
