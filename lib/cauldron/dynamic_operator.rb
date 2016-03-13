@@ -59,6 +59,7 @@ module Cauldron
     end
 
     def write_to_file(filename)
+      FileUtils.mkdir_p File.join('tmp')
       File.open( File.join('tmp',filename), 'w+') do |file|
         file << "class DynamicOperator"+"\n"
         file << Sorcerer.source(@sexp_methods, indent: true)
