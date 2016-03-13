@@ -218,15 +218,12 @@ module Cauldron
             )
         
         a = c.new(information, sexp.clone)
-        a.instance_eval(Sorcerer.source(sexp.clone, indent: true))
+        #a.instance_eval(Sorcerer.source(sexp.clone, indent: true))
 
-        #binding.pry
-        #c.instance_eval(Sorcerer.source(sexp, indent: true))
-        return a.statement_classes.first
-        # ClassName.new.method1 #=> 42        
+        return a.statement_classes.first        
       else
         a = eval(dynamic_template_name).new(information, sexp.clone)
-        a.instance_eval(Sorcerer.source(sexp, indent: true))
+        #a.instance_eval(Sorcerer.source(sexp, indent: true))
         return a.statement_classes.first
       end
 
