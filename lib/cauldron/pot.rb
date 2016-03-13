@@ -24,9 +24,9 @@ module Cauldron
       variables = example_set.variables
       #sexp = Ripper::SexpBuilder.new('def function('+variables.join(',')+');'+relationship.to_ruby(variables)+"; end").parse
       sexp = Ripper::SexpBuilder.new('def function('+variables.join(',')+');'+relationship.to_ruby(example_set.scope)+"; end").parse
-      
-      Sorcerer.source(sexp, indent: true)
 
+      Sorcerer.source(sexp, indent: true)
+      
     end
 
     def chain_operators(problems,operators)

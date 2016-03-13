@@ -60,6 +60,14 @@ Given(/^I'm using the collect and \+ (\d+) example$/) do |arg1|
   ]    
 end
 
+Given(/^I'm using the collect and plus (\d+) example$/) do |arg1|
+  @pot = Cauldron::Pot.new
+  @examples = [
+    {arguments: [[5,7]], response: [12, 14]},
+    {arguments: [[9,15]], response: [16, 22]}
+  ] 
+end
+
 When(/^I generate a solution$/) do
   @solution = @pot.solve @examples
 end
