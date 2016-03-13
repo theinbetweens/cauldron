@@ -126,13 +126,6 @@ class ArrayReverseOperator
     
     vars = context.keys.select {|x| x.match(/var\d/) }
     var_names = vars.collect(&:to_s)
-    # binding.pry
-    # a = %Q{
-    # def function(var0)
-    #   #{Sorcerer.source(to_sexp(var_names), indent: true)}
-    # end
-    # } 
-
 
     a = %Q{
     def function(var0)

@@ -15,6 +15,10 @@ module Cauldron
       object.function(example.arguments.first)
 
       History.new(object.results)
+    #rescue => e
+      # binding.pry
+      # Sorcerer.source(sexp, indent: true) 
+      # var0 = [5,7]
     end
 
     def record(line, depth, total_line, point, entry)

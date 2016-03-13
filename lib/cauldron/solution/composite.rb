@@ -276,6 +276,8 @@ module Cauldron::Solution
       return false
     rescue NameError => e
       return false
+    rescue TypeError => e
+      return false
     end
 
     # TODO Drop this method

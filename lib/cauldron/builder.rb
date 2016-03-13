@@ -46,10 +46,15 @@ module Cauldron
       # )+Cauldron::StatementGenerator.new.build('string',[:chop])
 
       # TRYING
+      # StatementGenerator.new.build(
+      #   ['A','B', 'AC'],
+      #   [:collect]
+      # )+Cauldron::StatementGenerator.new.build('string',[:chop])+[Cauldron::ArrayCollectTemplate::Template]      
+
       StatementGenerator.new.build(
         ['A','B', 'AC'],
         [:collect]
-      )+Cauldron::StatementGenerator.new.build('string',[:chop])+[Cauldron::ArrayCollectTemplate::Template]      
+      )+Cauldron::StatementGenerator.new.build('string',[:chop])+[Cauldron::ArrayCollectTemplate::Template]+[Cauldron::NumberAdditionTemplate::Template]
 
       # TODO Not very effient to regenerate the opperators
       # StatementGenerator.new.build(

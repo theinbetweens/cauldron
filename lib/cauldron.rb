@@ -43,6 +43,9 @@ require 'cauldron/operator/var_collect_operator'
 require 'cauldron/array_collect_template/default'
 require 'cauldron/array_collect_template/template'
 
+require 'cauldron/number_addition_template/template'
+require 'cauldron/number_addition_template/add_five'
+
 require 'cauldron/dynamic_operator_module'
 
 require 'cauldron/solution/one'

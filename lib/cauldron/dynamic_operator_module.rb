@@ -73,6 +73,7 @@ module Cauldron
         return false
       rescue StandardError => e
         puts e
+        return false
       end
       return true
       
