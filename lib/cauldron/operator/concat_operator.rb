@@ -4,6 +4,7 @@ class ConcatOperator
 
   def initialize(indexes)
     @indexes = indexes
+    @constant = 'bar'
   end
 
   def self.viable?(arguments, response)
@@ -50,12 +51,13 @@ class ConcatOperator
   end
 
   def to_sexp(scope, operators)
+    first_variable = 'var'+@indexes[0].to_s
     [:program,
      [:stmts_add,
       [:stmts_new],
       [:method_add_arg,
        [:call,
-        [:vcall, [:@ident, scope[@indexes[0]] ]],
+        [:vcall, [:@ident, first_variable ]],
         :".",
         [:@ident, "concat"]],
        [:arg_paren,
