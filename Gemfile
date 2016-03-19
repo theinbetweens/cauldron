@@ -17,7 +17,7 @@ group :development, :cucumber, :test do
   gem "jeweler", "~> 1.6.2"
   gem "rspec", "~>2.6.0"
   gem 'simplecov', :require => false
-  gem "ruby_parser", "~>2.0.6"
+  gem "ruby_parser", "~>3.1.2"
   gem "aruba", "~>0.4.5"
   #gem 'ruby-debug', '0.10.4'
   #gem 'pry'
@@ -28,5 +28,5 @@ gem 'tree'
 
 gem 'pry', '~> 0.10.2'
 
-gem "ruby2ruby", "~>1.2.5"
+gem 'ruby2ruby', '~> 2.3'
 gem 'sorcerer', '~> 1.0.2'
