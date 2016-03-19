@@ -20,7 +20,15 @@ module Cauldron
         def to_ruby(scope, operators)
           Sorcerer.source self.to_sexp(scope, operators)
         end
-      #}
+      }
+    end
+
+    def sexp_method_to_desc
+      %Q{
+        def to_desc
+          to_ruby( Cauldron::Scope.new(['var0']), [] )    
+        end
+      }      
     end
 
     def method_to_sexp(instance, dynamic_method)
@@ -31,11 +39,20 @@ module Cauldron
       rescue ArgumentError => e
         
         number_of_arguments = e.message.match(/(\d+)\)/)[1].to_i
+
+        #statement = "scope[@indexes[0]] #{dynamic_method}"
+        statement = "scope[@indexes[0]]"
+
         to_sexp_method = %Q^
           def to_sexp(scope, operators)
-            Ripper::SexpBuilder.new("\#{scope[@indexes[0]]} + \#{constant}").parse 
+            Ripper::SexpBuilder.new(#{statement}).parse
           end
-        ^
+        ^        
+        # to_sexp_method = %Q^
+        #   def to_sexp(scope, operators)
+        #     Ripper::SexpBuilder.new("\#{scope[@indexes[0]]} + \#{constant}").parse 
+        #   end
+        # ^
         return to_sexp_method
       end
 
@@ -111,6 +128,8 @@ module Cauldron
         #{sexp_method_to_ruby(instance, dynamic_method)}
 
         #{method_to_sexp(instance, dynamic_method)}
+
+        #{sexp_method_to_desc}
 
         #{branch_method(instance, dynamic_method)}
 

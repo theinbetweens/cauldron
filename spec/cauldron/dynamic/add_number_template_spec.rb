@@ -1,9 +1,11 @@
+require 'spec_helper'
+
 module Cauldron
 
   describe 'DynamicNumberAddition' do
 
     let(:generator) do
-      StatementGenerator.new.build_template(4, '+')
+      Cauldron::StatementGenerator.new.build_template(4, '+')
     end
 
     context 'given the example a = 4; return 6' do

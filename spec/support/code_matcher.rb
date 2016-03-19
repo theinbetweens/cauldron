@@ -10,6 +10,17 @@ RSpec::Matchers.define :match_code_of do |expected|
   end  
 end
 
+RSpec::Matchers.define :include_statement do |expected|
+  match do |actual|
+    #actual % expected == 0
+    #Sorcerer.source(actual, indent: true).strip == Sorcerer.source(Ripper::SexpBuilder.new(expected).parse, indent: true).strip
+    actual.any? { |x| x.new([0]).to_desc == expected }
+  end
+  failure_message_for_should do |actual|
+    "expected that '#{actual.collect { |x| x.new([0]).to_desc }.join(',')}' to include '#{expected}'"
+  end  
+end
+
 RSpec::Matchers.define :match_history do |expected|
 
   lines = expected.split("\n").reject {|x| x.match(/^\s*$/) }
