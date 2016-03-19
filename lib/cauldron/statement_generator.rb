@@ -10,6 +10,7 @@ module Cauldron
       end
     end
 
+    # TODO Change to build_blue_print
     def build_template(instance, dynamic_method)
       build_class(instance, dynamic_method)
     end
@@ -159,6 +160,11 @@ module Cauldron
       dynamic_name+'Template'
     end
 
+    def default_template(instance, dynamic_method)
+      blue_print = build_class(instance, dynamic_method)
+      blue_print.statement_classes.first        
+    end
+
     def build_class(instance, dynamic_method)
       sexp = template_sexp(instance, dynamic_method)
       information = { constants: false }
@@ -181,10 +187,12 @@ module Cauldron
                 end  
 
                 # NOTE: These theses classes define the constants
-                def statement_classes
+                def statement_classes(examples = nil)
+
+                  #binding.pry
 
                   # Find the constants
-                  c = Object.const_set(
+                  b = Object.const_set(
                     self.class.to_s+rand(4000000).to_s,
                     Class.new do
 
@@ -228,20 +236,21 @@ module Cauldron
 
                     end
                   )
-                  c.class_eval(Sorcerer.source(sexp_methods, indent: true))
-                  [c]
+                  b.class_eval(Sorcerer.source(sexp_methods, indent: true))
+                  [b]
                 end                 
 
               end
             )
         
         
-        a = c.new(information, sexp.clone)
+        #a = c.new(information, sexp.clone)
 
-        return a.statement_classes.first        
+        #return a.statement_classes.first        
+        return c.new(information, sexp.clone)
       else
-        a = eval(template_name).new(information, sexp.clone)
-        return a.statement_classes.first
+        #a = eval(template_name).new(information, sexp.clone)
+        return eval(template_name).new(information, sexp.clone) #a.statement_classes.first
       end
 
       raise StandardError.new('Should not get here')

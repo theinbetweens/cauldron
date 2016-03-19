@@ -14,7 +14,7 @@ module Cauldron
       context 'var0.chop' do
 
         let(:dynamic_operator) do
-          StatementGenerator.new.build('string',[:chop]).first.new([0])
+          StatementGenerator.new.default_template('string',:chop).new([0])
         end
 
         it 'is false' do
@@ -26,10 +26,10 @@ module Cauldron
       context 'var1 = var0.collect { |var2| var2}' do
 
         let(:dynamic_operator) do
-          StatementGenerator.new.build(
+          StatementGenerator.new.default_template(
             ['00sjack00','RowIAGE', 'iNathalie'],
-            [:collect]
-          ).first.new([0])
+            :collect
+          ).new([0])
         end
 
         it 'is true' do
@@ -45,10 +45,10 @@ module Cauldron
       context 'var1 = var0.collect { |var2| var2}' do
 
         let(:dynamic_operator) do
-          StatementGenerator.new.build(
+          StatementGenerator.new.default_template(
             ['00sjack00','RowIAGE', 'iNathalie'],
-            [:collect]
-          ).first.new([0])
+            :collect
+          ).new([0])
         end
 
         let(:scope) { Cauldron::Scope.new(['var0']) }
@@ -85,7 +85,7 @@ module Cauldron
       context 'var1 = var0.collect { |var2| var2}' do
 
         let(:dynamic_operator) do
-          StatementGenerator.new.build(['a','b','c'],[:collect]).first.new([0])
+          StatementGenerator.new.default_template(['a','b','c'],:collect).new([0])
         end
 
         context "when var0 only value is ['a','b','c']" do
@@ -118,7 +118,7 @@ module Cauldron
           } do
 
             let(:containing_statement) do
-              StatementGenerator.new.build(['a','b','c'],[:collect]).first.new([0])
+              StatementGenerator.new.default_template(['a','b','c'],:collect).new([0])
             end
 
             let(:examples) do
@@ -140,7 +140,7 @@ module Cauldron
             context 'adding statement "var3 = var2.collect { |var4| var4}"' do
 
               let(:dynamic_operator) do
-                StatementGenerator.new.build(['a','b','c'],[:collect]).first.new([2])
+                StatementGenerator.new.default_template(['a','b','c'],:collect).new([2])
               end              
 
               it 'is false' do
@@ -152,7 +152,7 @@ module Cauldron
             context 'inserting statement "var3 = var1.collect { |var4| var4}"' do
 
               let(:dynamic_operator) do
-                StatementGenerator.new.build(['a','b','c'],[:collect]).first.new([1])
+                StatementGenerator.new.default_template(['a','b','c'],:collect).new([1])
               end              
 
               it 'is false' do
@@ -168,12 +168,12 @@ module Cauldron
       context 'var0.chop' do
 
         let(:dynamic_operator) do
-          StatementGenerator.new.build('string',[:chop]).first.new([0])
+          StatementGenerator.new.default_template('string',:chop).new([0])
         end
 
         let(:composite) do
           Cauldron::Solution::Composite.new(
-            [ Tree::TreeNode.new("CHILD1", dynamic_operator.new([0]) ) ]
+            [ Tree::TreeNode.new("CHILD1", dynamic_operator ) ]
           )
         end
 
@@ -181,7 +181,7 @@ module Cauldron
 
           context %q{describe using [:var0 => 'asdas', :var1 => '3232']} do
 
-            let(:dynamic_operator_class) { StatementGenerator.new.build('string',[:chop]).first }
+            let(:dynamic_operator_class) { StatementGenerator.new.default_template('string',:chop) }
 
             it 'returns 2 instances' do
               dynamic_operator_class.context_instances(
@@ -197,7 +197,7 @@ module Cauldron
 
         describe '#context_realizable?' do
 
-          let(:dynamic_operator_class) { StatementGenerator.new.build('string',[:chop]).first }
+          let(:dynamic_operator_class) { StatementGenerator.new.default_template('string',:chop) }
 
           context 'using var 0' do
 
@@ -247,7 +247,7 @@ module Cauldron
           } do
 
             let(:containing_statement) do
-              StatementGenerator.new.build(['lion','bear'],[:collect]).first.new([0])
+              StatementGenerator.new.default_template(['lion','bear'],:collect).new([0])
             end
 
             context %q{var0 is ["lion", "bear"]} do

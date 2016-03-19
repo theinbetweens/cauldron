@@ -11,11 +11,11 @@ module Cauldron
     describe '#to_ruby' do
 
       let(:nested_statement) do
-        Tree::TreeNode.new('x', StatementGenerator.new.build(['lion','bear'],[:collect], true).first.new([0]))
+        Tree::TreeNode.new( 'x', StatementGenerator.new.default_template(['lion','bear'],:collect).new([0]) )
       end
 
       let(:composite) do
-        chop = StatementGenerator.new.build('lion',[:chop]).first.new([2])
+        chop = StatementGenerator.new.default_template('lion',:chop).new([2])
         nested_statement << Tree::TreeNode.new('x', chop)
         Cauldron::Solution::Composite.new([nested_statement])
       end
@@ -68,7 +68,7 @@ module Cauldron
         context 'composite is "var0 = var1.collect { |var2|}' do
 
           let(:containing_statement) do
-            StatementGenerator.new.build(['lion','bear'],[:collect]).first.new([0])
+            StatementGenerator.new.default_template(['lion','bear'],:collect).new([0])
           end
 
           let(:composite) do

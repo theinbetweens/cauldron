@@ -86,8 +86,6 @@ module Cauldron
         context 'with method "+"' do
 
           it "doesn't raise an error" do
-            #expect{ subject.build_template(4, '+') }.not_to raise_error
-            #subject.build_template(4, '+')
             expect{ subject.build_template(4, '+') }.not_to raise_error
           end
 
@@ -127,7 +125,7 @@ module Cauldron
         describe '#realizable?' do
 
           let(:operator) do
-            subject.build('string',[:chop]).first.build([0])
+            subject.default_template('string',:chop).new([0])
           end
 
         end
@@ -135,7 +133,7 @@ module Cauldron
         describe '#to_ruby' do
 
           let(:operator) do
-            subject.build('string',[:chop]).first.new([0])
+            subject.default_template('string',:chop).new([0])
           end
 
           it 'returns the "var0.chop"' do
@@ -183,10 +181,10 @@ module Cauldron
                 [
                   Tree::TreeNode.new(
                     "ROOT", 
-                    StatementGenerator.new.build(
+                    StatementGenerator.new.default_template(
                       ["Sparky", "Kels"],
-                      [:collect]
-                    ).first.new([0])                    
+                      :collect
+                    ).new([0])                    
                   )
                 ]
               )
@@ -204,7 +202,7 @@ module Cauldron
             let(:insert_points) { [[0, 0], [1]] }
 
             let(:operator) do
-              subject.build('string',[:chop]).first
+              subject.default_template('string',:chop)
             end            
 
             # instances(histories, composite, examples, insert_points)
