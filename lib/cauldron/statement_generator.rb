@@ -6,8 +6,12 @@ module Cauldron
     # must have the constants
     def build(instance,dynamic_methods,declare_variable=false)
       dynamic_methods.collect do |x|
-        build_class(instance,x)
+        build_template(instance,x)
       end
+    end
+
+    def build_template(instance, dynamic_method)
+      build_class(instance, dynamic_method)
     end
 
     def sexp_method_to_ruby(instance, dynamic_method)
@@ -65,8 +69,27 @@ module Cauldron
       end
     end
 
+    def requires_arguments?(instance, dynamic_method)
+      instance.send(dynamic_method)
+      false
+    rescue ArgumentError => e
+      true
+    end
+
+    def expects_block?(instance, dynamic_method)
+      instance.send(dynamic_method).class == Enumerator
+    end
+
     def branch_method(instance, dynamic_method)
-      if instance.send(dynamic_method).class == Enumerator
+      if requires_arguments?(instance, dynamic_method)
+        return %q{
+          def branch?
+            false
+          end
+        }        
+      end
+
+      if expects_block?(instance, dynamic_method)
         return %q{
           def branch?
             true
@@ -80,7 +103,8 @@ module Cauldron
       }
     end
 
-    def build_class(instance, dynamic_method)
+    def template_sexp(instance, dynamic_method)
+
       res = %Q{
 
         #{sexp_method_to_ruby(instance, dynamic_method)}
@@ -126,20 +150,26 @@ module Cauldron
         end
      
       }
-      
-      sexp = Ripper::SexpBuilder.new(res).parse
+      Ripper::SexpBuilder.new(res).parse
+    end
 
+    def dynamic_template_name(instance, dynamic_method)
+      dynamic_method_name = dynamic_method.to_s.gsub(/\+/,'Add')
+      dynamic_name = ('Dynamic'+'_'+instance.class.to_s+'_'+dynamic_method_name.to_s).camelize
+      dynamic_name+'Template'
+    end
+
+    def build_class(instance, dynamic_method)
+      sexp = template_sexp(instance, dynamic_method)
       information = { constants: false }
+      
+      template_name = dynamic_template_name(instance, dynamic_method)
 
       # http://ruby-doc.org/core-2.3.0/Class.html
-      dynamic_name = ('Dynamic'+'_'+instance.class.to_s+'_'+dynamic_method.to_s).camelize
-      dynamic_template_name = dynamic_name+'Template'
-      
       # http://stackoverflow.com/questions/4113479/dynamic-class-definition-with-a-class-name
-      unless Object.const_defined? dynamic_template_name
+      unless Object.const_defined? template_name
         c = Object.const_set(
-              dynamic_template_name, 
-              #DynamicOperator.new(information, sexp) do 
+              template_name,  
               Class.new do
 
                 attr_reader :indexes, :dynamic_name, :sexp_methods
@@ -154,7 +184,6 @@ module Cauldron
                 def statement_classes
 
                   # Find the constants
-
                   c = Object.const_set(
                     self.class.to_s+rand(4000000).to_s,
                     Class.new do
@@ -178,6 +207,7 @@ module Cauldron
                         results = temp.flatten.uniq
                         
                         variable_numbers = results.collect { |x| x.match(/var(\d+)/)[1] }
+                        # TODO Presumes that only one variable is passed
                         variable_numbers.collect { |x| new([x.to_i])}
                       end 
 
@@ -205,13 +235,12 @@ module Cauldron
               end
             )
         
+        
         a = c.new(information, sexp.clone)
-        #a.instance_eval(Sorcerer.source(sexp.clone, indent: true))
 
         return a.statement_classes.first        
       else
-        a = eval(dynamic_template_name).new(information, sexp.clone)
-        #a.instance_eval(Sorcerer.source(sexp, indent: true))
+        a = eval(template_name).new(information, sexp.clone)
         return a.statement_classes.first
       end
 

@@ -48,6 +48,55 @@ module Cauldron
 
     end
 
+    describe '#dynamic_template_name' do
+
+      context 'with instance 4' do
+
+        context 'with method "+"' do
+
+          let(:subject) do
+            Object.const_set(
+              StatementGenerator.new.dynamic_template_name(4,'+'),
+              Class.new
+            )            
+          end
+
+          it 'generates a valid class name' do
+            expect{
+              subject.new
+            }.not_to raise_error
+          end
+
+          after(:each) do
+            Object.send(:remove_const, StatementGenerator.new.dynamic_template_name(4,'+'))
+          end
+
+        end
+
+      end
+
+    end
+
+    describe '#build_template' do
+
+      let(:subject) { StatementGenerator.new}
+
+      context 'with instance 4' do
+
+        context 'with method "+"' do
+
+          it "doesn't raise an error" do
+            #expect{ subject.build_template(4, '+') }.not_to raise_error
+            #subject.build_template(4, '+')
+            expect{ subject.build_template(4, '+') }.not_to raise_error
+          end
+
+        end
+
+      end
+
+    end
+
     describe '#build' do
 
       let(:subject) { StatementGenerator.new}
