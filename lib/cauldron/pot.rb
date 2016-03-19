@@ -41,7 +41,7 @@ module Cauldron
 
       operations = [ 
         NumericOperator, ArrayReverseOperator, 
-        HashKeyValueOperator, StringAsteriskOperator, ArrayCollect,
+        HashKeyValueOperator, StringAsteriskOperator,
         ConcatOperator
       ]
 
@@ -60,37 +60,37 @@ module Cauldron
 
     end 
 
-    def build_chain_operator(operators, problems)
+    # def build_chain_operator(operators, problems)
       
-      first_operator_class, second_operator_class = operators[0], operators[1]
+    #   first_operator_class, second_operator_class = operators[0], operators[1]
 
-      first_operators = build_operators( first_operator_class, problems )
+    #   first_operators = build_operators( first_operator_class, problems )
 
-      first_operator = first_operators.first 
+    #   first_operator = first_operators.first 
       
-      values = problems.first[:arguments][0]
-      first_operator_history = first_operator.context_history(['var0'], values)
+    #   values = problems.first[:arguments][0]
+    #   first_operator_history = first_operator.context_history(['var0'], values)
 
-      second_operators =  second_operator_class.instances(
-                            first_operator_history,
-                            problems.first[:response]
-                          )
+    #   second_operators =  second_operator_class.instances(
+    #                         first_operator_history,
+    #                         problems.first[:response]
+    #                       )
 
-      return nil if first_operators.empty? || second_operators.empty?
+    #   return nil if first_operators.empty? || second_operators.empty?
 
-      variations = first_operators.product(second_operators) 
+    #   variations = first_operators.product(second_operators) 
 
-      variation = variations.first
+    #   variation = variations.first
       
-      root = Tree::TreeNode.new("ROOT", "Root Content")
-      child = Tree::TreeNode.new("CHILD1", variation[0]) 
-      grand_child = Tree::TreeNode.new("CHILD2", variation[1])
-      child << grand_child
-      root << child
-      root
+    #   root = Tree::TreeNode.new("ROOT", "Root Content")
+    #   child = Tree::TreeNode.new("CHILD1", variation[0]) 
+    #   grand_child = Tree::TreeNode.new("CHILD2", variation[1])
+    #   child << grand_child
+    #   root << child
+    #   root
 
-      Cauldron::Solution::Composite.new( root.children )
-    end        
+    #   Cauldron::Solution::Composite.new( root.children )
+    # end        
 
   protected
 

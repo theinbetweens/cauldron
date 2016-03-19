@@ -62,9 +62,8 @@ class NumericOperator
   end  
 
   # Operator for "x + n" e.g. x + 1
+  # Does the input match the answer
   def successful?(problem)
-    # Does the input match the answer
-    #problem.collect {|x| x[:response] - x[:arguments].first }.uniq.length == 1
     if (problem[:arguments].first + ADDITION) == problem[:response]
       return true
     end

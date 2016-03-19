@@ -37,17 +37,7 @@ module Cauldron
       %q{
       record("line", "depth", "total_lines", "point")
       }
-    end    
-
-    # def self.substitue_tracking
-    #   %q{
-    #   record("line", "depth", "total_lines", local_variables.reject { |foo|
-    #     foo == :_
-    #   }.collect { |bar|
-    #     [bar, eval(bar.to_s)]
-    #   })
-    #   }
-    # end
+    end
 
     def self.tracking(line, depth, total_line, point)
       a = %Q{
@@ -57,71 +47,7 @@ module Cauldron
           [bar, eval(bar.to_s)]
         })
       }   
-      
       Ripper::SexpBuilder.new(a).parse
-      #Sorcerer.source(sexp, indent: true)
-
-      # [:method_add_arg,
-      #  [:fcall, [:@ident, "record", [2, 0]]],
-      #  [:arg_paren,
-      #   [:args_add_block,
-      #    [:args_add,
-      #     [:args_add,
-      #      [:args_add,
-      #       [:args_add, 
-      #         [:args_new], 
-      #         [:@int, line, [2, 7]]
-      #       ],
-      #       [:@int, depth, [2, 9]]],
-      #      [:@int, total_line, [2, 11]]
-      #     ],
-      #     [:method_add_block,
-      #      [:call,
-      #       [:method_add_block,
-      #        [:call,
-      #         [:vcall, [:@ident, "local_variables", [2, 13]]],
-      #         :".",
-      #         [:@ident, "reject", [2, 29]]],
-      #        [:brace_block,
-      #         [:block_var,
-      #          [:params,
-      #           [[:@ident, "foo", [2, 38]]],
-      #           nil,
-      #           nil,
-      #           nil,
-      #           nil,
-      #           nil,
-      #           nil],
-      #          false],
-      #         [:stmts_add,
-      #          [:stmts_new],
-      #          [:binary,
-      #           [:var_ref, [:@ident, "foo", [2, 43]]],
-      #           :==,
-      #           [:symbol_literal, [:symbol, [:@ident, "_", [2, 51]]]]]]]],
-      #       :".",
-      #       [:@ident, "collect", [2, 54]]],
-      #      [:brace_block,
-      #       [:block_var,
-      #        [:params, [[:@ident, "bar", [2, 65]]], nil, nil, nil, nil, nil, nil],
-      #        false],
-      #       [:stmts_add,
-      #        [:stmts_new],
-      #        [:array,
-      #         [:args_add,
-      #          [:args_add, [:args_new], [:var_ref, [:@ident, "bar", [2, 71]]]],
-      #          [:method_add_arg,
-      #           [:fcall, [:@ident, "eval", [2, 76]]],
-      #           [:arg_paren,
-      #            [:args_add_block,
-      #             [:args_add,
-      #              [:args_new],
-      #              [:call,
-      #               [:var_ref, [:@ident, "bar", [2, 81]]],
-      #               :".",
-      #               [:@ident, "to_s", [2, 85]]]],
-      #             false]]]]]]]]],
-      #    false]]]#]
     end
 
   end

@@ -179,53 +179,6 @@ module Cauldron::Solution
 
     end
 
-    # describe '#tracking_sexp' do
-
-    #   context %q{
-    #     given a composite:
-    #       def function(var0)
-    #         var0.collect do |var1|
-    #           var1 * 3 
-    #         end
-    #       end
-    #     } do
-
-    #       let(:array_collect_node) do
-    #         node = Tree::TreeNode.new("CHILD1", ArrayCollect.new([0]))
-    #         node << Tree::TreeNode.new("CHILD1", StringAsteriskOperator.new([1],3))
-    #         node
-    #       end
-
-    #       let(:composite) do
-    #         Cauldron::Solution::Composite.new(
-    #           [array_collect_node]
-    #         )
-    #       end
-
-    #       let(:scope) do
-    #         Cauldron::Scope.new(['var0'])
-    #       end
-
-    #       it %q{generates a method:
-    #         var0.collect do |var1|
-    #           var1 * 3
-    #           record(1,1,2,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
-    #         end
-    #         record(1,0,2,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
-    #       } do
-    #         composite.tracking_sexp(scope, Cauldron::Caret.new ).should match_code_of %q{
-    #           var0.collect do |var1|
-    #             var1 * 3
-    #             record(1,1,2,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })
-    #           end
-    #           record(1,0,2,local_variables.reject {|foo| foo == :_}.collect { |bar| [bar, eval(bar.to_s)] })              
-    #         }
-    #       end
-
-    #   end
-
-    # end
-
     describe '#solution?' do
 
       let(:problems) do
@@ -239,7 +192,7 @@ module Cauldron::Solution
 
       let(:composite) do
         Cauldron::Solution::Composite.new(
-          [Tree::TreeNode.new("CHILD1", ArrayCollect.new([0]))]
+          [Tree::TreeNode.new("CHILD1", Cauldron::ArrayCollectTemplate::Default.new([0]))]
         )
       end
 
@@ -328,7 +281,7 @@ end
 
         context 'has operator "Array#collect"' do
 
-          let(:array_collect) { ArrayCollect.new([0]) }
+          let(:array_collect) { Cauldron::ArrayCollectTemplate::Default.new([0]) }
 
           let(:tree) do
             # Tree::TreeNode.new("ROOT", "Root Content").tap do |root|
@@ -431,7 +384,7 @@ end
 
       context 'using initial operator "Array#collect"' do
 
-        let(:collect_operator) { ArrayCollect.new([0]) }
+        let(:collect_operator) { Cauldron::ArrayCollectTemplate::Default.new([0]) }
 
         let(:scope) { Cauldron::Scope.new(['var0']) }
 

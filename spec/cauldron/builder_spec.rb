@@ -61,7 +61,7 @@ module Cauldron
         let(:builder) { Cauldron::Builder.new(composite) }
 
         it 'results do not include array collect' do
-          builder.insertable_operators(examples).should_not include_an_instance_of(ArrayCollect)
+          builder.insertable_operators(examples).should_not include_an_instance_of(Cauldron::ArrayCollectTemplate::Default)
         end        
 
       end

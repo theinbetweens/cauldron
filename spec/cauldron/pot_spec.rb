@@ -218,33 +218,6 @@ end
 
     end
 
-    describe '#single_viable_operators' do
-
-      context 'argument is ["a","b","c"]' do
-
-        context 'response is ["a","b","c"]' do
-
-          let(:problems) do
-            Cauldron::ExampleSet.new(
-              [
-                Cauldron::Example.new({ arguments: [['a','b','c']], response: ['a','b','c']})
-              ]
-            )
-          end          
-
-          it 'response contains "ArrayCollect" class' do
-            pot = Pot.new
-            pot.single_viable_operators(
-              problems
-            ).should include(ArrayCollect)
-          end
-
-        end
-
-      end
-
-    end
-
     describe '#build_chain_operator' do
 
       #[ArrayCollect, StringAsteriskOperator]

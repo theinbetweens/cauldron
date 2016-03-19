@@ -89,10 +89,6 @@ module Cauldron
 
         #{branch_method(instance, dynamic_method)}
 
-        def build(children, scope)
-          to_sexp(scope, children)
-        end 
-
         def self.instances(histories, composite, examples, insert_points)
 
           # TEMP
@@ -152,14 +148,13 @@ module Cauldron
                 def initialize(information, sexp_methods)
                   @information, @sexp_methods = information, sexp_methods
                   @failed_uses = []
-                end
-
-                def method1() 
-                  42 
-                end     
+                end  
 
                 # NOTE: These theses classes define the constants
                 def statement_classes
+
+                  # Find the constants
+
                   c = Object.const_set(
                     self.class.to_s+rand(4000000).to_s,
                     Class.new do
@@ -168,9 +163,7 @@ module Cauldron
                       include Cauldron::DynamicOperatorModule   
 
                       attr_reader :indexes        
-                      attr_accessor :failed_uses      
-
-                      @@sexp_template_methods = []       
+                      attr_accessor :failed_uses     
 
                       def initialize(indexes)
                         @indexes = indexes

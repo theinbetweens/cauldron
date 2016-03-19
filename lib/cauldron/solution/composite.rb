@@ -65,15 +65,7 @@ module Cauldron::Solution
       rendered_code = Sorcerer.source(sexp, indent: true)
       caret = Cauldron::Caret.new
 
-
       rendered_code = Sorcerer.source(sexp, indent: true).gsub(/end/,"\nend").split("\n").reject(&:empty?).join("\n")
-      puts '======================:::'
-
-      #rendered_code_lines = Sorcerer.source(sexp, indent: true).split("\n")
-      #rendered_code_lines
-      puts rendered_code
-      
-      puts '======================:::'
 
       # Generate tracking code with pending substitutions
       tracked_code = []
@@ -88,11 +80,6 @@ module Cauldron::Solution
       code_tracking  = Sorcerer.source(sexp, indent: true)
       code_tracking.split("\n")
 
-      puts '&&&&&&&&&&&&&&& CODE TRACKING PART 1 &&&&&&&&&&&&&&&&&&&&&&&&'
-      code_tracking.split("\n").each do |x|
-        puts x
-      end
-
       current_line = -1
       total_lines = 0
       new_tracked_code = []
@@ -103,15 +90,9 @@ module Cauldron::Solution
       current_depth = 0
       caret = Cauldron::Caret.new
 
-      #parent_node = Tree::TreeNode.new("ROOT", "Root Content")
-      #binding.pry
       points = end_points
 
       code_tracking.split("\n").each do |line|
-
-        #next_node = Tree::TreeNode.new("CHILD1", line)
-        #depth = (line.match(/^(\s+)/)[0].length / 2) -1
-        #parent_node << next_node
 
         if line.match /record/
           depth = (line.match(/^(\s+)/)[0].length / 2) -1
@@ -152,53 +133,12 @@ module Cauldron::Solution
         #total_lines += 1
       end
 
-      # NOTE: Keep this to debug before conversion of S-EXP
-      puts '&&&&&&&&&&&&&&&&&& TRACKING CODE 2 &&&&&&&&&&&&&&&&&&&&&&&&&&&&'
-      new_tracked_code.each do |x|
-        puts x
-      end
-      
-      sexp = Ripper::SexpBuilder.new(new_tracked_code.join("\n")).parse 
-
-      #puts '==========='
-      #puts Sorcerer.source(sexp, indent: true)
-      #puts '==========='
+      # NOTE: Keep this to debug before conversion of S-EXP      
+      sexp = Ripper::SexpBuilder.new(new_tracked_code.join("\n")).parse
       
       Cauldron::Tracer.new(sexp)
 
     end
-
-    # def tracking_sexp(scope, caret)
-    #   if operators.empty?
-    #     sexp = [:bodystmt,
-    #       [:stmts_add,
-    #         [:stmts_new]
-    #       ],
-    #       Cauldron::Tracer.tracking(caret.line, caret.current_depth, caret.total_lines)
-    #     ]        
-    #   else
-
-    #     if operators.length == 1
-    #       inner = operators.first.content.to_tracking_sexp(
-    #                 operators.first.children, scope, caret
-    #               ) 
-    #       sibling = reset_and_track(caret)
-    #       sexp = [
-    #               :bodystmt,
-    #                 [:stmts_add, 
-    #                   [:stmts_add,
-    #                     [:stmts_new],
-    #                     inner
-    #                   ],
-    #                   sibling
-    #                 ]
-    #               ]
-    #     else
-    #       raise StandardError.new('Currently only supporting 1')
-    #     end
-    #   end
-    #   sexp
-    # end
 
     def reset_and_track(caret)
       caret.return_depth(0)
@@ -218,30 +158,6 @@ module Cauldron::Solution
 
       sexp = Ripper::SexpBuilder.new(res).parse
       return sexp
-
-      # first = operators.first
-      
-      # #inner = add_first_statement( first.content.build(first.children.first, variables) )
-
-      # inner = add_first_statement( 
-      #           first.content.build(
-      #             first.children, variables
-      #           ) 
-      #         )
-
-      # second = operators[1]
-      
-      # if second.nil?
-      #   results = inner
-      # else
-      #   results = add_statement(
-      #               second.content.build(second.children, variables),
-      #               inner
-      #             )
-      # end
-      
-      # # TODO Not sure why this is needed just yet
-      # [:program, results]
     end
 
     def to_ruby(scope)
