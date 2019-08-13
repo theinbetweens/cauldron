@@ -1,8 +1,9 @@
-class StringAsteriskOperator
+# frozen_string_literal: true
 
+class StringAsteriskOperator
   # var0 * 3
 
-  # TODO Possibly include the scope of the index
+  # TODO: Possibly include the scope of the index
   # a = 5
   # ['sdsd'].each do |b|
   #   c = 5
@@ -25,14 +26,13 @@ class StringAsteriskOperator
   def initialize(indexes)
     @indexes = indexes
     @constant = 2
-    #@constant, @indexes = constant, indexes
+    # @constant, @indexes = constant, indexes
   end
 
   def self.instances(histories, composite, examples, insert_points)
-
     # TEMP
     unless examples.class == ExampleSet
-      raise StandardError.new('Examples should be an example')
+      raise StandardError, 'Examples should be an example'
     end
 
     # Print out each insertable statements
@@ -45,24 +45,22 @@ class StringAsteriskOperator
     results = []
 
     insert_points.each do |point|
-
       # Find the variables at a particular point
       # TODO Change to test
       contexts = histories.contexts_at(point)
       composites = context_instances(contexts)
 
       composites.each do |x|
-        if contexts.all? do |context|
+        next unless contexts.all? do |context|
           x.context_realizable?(context)
         end
-          results << extend_actualized_composite(x, composite, examples, point)
-        end
-      end
 
+        results << extend_actualized_composite(x, composite, examples, point)
+      end
     end
-    
+
     results
-  end  
+  end
 
   # def self.instances(context_history, target)
   #   res = history_goals(context_history, target)
@@ -78,19 +76,21 @@ class StringAsteriskOperator
 
   # end
 
-  def self.history_goals(context_history,target)
+  def self.history_goals(context_history, target)
     variables = context_history.first.keys
-    context_history.each {|x| x[variables.first] }.zip(target)
+    context_history.each { |x| x[variables.first] }.zip(target)
   end
 
   def self.find_constants(problems)
-    return [] unless problems.all? { |x| x.response.kind_of?(String) }
-    problems.collect {|x| x.response.scan(x.arguments.first).count }.reject {|x| x == 0}
+    return [] unless problems.all? { |x| x.response.is_a?(String) }
+
+    problems.collect { |x| x.response.scan(x.arguments.first).count }.reject { |x| x == 0 }
   end
 
-  def self.viable?(arguments,output)
-    return false unless output.kind_of?(String)
-    return false unless arguments.first.kind_of?(String)
+  def self.viable?(arguments, output)
+    return false unless output.is_a?(String)
+    return false unless arguments.first.is_a?(String)
+
     true
   end
 
@@ -104,28 +104,28 @@ class StringAsteriskOperator
 
   def branch?
     false
-  end 
+  end
 
   def successful?(problem)
-    return true if problem[:arguments].first*@constant == problem[:response]    
+    return true if problem[:arguments].first * @constant == problem[:response]
+
     false
   end
 
-  def to_ruby(scope, operators)
-    Sorcerer.source self.to_sexp([], scope)
+  def to_ruby(scope, _operators)
+    Sorcerer.source to_sexp([], scope)
   end
 
   # def to_sexp(operators, scope)
   #   [:binary, [:vcall, [:@ident, scope[@indexes[0]] ]], :*, [:@int, @constant]]
   # end
-  def to_sexp(scope, children)
-    first_variable = 'var'+@indexes[0].to_s
-    Ripper::SexpBuilder.new(%Q{#{first_variable} * #{@constant}}).parse
-  end  
+  def to_sexp(_scope, _children)
+    first_variable = 'var' + @indexes[0].to_s
+    Ripper::SexpBuilder.new(%(#{first_variable} * #{@constant})).parse
+  end
 
-  # TODO Get rid of the defined names
+  # TODO: Get rid of the defined names
   def build(operators, scope)
     to_sexp(operators, scope)
   end
-
 end

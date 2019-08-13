@@ -30,3 +30,5 @@ gem 'pry', '~> 0.10.2'
 
 gem 'ruby2ruby', '~> 2.3'
 gem 'sorcerer', '~> 1.0.2'
+
+gem "rubocop", ">= 0.47", require: false

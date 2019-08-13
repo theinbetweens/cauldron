@@ -1,4 +1,6 @@
-# TODO Really want a nice indent solution - like cucumber
+# frozen_string_literal: true
+
+# TODO: Really want a nice indent solution - like cucumber
 # http://stackoverflow.com/questions/3350648/ruby-indented-multiline-strings
 # Personally, I think that Ruby's indented heredocs are useless and they should work more like Bash indented heredocs and also strip whitespace inside the string …
 
@@ -12,10 +14,11 @@
 # https://github.com/Mynyml/Unindent/
 class String
   def unindent
-    indent = self.split("\n").select {|line| !line.strip.empty? }.map {|line| line.index(/[^\s]/) }.compact.min || 0
-    self.gsub(/^[[:blank:]]{#{indent}}/, '')
+    indent = split("\n").reject { |line| line.strip.empty? }.map { |line| line.index(/[^\s]/) }.compact.min || 0
+    gsub(/^[[:blank:]]{#{indent}}/, '')
   end
+
   def unindent!
-    self.replace(self.unindent)
+    replace(unindent)
   end
 end

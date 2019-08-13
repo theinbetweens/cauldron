@@ -1,7 +1,7 @@
+# frozen_string_literal: true
+
 module Cauldron
-
   class Builder
-
     attr_reader :composite
 
     def initialize(composite)
@@ -9,10 +9,10 @@ module Cauldron
     end
 
     def tree
-      root_node = Tree::TreeNode.new("ROOT", "Root Content")
+      root_node = Tree::TreeNode.new('ROOT', 'Root Content')
       line_count = 0
-      composite.operators.each do |x|
-        child_node = Tree::TreeNode.new('CHILD-'+line_count.to_s)
+      composite.operators.each do |_x|
+        child_node = Tree::TreeNode.new('CHILD-' + line_count.to_s)
         root_node << child_node
         line_count += 1
       end
@@ -22,16 +22,15 @@ module Cauldron
     def insertable_operators(examples)
       actualized_composite = ActualizedComposite.new(composite.clone_solution, examples)
       h = actualized_composite.histories
-      results = self.class.available_statement_types.inject([]) do |total,x|
+      results = self.class.available_statement_types.inject([]) do |total, x|
         total += x.instances(h, composite, examples, h.insert_points)
-        total 
+        total
       end
-      #binding.pry
+      # binding.pry
       results
     end
 
     def self.available_statement_types
-      
       # CURRENT
       # StatementGenerator.new.build(
       #   ['A','B', 'AC'],
@@ -42,19 +41,17 @@ module Cauldron
       # StatementGenerator.new.build(
       #   ['A','B', 'AC'],
       #   [:collect]
-      # )+Cauldron::StatementGenerator.new.build('string',[:chop])+[Cauldron::ArrayCollectTemplate::Template]      
+      # )+Cauldron::StatementGenerator.new.build('string',[:chop])+[Cauldron::ArrayCollectTemplate::Template]
       [StatementGenerator.new.build_template(
-        ['A','B', 'AC'],
+        %w[A B AC],
         :collect
-      ).statement_classes.first]+[Cauldron::StatementGenerator.new.build_template('string',:chop).statement_classes.first]+[Cauldron::ArrayCollectTemplate::Template]+[Cauldron::NumberAdditionTemplate::Template]
+      ).statement_classes.first] + [Cauldron::StatementGenerator.new.build_template('string', :chop).statement_classes.first] + [Cauldron::ArrayCollectTemplate::Template] + [Cauldron::NumberAdditionTemplate::Template]
 
-      # TODO Not very effient to regenerate the opperators
+      # TODO: Not very effient to regenerate the opperators
       # StatementGenerator.new.build(
       #   ['A','B', 'AC'],
       #   [:collect]
       # )+Cauldron::StatementGenerator.new.build('string',[:chop])+[ArrayReverseOperator]+[StatementGenerator.new.build(3,[:+])]
     end
-
   end
-
 end

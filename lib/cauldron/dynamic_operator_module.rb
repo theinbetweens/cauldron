@@ -1,13 +1,14 @@
+# frozen_string_literal: true
+
 module Cauldron
-
   module DynamicOperatorModule
-
     def uses_constants?
       @information[:constants]
     end
 
     def indexes=(value)
-      raise StandardError.new('') if @closed
+      raise StandardError, '' if @closed
+
       @indexes = value
     end
 
@@ -16,7 +17,7 @@ module Cauldron
     end
 
     def clone_statement
-      # TODO Need to clone the sexp methods
+      # TODO: Need to clone the sexp methods
       # o = DynamicOperator.new(@information, @sexp_methods)
       # o.instance_eval(Sorcerer.source(@sexp_methods, indent: true))
       # o
@@ -41,33 +42,32 @@ module Cauldron
     # end
 
     def context_realizable?(context)
-      
-      vars = context.keys.select {|x| x.match(/var\d/) }
+      vars = context.keys.select { |x| x.match(/var\d/) }
       var_names = vars.collect(&:to_s)
 
-      first_variable = 'var'+@indexes[0].to_s
-      
+      first_variable = 'var' + @indexes[0].to_s
+
       # a = %Q{
       # def function(var0)
       #   #{Sorcerer.source(to_sexp(var_names), indent: true)}
       # end
-      # } 
+      # }
       # a = %Q{
       # def function(var0)
       #   #{Sorcerer.source(to_sexp(Cauldron::Scope.new(var_names), []), indent: true)}
       # end
-      # }     
-      a = %Q{
+      # }
+      a = %{
       def function(#{first_variable})
         #{Sorcerer.source(to_sexp(Cauldron::Scope.new(var_names), []), indent: true)}
       end
-      }        
+      }
 
       o = Object.new
       o.instance_eval(a)
 
       begin
-        #o.function(*vars.collect {|x| context[x] })  
+        # o.function(*vars.collect {|x| context[x] })
         o.function context[first_variable.to_sym]
       rescue NoMethodError => e
         return false
@@ -75,35 +75,34 @@ module Cauldron
         puts e
         return false
       end
-      return true
-      
+      true
 
-
-      #o.function(*params.values)
+      # o.function(*params.values)
 
       # a = %Q{
       # def function(var0)
       #   #{Sorcerer.source(to_sexp(Cauldron::Scope.new(['var0'])), indent: true)}
       # end
-      # }      
+      # }
     end
 
     def write_to_file(filename)
-      File.open( File.join('tmp',filename), 'w+') do |file|
-        file << "class DynamicOperator"+"\n"
+      File.open(File.join('tmp', filename), 'w+') do |file|
+        file << 'class DynamicOperator' + "\n"
         file << Sorcerer.source(@sexp_methods, indent: true)
         file << "\n"
-        file << "end"
+        file << 'end'
       end
     end
 
-    def rip(composite,examples)
+    def rip(composite, examples)
       Ripper::SexpBuilder.new(
-        %Q{
+        %{
         def function(var0)
           #{composite.to_ruby(examples.scope)}
         end
-      }).parse      
+      }
+      ).parse
     end
 
     # def to_tracking_sexp(operators, scope, caret)
@@ -111,30 +110,28 @@ module Cauldron
     #   to_sexp(scope)
     # end
 
-    def realizable?(histories, point)
+    def realizable?(histories, _point)
       parameters = histories.variable_permutations(@indexes.length)
       parameters.each do |params|
         begin
           realize(params)
-        rescue => e
+        rescue StandardError => e
           puts e
           failed_uses.push(histories)
           return false
         end
       end
-      true          
-    rescue => e
+      true
+    rescue StandardError => e
       puts e
       puts e.backtrace
-      # TODO GENERATE RSPEC TEST with arguments
+      # TODO: GENERATE RSPEC TEST with arguments
     end
 
     def realize(params)
       o = Object.new
       o.instance_eval(rip2)
       o.function(*params.values)
-    end    
-
+    end
   end
-
 end

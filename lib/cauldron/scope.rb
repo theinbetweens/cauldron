@@ -1,5 +1,6 @@
-module Cauldron
+# frozen_string_literal: true
 
+module Cauldron
   class Scope
     include Enumerable
 
@@ -10,7 +11,7 @@ module Cauldron
     end
 
     def new_variable!
-      #@variables << "var#{variables.length+1}"
+      # @variables << "var#{variables.length+1}"
       @variables << "var#{variables.length}"
       @variables.last
     end
@@ -18,7 +19,5 @@ module Cauldron
     def [](index)
       variables[index]
     end
-
   end
-
 end

@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.executables   = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
   s.test_files    = s.files.grep(%r{^(test|spec|features)/})
   s.require_paths = ["lib"]  
-  s.homepage = %q{http://github.com/theinbetweens/cauldron}
+  s.homepage = %q{https://github.com/theinbetweens/cauldron}
   s.licenses = ["MIT"]  
   s.rubygems_version = %q{1.4.0}
   s.summary = %q{Generate simple ruby methods from the input(s) and expected output}

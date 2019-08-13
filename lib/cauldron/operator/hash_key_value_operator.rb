@@ -1,17 +1,19 @@
-#http://www.ruby-doc.org/core-2.1.1/Hash.html
-#hsh[key] → value
-class HashKeyValueOperator
+# frozen_string_literal: true
 
+# http://www.ruby-doc.org/core-2.1.1/Hash.html
+# hsh[key] → value
+class HashKeyValueOperator
   # var0[:foo]
 
   def initialize(indexes)
     @indexes = indexes
     @constant = :foo
-    #@constant, @indexes = constant, indexes
+    # @constant, @indexes = constant, indexes
   end
 
-  def self.viable?(arguments, response)
-    return false unless arguments.all? { |x| x.kind_of?(Hash) }
+  def self.viable?(arguments, _response)
+    return false unless arguments.all? { |x| x.is_a?(Hash) }
+
     true
   end
 
@@ -20,55 +22,50 @@ class HashKeyValueOperator
   end
 
   def self.find_constants(problems)
-    problems.collect {|x| x.arguments.first.keys }.flatten
+    problems.collect { |x| x.arguments.first.keys }.flatten
   end
 
   def successful?(problem)
-    if problem.arguments.first[@constant] == problem.response
-      return true
-    end
-    return false    
+    return true if problem.arguments.first[@constant] == problem.response
+
+    false
   end
 
   def to_ruby(scope, operators)
-    Sorcerer.source self.to_sexp(scope, operators)
+    Sorcerer.source to_sexp(scope, operators)
   end
 
-  def to_sexp(scope, operators)
+  def to_sexp(scope, _operators)
     [:aref,
-      [:vcall, 
-        [:@ident, scope[0]]
-      ], 
-      [:args_add_block, 
-        [
-          :args_add, 
-          [:args_new], 
-          sexp_index
-        ]
-      ]
-    ]
-  end 
+     [:vcall,
+      [:@ident, scope[0]]],
+     [:args_add_block,
+      [
+        :args_add,
+        [:args_new],
+        sexp_index
+      ]]]
+  end
 
   def sexp_index
-    if @constant.kind_of?(Symbol)
+    if @constant.is_a?(Symbol)
       a = [
-            :symbol_literal, 
-            [:symbol, [:@ident, @constant]],
-            [:string_add, [:@ident, @constant]]
-          ]
-      return a      
-    elsif @constant.kind_of?(String)
-      return [
-                :string_literal, 
-                [
-                  :string_add, 
-                  [:string_content], 
-                  [:@tstring_content, @constant ]
-                ]
-            ] 
+        :symbol_literal,
+        [:symbol, [:@ident, @constant]],
+        [:string_add, [:@ident, @constant]]
+      ]
+      a
+    elsif @constant.is_a?(String)
+      [
+        :string_literal,
+        [
+          :string_add,
+          [:string_content],
+          [:@tstring_content, @constant]
+        ]
+      ]
     else
-      raise StandardError.new('Unknown index')
+      raise StandardError, 'Unknown index'
     end
-  end 
-
+  end
 end

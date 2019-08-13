@@ -1,22 +1,22 @@
+# frozen_string_literal: true
+
 module Cauldron
-
   class StatementGenerator
-
-    # Build appropriate classes that can build appropriate instances - instances 
+    # Build appropriate classes that can build appropriate instances - instances
     # must have the constants
-    def build(instance,dynamic_methods,declare_variable=false)
+    def build(instance, dynamic_methods, _declare_variable = false)
       dynamic_methods.collect do |x|
-        build_template(instance,x)
+        build_template(instance, x)
       end
     end
 
-    # TODO Change to build_blue_print
+    # TODO: Change to build_blue_print
     def build_template(instance, dynamic_method)
       build_class(instance, dynamic_method)
     end
 
-    def sexp_method_to_ruby(instance, dynamic_method)
-      %Q{
+    def sexp_method_to_ruby(_instance, _dynamic_method)
+      %{
         def to_ruby(scope, operators)
           Sorcerer.source self.to_sexp(scope, operators)
         end
@@ -24,47 +24,45 @@ module Cauldron
     end
 
     def sexp_method_to_desc
-      %Q{
+      %{
         def to_desc
-          to_ruby( Cauldron::Scope.new(['var0']), [] )    
+          to_ruby( Cauldron::Scope.new(['var0']), [] )
         end
-      }      
+      }
     end
 
     def method_to_sexp(instance, dynamic_method)
-
       # Does it expect arguments?
       begin
         instance.send(dynamic_method)
       rescue ArgumentError => e
-        
         number_of_arguments = e.message.match(/(\d+)\)/)[1].to_i
 
-        #statement = "scope[@indexes[0]] #{dynamic_method}"
-        statement = "scope[@indexes[0]]"
+        # statement = "scope[@indexes[0]] #{dynamic_method}"
+        statement = 'scope[@indexes[0]]'
 
-        to_sexp_method = %Q^
+        to_sexp_method = %^
           def to_sexp(scope, operators)
             Ripper::SexpBuilder.new(#{statement}).parse
           end
-        ^        
+        ^
         # to_sexp_method = %Q^
         #   def to_sexp(scope, operators)
-        #     Ripper::SexpBuilder.new("\#{scope[@indexes[0]]} + \#{constant}").parse 
+        #     Ripper::SexpBuilder.new("\#{scope[@indexes[0]]} + \#{constant}").parse
         #   end
         # ^
         return to_sexp_method
       end
 
       if instance.send(dynamic_method).class == Enumerator
-        %Q^
+        %^
           def to_sexp(scope, operators)
             scope_var = scope.new_variable!
             scope_var_two = scope.new_variable!
             dynamic_method = '#{dynamic_method}'
 
             first_variable = 'var'+@indexes[0].to_s
-            
+
             a = "\#{scope_var} = \#{first_variable}.\#{dynamic_method} do |\#{scope_var_two}|"+"\n"
             a += operators.collect {|x| x.content.to_ruby(scope, x.children) }.join("\n")
             a += "\n"+"end"+"\n"
@@ -74,7 +72,7 @@ module Cauldron
           end
         ^
       else
-        %Q{
+        %{
           def to_sexp(scope, operators)
             first_variable = 'var'+@indexes[0].to_s
             [:call,
@@ -82,7 +80,7 @@ module Cauldron
               :".",
               [:@ident, "#{dynamic_method}"]
             ]
-          end        
+          end
         }
       end
     end
@@ -100,30 +98,29 @@ module Cauldron
 
     def branch_method(instance, dynamic_method)
       if requires_arguments?(instance, dynamic_method)
-        return %q{
+        return '
           def branch?
             false
           end
-        }        
+        '
       end
 
       if expects_block?(instance, dynamic_method)
-        return %q{
+        return '
           def branch?
             true
-          end          
-        }
+          end
+        '
       end
-      %q{
+      '
         def branch?
           false
-        end          
-      }
+        end
+      '
     end
 
     def template_sexp(instance, dynamic_method)
-
-      res = %Q{
+      res = %{
 
         #{sexp_method_to_ruby(instance, dynamic_method)}
 
@@ -165,127 +162,120 @@ module Cauldron
             end
 
           end
-          
+
           results
         end
-     
+
       }
       Ripper::SexpBuilder.new(res).parse
     end
 
     def dynamic_template_name(instance, dynamic_method)
-      dynamic_method_name = dynamic_method.to_s.gsub(/\+/,'Add')
-      dynamic_name = ('Dynamic'+'_'+instance.class.to_s+'_'+dynamic_method_name.to_s).camelize
-      dynamic_name+'Template'
+      dynamic_method_name = dynamic_method.to_s.gsub(/\+/, 'Add')
+      dynamic_name = ('Dynamic' + '_' + instance.class.to_s + '_' + dynamic_method_name.to_s).camelize
+      dynamic_name + 'Template'
     end
 
     def default_template(instance, dynamic_method)
       blue_print = build_class(instance, dynamic_method)
-      blue_print.statement_classes.first        
+      blue_print.statement_classes.first
     end
 
     def build_class(instance, dynamic_method)
       sexp = template_sexp(instance, dynamic_method)
       information = { constants: false }
-      
+
       template_name = dynamic_template_name(instance, dynamic_method)
 
       # http://ruby-doc.org/core-2.3.0/Class.html
       # http://stackoverflow.com/questions/4113479/dynamic-class-definition-with-a-class-name
-      unless Object.const_defined? template_name
-        c = Object.const_set(
-              template_name,  
-              Class.new do
-
-                attr_reader :indexes, :dynamic_name, :sexp_methods
-                attr_accessor :failed_uses                
-
-                def initialize(information, sexp_methods)
-                  @information, @sexp_methods = information, sexp_methods
-                  @failed_uses = []
-                end  
-
-                # NOTE: These theses classes define the constants
-                def statement_classes(examples = nil)
-
-                  #binding.pry
-
-                  # Find the constants
-                  b = Object.const_set(
-                    self.class.to_s+rand(4000000).to_s,
-                    Class.new do
-
-                      include Cauldron::Operator
-                      include Cauldron::DynamicOperatorModule   
-
-                      attr_reader :indexes        
-                      attr_accessor :failed_uses     
-
-                      def initialize(indexes)
-                        @indexes = indexes
-                        @failed_uses = []
-                      end
-
-                      def self.context_instances(contexts)
-                        temp = []
-                        contexts.each do |context|
-                          temp << context.keys.collect(&:to_s).select {|x| x.match(/var\d/) }
-                        end
-                        results = temp.flatten.uniq
-                        
-                        variable_numbers = results.collect { |x| x.match(/var(\d+)/)[1] }
-                        # TODO Presumes that only one variable is passed
-                        variable_numbers.collect { |x| new([x.to_i])}
-                      end 
-
-                      def self.extend_actualized_composite(x, container, examples, point)
-                        cloned_container = container.clone_solution
-                        cloned_container.add_statement_at(x, point)
-                        cloned_container
-                        Cauldron::ActualizedComposite.new(cloned_container, examples)
-                      end  
-
-                      def rip2
-                        %Q{
-                        def function(var0)
-                          #{Sorcerer.source(to_sexp(Cauldron::Scope.new(['var0']),[]), indent: true)}
-                        end
-                        }
-                      end
-
-                    end
-                  )
-                  b.class_eval(Sorcerer.source(sexp_methods, indent: true))
-                  [b]
-                end                 
-
-              end
-            )
-        
-        
-        #a = c.new(information, sexp.clone)
-
-        #return a.statement_classes.first        
-        return c.new(information, sexp.clone)
+      if Object.const_defined? template_name
+        # a = eval(template_name).new(information, sexp.clone)
+        return eval(template_name).new(information, sexp.clone) # a.statement_classes.first
       else
-        #a = eval(template_name).new(information, sexp.clone)
-        return eval(template_name).new(information, sexp.clone) #a.statement_classes.first
+        c = Object.const_set(
+          template_name,
+          Class.new do
+            attr_reader :indexes, :dynamic_name, :sexp_methods
+            attr_accessor :failed_uses
+
+            def initialize(information, sexp_methods)
+              @information = information
+              @sexp_methods = sexp_methods
+              @failed_uses = []
+            end
+
+            # NOTE: These theses classes define the constants
+            def statement_classes(_examples = nil)
+              # binding.pry
+
+              # Find the constants
+              b = Object.const_set(
+                self.class.to_s + rand(4_000_000).to_s,
+                Class.new do
+                  include Cauldron::Operator
+                  include Cauldron::DynamicOperatorModule
+
+                  attr_reader :indexes
+                  attr_accessor :failed_uses
+
+                  def initialize(indexes)
+                    @indexes = indexes
+                    @failed_uses = []
+                  end
+
+                  def self.context_instances(contexts)
+                    temp = []
+                    contexts.each do |context|
+                      temp << context.keys.collect(&:to_s).select { |x| x.match(/var\d/) }
+                    end
+                    results = temp.flatten.uniq
+
+                    variable_numbers = results.collect { |x| x.match(/var(\d+)/)[1] }
+                    # TODO: Presumes that only one variable is passed
+                    variable_numbers.collect { |x| new([x.to_i]) }
+                  end
+
+                  def self.extend_actualized_composite(x, container, examples, point)
+                    cloned_container = container.clone_solution
+                    cloned_container.add_statement_at(x, point)
+                    cloned_container
+                    Cauldron::ActualizedComposite.new(cloned_container, examples)
+                  end
+
+                  def rip2
+                    %{
+                    def function(var0)
+                      #{Sorcerer.source(to_sexp(Cauldron::Scope.new(['var0']), []), indent: true)}
+                    end
+                    }
+                  end
+                end
+              )
+              b.class_eval(Sorcerer.source(sexp_methods, indent: true))
+              [b]
+            end
+          end
+        )
+
+        # a = c.new(information, sexp.clone)
+
+        # return a.statement_classes.first
+        return c.new(information, sexp.clone)
       end
 
-      raise StandardError.new('Should not get here')
+      raise StandardError, 'Should not get here'
     end
-
   end
-
 end
 
-# TODO stacking mulitple rescues does not work
+# TODO: stacking mulitple rescues does not work
 # realizable?
 
 # def realizable?(composite, examples)
 #   o = Object.new
 #   composite.to_ruby(examples.scope)
-#   sexp = rip(composite,examples) 
+#   sexp = rip(composite,examples)
 #   o.instance_eval(Sorcerer.source(sexp, indent: true))
 #   begin
 #     o.function(examples.examples.first.arguments.first)

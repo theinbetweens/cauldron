@@ -1,14 +1,15 @@
+# frozen_string_literal: true
+
 module Cauldron
-
   class DynamicOperator
-
     include Cauldron::Operator
 
     attr_reader :indexes
     attr_accessor :failed_uses
 
     def initialize(information, sexp_methods)
-      @information, @sexp_methods = information, sexp_methods
+      @information = information
+      @sexp_methods = sexp_methods
       @failed_uses = []
       @closed = false
     end
@@ -18,7 +19,8 @@ module Cauldron
     end
 
     def indexes=(value)
-      raise StandardError.new('') if @closed
+      raise StandardError, '' if @closed
+
       @indexes = value
     end
 
@@ -34,57 +36,54 @@ module Cauldron
     end
 
     def context_realizable?(context)
-      
-      vars = context.keys.select {|x| x.match(/var\d/) }
+      vars = context.keys.select { |x| x.match(/var\d/) }
       var_names = vars.collect(&:to_s)
 
-      a = %Q{
+      a = %{
       def function(var0)
         #{Sorcerer.source(to_sexp(Cauldron::Scope.new(var_names), []), indent: true)}
       end
-      }       
+      }
 
       o = Object.new
       o.instance_eval(a)
 
       begin
-        o.function(vars.collect {|x| context[x] })  
+        o.function(vars.collect { |x| context[x] })
       rescue NoMethodError => e
         return false
       rescue StandardError => e
         puts e
       end
-      return true
-      
+      true
     end
 
     def write_to_file(filename)
       FileUtils.mkdir_p File.join('tmp')
-      File.open( File.join('tmp',filename), 'w+') do |file|
-        file << "class DynamicOperator"+"\n"
+      File.open(File.join('tmp', filename), 'w+') do |file|
+        file << 'class DynamicOperator' + "\n"
         file << Sorcerer.source(@sexp_methods, indent: true)
         file << "\n"
-        file << "end"
+        file << 'end'
       end
     end
 
     def rip2
-      %Q{
+      %{
       def function(var0)
         #{Sorcerer.source(to_sexp(Cauldron::Scope.new(['var0'])), indent: true)}
       end
       }
     end
 
-    def rip(composite,examples)
+    def rip(composite, examples)
       Ripper::SexpBuilder.new(
-        %Q{
+        %{
         def function(var0)
           #{composite.to_ruby(examples.scope)}
         end
-      }).parse      
+      }
+      ).parse
     end
-
   end
-
 end

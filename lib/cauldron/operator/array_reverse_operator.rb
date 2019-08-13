@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 class ArrayReverseOperator
-
   def initialize(indexes)
-    raise StandardError.new('Need at least one item') if indexes.empty?
-    @indexes = indexes
-  end  
+    raise StandardError, 'Need at least one item' if indexes.empty?
 
-  # Matching in 
+    @indexes = indexes
+  end
+
+  # Matching in
   def successful?(problem)
     # NOTE - for the future - like the idea of not actually calling the method
     # input.length.each do |i|
@@ -13,19 +15,21 @@ class ArrayReverseOperator
     # does input[1] == output[input.length-1]
     # does input[3] == output[input.length-3]
     # end
-    
+
     # in this case x.reverse will work
     return true if problem[:arguments].first.reverse == problem[:response]
+
     false
   end
 
   # 1. Only has one argument value
   # 2. Argument is an array value
-  # 3. Response is an array 
-  def self.viable?(arguments,output)
+  # 3. Response is an array
+  def self.viable?(arguments, output)
     return false unless arguments.length == 1
-    return false unless arguments.all? { |x| x.kind_of?(Array) }
-    return false unless output.kind_of?(Array)
+    return false unless arguments.all? { |x| x.is_a?(Array) }
+    return false unless output.is_a?(Array)
+
     true
   end
 
@@ -33,7 +37,7 @@ class ArrayReverseOperator
     false
   end
 
-  def self.find_constants(problems)
+  def self.find_constants(_problems)
     []
   end
 
@@ -42,7 +46,7 @@ class ArrayReverseOperator
   end
 
   def self.process(arguments)
-    arguments.collect {|x| x.reverse }
+    arguments.collect(&:reverse)
   end
 
   def to_ruby(operators, scope)
@@ -53,14 +57,12 @@ class ArrayReverseOperator
     to_sexp(operators, scope)
   end
 
-  def to_sexp(scope, operators)
-    [:call, 
-      [:vcall, 
-        [:@ident, scope[@indexes[0]] ]
-      ], 
-      :".", 
-      [:@ident, "reverse"]
-    ]    
+  def to_sexp(scope, _operators)
+    [:call,
+     [:vcall,
+      [:@ident, scope[@indexes[0]]]],
+     :".",
+     [:@ident, 'reverse']]
   end
 
   def branch?
@@ -68,14 +70,13 @@ class ArrayReverseOperator
   end
 
   def self.init(indexes)
-    self.new(indexes)
+    new(indexes)
   end
 
   def self.instances(histories, composite, examples, insert_points)
-
     # TEMP
     unless examples.class == Cauldron::ExampleSet
-      raise StandardError.new('Examples should be an example')
+      raise StandardError, 'Examples should be an example'
     end
 
     # Print out each insertable statements
@@ -88,7 +89,6 @@ class ArrayReverseOperator
     results = []
 
     insert_points.each do |point|
-
       # Find the variables at a particular point
       # TODO Change to test
       contexts = histories.contexts_at(point)
@@ -98,63 +98,58 @@ class ArrayReverseOperator
       # scopes = scopes_at_point(point)
 
       composites.each do |x|
-        if contexts.all? do |context|
-          x.context_realizable?(context)
-        end
-          
+        next unless contexts.all? do |context|
+                      x.context_realizable?(context)
+                    end
+
         results << extend_actualized_composite(x, composite, examples, point)
       end
     end
 
-    end
-    
     results
-  end  
+  end
 
   def self.extend_actualized_composite(x, container, examples, point)
     cloned_container = container.clone_solution
     cloned_container.add_statement_at(x, point)
     cloned_container
     Cauldron::ActualizedComposite.new(cloned_container, examples)
-  end  
+  end
 
   def clone_statement
     self.class.init(@indexes.clone)
-  end  
+  end
 
   def context_realizable?(context)
-    
-    vars = context.keys.select {|x| x.match(/var\d/) }
+    vars = context.keys.select { |x| x.match(/var\d/) }
     var_names = vars.collect(&:to_s)
 
-    a = %Q{
+    a = %{
     def function(var0)
       #{Sorcerer.source(to_sexp(Cauldron::Scope.new(var_names), []), indent: true)}
     end
-    }       
+    }
 
     o = Object.new
     o.instance_eval(a)
 
     begin
-      o.function(vars.collect {|x| context[x] })  
+      o.function(vars.collect { |x| context[x] })
     rescue NoMethodError => e
       return false
     rescue StandardError => e
       puts e
     end
-    return true
-    
-  end  
+    true
+  end
 
   def self.context_instances(contexts)
     results = []
     contexts.each do |context|
-      results << context.keys.collect(&:to_s).select {|x| x.match(/var\d/) }
+      results << context.keys.collect(&:to_s).select { |x| x.match(/var\d/) }
     end
     results = results.flatten.uniq
     variable_numbers = results.collect { |x| x.match(/var(\d+)/)[1] }
-    variable_numbers.collect { |x| init([x.to_i])}
-  end  
-
+    variable_numbers.collect { |x| init([x.to_i]) }
+  end
 end

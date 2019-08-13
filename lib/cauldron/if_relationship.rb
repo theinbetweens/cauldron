@@ -1,35 +1,33 @@
-class IfRelationship #< Relationship
+# frozen_string_literal: true
 
-  # TODO Need to change to IfSolution probably
+class IfRelationship # < Relationship
+  # TODO: Need to change to IfSolution probably
 
   def initialize(problems)
     @problems = problems
   end
 
   def to_ruby(variables)
-
     # Add the arguments
     result = ''
-    @problems.each_with_index do |x,i|
-      result += '  if '+variables[0].to_s+' == '+quote(x.arguments[0])+"\n"
-      result += '    return '+quote(x.response)+"\n"
-      result += '  end'+"\n"
-    end    
+    @problems.each_with_index do |x, _i|
+      result += '  if ' + variables[0].to_s + ' == ' + quote(x.arguments[0]) + "\n"
+      result += '    return ' + quote(x.response) + "\n"
+      result += '  end' + "\n"
+    end
     result
   end
 
-  def self.match?(problems)
+  def self.match?(_problems)
     true
   end
 
-protected
+  protected
 
-  # TODO Not Dry - method used in Pot
+  # TODO: Not Dry - method used in Pot
   def quote(value)
-    if value.kind_of?(String)
-      return "'#{value}'"
-    end
+    return "'#{value}'" if value.is_a?(String)
+
     value.to_s
   end
-
 end
