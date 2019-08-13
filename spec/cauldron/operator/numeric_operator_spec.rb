@@ -53,7 +53,7 @@ module Cauldron
             {arguments: [7], response: 8},
             {arguments: [10], response: 11}
           ]
-          problem.all? {|x| NumericOperator.viable?(x[:arguments], x[:response]) }.should be_true
+          expect(problem.all? {|x| NumericOperator.viable?(x[:arguments], x[:response]) }).to eql(true)
         end
 
       end
@@ -65,8 +65,7 @@ module Cauldron
             {arguments: ["ted"], response: 8},
             {arguments: ["ben"], response: 11}
           ]          
-          #NumericValueRelationship.match?(problem).should be_false
-          problem.all? {|x| NumericOperator.viable?(x[:arguments], x[:response]) }.should be_false
+          expect(problem.all? {|x| NumericOperator.viable?(x[:arguments], x[:response]) }).to eql(false)
         end
 
       end
@@ -77,9 +76,8 @@ module Cauldron
           problem = [
             {arguments: [7], response: 'ben'},
             {arguments: [10], response: 'ted'}
-          ]          
-          #NumericValueRelationship.match?(problem).should be_false
-          problem.all? {|x| NumericOperator.viable?(x[:arguments], x[:response]) }.should be_false
+          ]
+          expect(problem.all? {|x| NumericOperator.viable?(x[:arguments], x[:response]) }).to eql(false)
         end
 
       end
@@ -100,7 +98,7 @@ module Cauldron
         let(:operator) { NumericOperator.new([0]) }
 
         it 'is false' do    
-          problem.all? { |x| operator.successful?(x) }.should be_false
+          expect(problem.all? { |x| operator.successful?(x) }).to eql(false)
         end
 
       end

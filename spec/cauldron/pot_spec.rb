@@ -73,14 +73,14 @@ end
             end            
         } do
           pending
-          pot.solve(examples).should == 
+          expect(pot.solve(examples) ).to eql( 
 %q{
 def function(var0)
   var1 = var0.collect do |var2|
     var2.chop
   end
 end
-}.lstrip
+}).lstrip
         end
 
       end
@@ -90,17 +90,17 @@ end
         it 'returns a concat function' do
           pending
           pot = Pot.new
-          pot.solve(
+          expect(pot.solve(
             [
               {arguments: ['foo'], response: 'foobar'},
               {arguments: ['bar'], response: 'barbar'}
             ]
-          ).should == 
+          )).to eql(
 %q{
 def function(var0)
   var0.concat("bar")
 end
-}.lstrip
+}).lstrip
         end
 
       end
@@ -182,19 +182,19 @@ end
               } do
                 pending
               pot = Pot.new
-              pot.solve(
+              expect(pot.solve(
                 [
                   { arguments: [['foo', 'lima']], response: ['foofoo', 'limalima'] },
                   { arguments: [['bar', 'delta']], response: ['barbar', 'deltadelta'] }
                 ]
-              ).should == 
+              )).to eql(
 %q{
 def function(var0)
   var0.collect { |x|
     x * 2
   }
 end
-}.lstrip
+}).lstrip
             end
 
           end

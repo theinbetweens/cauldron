@@ -19,7 +19,7 @@ module Cauldron
       context 'the arguments are not string' do
 
         it 'is false' do
-          ConcatOperator.viable?([8], 'foobar').should be_false
+          expect(ConcatOperator.viable?([8], 'foobar')).to eql(false)
         end
 
       end
@@ -27,7 +27,7 @@ module Cauldron
       context 'the reponse is not a string' do
 
         it 'is false' do
-          ConcatOperator.viable?(['foo'],8).should be_false
+          expect(ConcatOperator.viable?(['foo'],8)).to eql(false)
         end
 
       end

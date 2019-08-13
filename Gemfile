@@ -14,11 +14,11 @@ gem 'activesupport'
 group :development, :cucumber, :test do
   #gem "shoulda", ">= 0"
   #gem "bundler", "~> 1.0.15"
-  gem "jeweler", "~> 1.6.2"
-  gem "rspec", "~>2.6.0"
+  gem "jeweler"
+  gem "rspec"
   gem 'simplecov', :require => false
-  gem "ruby_parser", "~>3.1.2"
-  gem "aruba", "~>0.4.5"
+  gem "ruby_parser"
+  gem 'aruba', '~> 0.14.6'
   #gem 'ruby-debug', '0.10.4'
   #gem 'pry'
 end

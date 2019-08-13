@@ -184,11 +184,11 @@ module Cauldron
             let(:dynamic_operator_class) { StatementGenerator.new.default_template('string',:chop) }
 
             it 'returns 2 instances' do
-              dynamic_operator_class.context_instances(
+              expect(dynamic_operator_class.context_instances(
                 [
                   {:var0=>["Sparky", "Kels"], :var1=>nil, :line=>0, :depth=>1, :total_line=>3, :point=>[0, 0]},
                 ]
-              ).should have(2).instances   
+              ).length).to eql(2)
             end
 
           end
@@ -208,7 +208,7 @@ module Cauldron
               end              
 
               it 'returns false' do
-                dynamic_operator_class.new([0]).context_realizable?(context).should be_false
+                expect(dynamic_operator_class.new([0]).context_realizable?(context)).to be false
               end
 
             end
@@ -224,7 +224,7 @@ module Cauldron
             context 'using the index "2"' do
 
               it 'returns true' do
-                dynamic_operator_class.new([2]).context_realizable?(context).should be_true
+                expect(dynamic_operator_class.new([2]).context_realizable?(context)).to be true
               end  
 
             end
@@ -232,7 +232,7 @@ module Cauldron
             context 'using the index "0"' do
 
               it 'returns true' do
-                dynamic_operator_class.new([0]).context_realizable?(context).should be_false
+                expect(dynamic_operator_class.new([0]).context_realizable?(context)).to be false
               end  
 
             end            

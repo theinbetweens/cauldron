@@ -100,7 +100,7 @@ module Cauldron
       let(:subject) { StatementGenerator.new}
 
       it 'returns 1 operator' do
-        subject.build('string',[:chop]).should have(1).operator
+        expect(subject.build('string',[:chop]).length).to eql(1)
       end
 
       describe 'generating String#chop' do
@@ -143,22 +143,6 @@ module Cauldron
         end
 
         describe '#instances' do
-
-           # @results=
-           #  [#<Cauldron::History:0x007fa02b00f848
-           #    @logs=
-           #     [{:var2=>"Sparky", :var0=>["Sparky", "Kels"], :var1=>nil, :line=>0, :depth=>1, :total_line=>3, :point=>[0, 0]},
-           #      {:var2=>"Kels", :var0=>["Sparky", "Kels"], :var1=>nil, :line=>0, :depth=>1, :total_line=>3, :point=>[0, 0]},
-           #      {:var0=>["Sparky", "Kels"], :var1=>["Sparky", "Kels"], :line=>0, :depth=>0, :total_line=>4, :point=>[1]}]>,
-           #   #<Cauldron::History:0x007fa02cb63040
-           #    @logs=
-           #     [{:var2=>"Pip", :var0=>["Pip", "Rowe"], :var1=>nil, :line=>0, :depth=>1, :total_line=>3, :point=>[0, 0]},
-           #      {:var2=>"Rowe", :var0=>["Pip", "Rowe"], :var1=>nil, :line=>0, :depth=>1, :total_line=>3, :point=>[0, 0]},
-           #      {:var0=>["Pip", "Rowe"], :var1=>["Pip", "Rowe"], :line=>0, :depth=>0, :total_line=>4, :point=>[1]}]>]>          
-          it 'returns 1 instance (at point [0,0])' do
-            pending
-            # See Builder#insertable_operators
-          end
 
           describe 'adding String#chop in collect statement' do
 
@@ -207,9 +191,11 @@ module Cauldron
 
             # instances(histories, composite, examples, insert_points)
             it 'returns 1 new composite' do
-              operator.instances(
-                histories, composite, examples, insert_points
-              ).should have(1).composites
+              expect(
+                operator.instances(
+                  histories, composite, examples, insert_points
+                ).length
+              ).to eql(1)
             end
 
           end

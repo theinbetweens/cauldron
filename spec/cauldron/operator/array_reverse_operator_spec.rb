@@ -15,7 +15,7 @@ module Cauldron
       context 'the arguments are not arrays' do
 
         it 'is false' do
-          ArrayReverseOperator.viable?([8], ['lions','tigers','bears']).should be_false
+          expect(ArrayReverseOperator.viable?([8], ['lions','tigers','bears'])).to eql(false)
         end
 
       end
@@ -23,7 +23,7 @@ module Cauldron
       context 'using more than 1 argument' do
 
         it 'is false' do
-          ArrayReverseOperator.viable?([['lions'],['tigers']], ['lions','tigers']).should be_false
+          expect(ArrayReverseOperator.viable?([['lions'],['tigers']], ['lions','tigers'])).to eql(false)
         end
 
       end
@@ -31,7 +31,7 @@ module Cauldron
       context 'response is not an array' do
 
         it 'is false' do
-          ArrayReverseOperator.viable?([['lions','tigers']], 'lions').should be_false
+          expect(ArrayReverseOperator.viable?([['lions','tigers']], 'lions')).to eql(false)
         end
 
       end      
@@ -44,9 +44,11 @@ module Cauldron
 
         it 'is true' do
           operator = ArrayReverseOperator.new([0])
-          operator.successful?(
-            { arguments: [['lions','tigers']],response: ['tigers','lions']}
-          ).should be_true
+          expect(
+            operator.successful?(
+              { arguments: [['lions','tigers']],response: ['tigers','lions']}
+            )
+          ).to eql(true)
         end
 
       end
@@ -55,9 +57,11 @@ module Cauldron
 
         it 'is false' do
           operator = ArrayReverseOperator.new([0])
-          operator.successful?(
-            {arguments:[['lions','tigers']],response: ['lions','tigers']}
-          ).should be_false
+          expect(
+            operator.successful?(
+              {arguments:[['lions','tigers']],response: ['lions','tigers']}
+            )
+          ).to eql(false)
         end
         
       end

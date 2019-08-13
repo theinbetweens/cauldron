@@ -15,7 +15,7 @@ module Cauldron
       context 'the argument is not a hash' do
 
         it 'is false' do
-          HashKeyValueOperator.viable?(['string'], 'foobar').should be_false
+          expect(HashKeyValueOperator.viable?(['string'], 'foobar')).to eql(false)
         end
 
       end
@@ -23,7 +23,7 @@ module Cauldron
       context 'the argument is a hash' do
 
         it 'is true' do
-          HashKeyValueOperator.viable?([{:foo => 'bar'}], 'foobar').should be_true
+          expect(HashKeyValueOperator.viable?([{:foo => 'bar'}], 'foobar')).to eql(true)
         end
 
       end
@@ -33,7 +33,7 @@ module Cauldron
     describe '.uses_constants?' do
 
       it 'is true' do
-        HashKeyValueOperator.uses_constants?.should be_true
+        expect(HashKeyValueOperator.uses_constants?).to eql(true)
       end
 
     end

@@ -13,7 +13,7 @@ module Cauldron
             {arguments: [7], response: 'seven'},
             {arguments: [8], response: 'eight'}
           ]          
-          IfRelationship.match?(problem).should be_true
+          expect(IfRelationship.match?(problem)).to eql(true)
         end
 
       end

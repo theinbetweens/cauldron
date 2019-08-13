@@ -17,7 +17,7 @@ module Cauldron::ArrayCollectTemplate
           let(:subject) { Cauldron::ArrayCollectTemplate::Default.new([2]) }
 
           it 'is false' do
-            subject.context_realizable?(context).should be_false
+            subject.context_realizable?(context).should == false
           end
 
         end
@@ -27,7 +27,7 @@ module Cauldron::ArrayCollectTemplate
           let(:subject) { Cauldron::ArrayCollectTemplate::Default.new([0]) }
 
           it 'is true' do
-            subject.context_realizable?(context).should be_true
+            subject.context_realizable?(context).should == true
           end
 
         end        

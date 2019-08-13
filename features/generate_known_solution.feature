@@ -6,7 +6,7 @@ Feature: Cauldron generates single parameter methods
   Scenario: Chop the last character off a string
     Given a file named "launch.rb" with:
       """
-      $LOAD_PATH.unshift File.expand_path( File.join('lib') )
+      $LOAD_PATH.unshift File.expand_path( File.join(['..','..','lib']) )
       require 'cauldron'
       cauldron = Cauldron::Pot.new
       puts cauldron.solve [{arguments: ['Sparky'], response: 'Spark'}, {arguments: ['Kel'], response: 'Ke'}]

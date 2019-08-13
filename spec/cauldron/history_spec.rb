@@ -14,7 +14,7 @@ module Cauldron
         let(:subject) { History.new([{line: 0, depth: 0, point: [0], var0: ['Sparky','Kel'] }]) }
 
         it 'has 1 insert point' do
-          subject.insert_points.should have(1).insert_point
+          expect(subject.insert_points.length).to eql(1)
         end
 
         it 'has the insert point [0,0]' do
@@ -33,7 +33,7 @@ module Cauldron
         let(:subject) { History.new([{line: 1, depth: 0, point: [1], var0: 'Sparky', var1: 'Spark'}]) }
 
         it 'has 1 insert point' do
-          subject.insert_points.should have(1).insert_point
+          expect(subject.insert_points.length).to eql(1)
         end 
           
         it 'has the insert point [1,0]' do
@@ -62,7 +62,7 @@ module Cauldron
           }
 
           it 'has 2 insert point' do
-            subject.insert_points.should have(2).insert_point
+            expect(subject.insert_points.length).to eql(2)
           end
 
           it 'has the insert point [1]' do

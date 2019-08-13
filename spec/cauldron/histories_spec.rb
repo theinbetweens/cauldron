@@ -30,7 +30,7 @@ module Cauldron
         }        
 
         it 'returns 1 insert point' do
-          subject.insert_points.should have(1).insert_point
+          expect(subject.insert_points.length).to eql(1)
         end
 
       end      
@@ -66,11 +66,11 @@ module Cauldron
       end
 
       it 'returns 1 context' do
-        histories.contexts_at([1]).should have(1).context
+        expect(histories.contexts_at([1]).length).to eql(1)
       end
 
       it 'returns 2 contexts' do
-        histories.contexts_at([0, 0]).should have(2).contexts
+        expect(histories.contexts_at([0, 0]).length).to eql(2)
       end      
 
     end

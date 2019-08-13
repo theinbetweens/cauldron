@@ -121,7 +121,7 @@ module Cauldron
         context 'response is string' do
 
           it 'is true' do
-            StringAsteriskOperator.viable?(['hello'],'hellohello').should be_true         
+            expect(StringAsteriskOperator.viable?(['hello'],'hellohello') ).to eql(true)
           end
 
         end
@@ -129,7 +129,7 @@ module Cauldron
         context 'response is an array' do
 
           it 'is false' do
-            StringAsteriskOperator.viable?(['hello'],['hellohello']).should be_false
+            expect(StringAsteriskOperator.viable?(['hello'],['hellohello']) ).to eql(false)
           end
 
         end
@@ -139,7 +139,7 @@ module Cauldron
       context 'argument is not a string' do
 
         it 'is false' do
-          StringAsteriskOperator.viable?([8],'hellohello').should be_false
+          expect(StringAsteriskOperator.viable?([8],'hellohello')).to eql(false)
         end
 
       end
@@ -149,7 +149,7 @@ module Cauldron
     describe '.uses_constants?' do
 
       it 'is true' do
-        StringAsteriskOperator.uses_constants?.should be_true
+        expect(StringAsteriskOperator.uses_constants?).to eql(true)
       end
 
     end
@@ -165,7 +165,7 @@ module Cauldron
             it 'is true' do
               problem = { arguments: ['hello'], response: 'hellohello' }
               operator = StringAsteriskOperator.new([0])
-              operator.successful?(problem).should be_true           
+              expect(operator.successful?(problem) ).to eql(true)
             end
 
           end
