@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (5.2.3)
+    activesupport (5.2.4.3)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
@@ -20,7 +20,7 @@ GEM
     childprocess (2.0.0)
       rake (< 13.0)
     coderay (1.1.2)
-    concurrent-ruby (1.1.5)
+    concurrent-ruby (1.1.6)
     contracts (0.16.0)
     cucumber (3.1.2)
       builder (>= 2.1.2)
@@ -56,7 +56,7 @@ GEM
       oauth2 (~> 1.0)
     hashie (3.6.0)
     highline (2.0.2)
-    i18n (1.6.0)
+    i18n (1.8.2)
       concurrent-ruby (~> 1.0)
     jaro_winkler (1.5.3)
     jeweler (2.3.9)
@@ -75,7 +75,7 @@ GEM
     method_source (0.8.2)
     mime-types (2.99.3)
     mini_portile2 (2.4.0)
-    minitest (5.11.3)
+    minitest (5.14.1)
     multi_json (1.13.1)
     multi_test (0.1.2)
     multi_xml (0.6.0)
@@ -138,7 +138,7 @@ GEM
     thor (0.20.3)
     thread_safe (0.3.6)
     tree (0.2.1)
-    tzinfo (1.2.5)
+    tzinfo (1.2.7)
       thread_safe (~> 0.1)
     unicode-display_width (1.6.0)
 
